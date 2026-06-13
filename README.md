@@ -1,3 +1,8 @@
+🚀 AI Search Audit
+Get your LLM Visibility Report in seconds.
+
+Analyze how well your website can be understood, trusted, and cited by AI search systems including ChatGPT, Gemini, Claude, and Perplexity.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
