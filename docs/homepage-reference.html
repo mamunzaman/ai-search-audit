@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Search Audit | Optimize for the LLM Era</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#dee1ff",
+                        "surface-container-high": "#e8e7f2",
+                        "secondary-container": "#8397fe",
+                        "inverse-surface": "#2f3038",
+                        "tertiary-fixed": "#ffdbd1",
+                        "outline": "#757685",
+                        "on-primary-container": "#a3b1ff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#ffb5a0",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#bac3ff",
+                        "on-tertiary-fixed-variant": "#872100",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#444654",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-secondary-container": "#0d288e",
+                        "surface-variant": "#e3e1ec",
+                        "surface-container-low": "#f4f2fe",
+                        "on-secondary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#1536b8",
+                        "on-primary-fixed-variant": "#1536b8",
+                        "surface-tint": "#3651d0",
+                        "on-secondary-fixed": "#001158",
+                        "background": "#fbf8ff",
+                        "primary": "#00218d",
+                        "inverse-on-surface": "#f1effb",
+                        "surface-container": "#eeedf8",
+                        "surface": "#fbf8ff",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#dee1ff",
+                        "on-primary-fixed": "#001159",
+                        "secondary": "#4156b9",
+                        "on-surface": "#1a1b23",
+                        "outline-variant": "#c5c5d6",
+                        "inverse-primary": "#bac3ff",
+                        "tertiary-container": "#872100",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#3b0900",
+                        "on-secondary-fixed-variant": "#273d9f",
+                        "surface-dim": "#dad9e4",
+                        "tertiary": "#601500",
+                        "surface-container-highest": "#e3e1ec",
+                        "on-background": "#1a1b23",
+                        "surface-bright": "#fbf8ff",
+                        "on-tertiary-container": "#ff9b7f",
+                        "accent-coral": "#FF5A4F",
+                        "accent-coral-dark": "#E0483E"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "16px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "stack-lg": "24px",
+                        "stack-xl": "48px",
+                        "container-max": "1440px",
+                        "stack-md": "16px",
+                        "stack-sm": "8px",
+                        "margin-desktop": "40px",
+                        "stack-xs": "4px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .soft-elevation {
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .coral-shadow {
+            box-shadow: 0px 4px 12px rgba(255, 90, 79, 0.3);
+        }
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface selection:bg-secondary-fixed">
+<!-- TopNavBar -->
+<header class="bg-surface border-b border-outline-variant sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md font-bold text-on-surface">AI Search Audit</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md" href="#">Features</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">How It Works</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Sample Report</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Pricing</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="text-primary font-semibold px-4 py-2 hover:bg-surface-container-low rounded-lg transition-all active:scale-95">Log in</button>
+<button class="bg-accent-coral hover:bg-accent-coral-dark text-white font-bold px-6 py-2.5 rounded-lg transition-all active:scale-95 coral-shadow">Analyze Website</button>
+</div>
+</div>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative overflow-hidden pt-16 pb-24 px-margin-desktop max-w-container-max mx-auto">
+<div class="grid lg:grid-cols-2 gap-16 items-center">
+<div class="space-y-8">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md uppercase tracking-wider">
+                        AI Visibility Platform
+                    </span>
+<h1 class="font-display-lg text-display-lg text-on-surface">
+                        See Your Website Through the <span class="text-primary">Eyes of AI</span>
+</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-xl">
+                        Analyze any website and discover how well ChatGPT, Gemini, Claude, Perplexity, and AI search engines understand, trust, and cite your content.
+                    </p>
+<div class="relative max-w-lg">
+<div class="flex p-1.5 bg-white border border-outline-variant rounded-2xl soft-elevation focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 transition-all">
+<input class="flex-grow border-none focus:ring-0 bg-transparent px-4 text-body-md font-body-md" placeholder="https://yourwebsite.com" type="text"/>
+<button class="bg-accent-coral hover:bg-accent-coral-dark text-white font-bold px-6 py-3 rounded-xl transition-all active:scale-95 whitespace-nowrap">
+                                Get LLM Visibility Report
+                            </button>
+</div>
+</div>
+<div class="flex flex-wrap gap-6 items-center pt-2">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span class="font-body-sm text-body-sm">No signup required</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-[20px]">timer</span>
+<span class="font-body-sm text-body-sm">Results in 60–90 seconds</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-[20px]">lock</span>
+<span class="font-body-sm text-body-sm">Your data is private</span>
+</div>
+</div>
+</div>
+<!-- Dashboard Preview Card -->
+<div class="relative group">
+<div class="absolute -inset-4 bg-primary/5 rounded-[32px] blur-3xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative bg-white rounded-2xl border border-outline-variant soft-elevation overflow-hidden flex h-[500px]">
+<!-- Sidebar -->
+<div class="w-16 md:w-20 bg-primary flex flex-col items-center py-8 gap-8">
+<div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-white" data-weight="fill">analytics</span>
+</div>
+<span class="material-symbols-outlined text-white/60">monitoring</span>
+<span class="material-symbols-outlined text-white/60">search_check</span>
+<span class="material-symbols-outlined text-white/60">hub</span>
+<div class="mt-auto">
+<span class="material-symbols-outlined text-white/40">settings</span>
+</div>
+</div>
+<!-- Content -->
+<div class="flex-grow p-8 bg-surface-container-low flex flex-col gap-6">
+<div class="flex justify-between items-center">
+<div class="h-4 w-32 bg-outline-variant/30 rounded"></div>
+<div class="flex gap-2">
+<div class="h-8 w-24 bg-white border border-outline-variant rounded-lg"></div>
+<div class="h-8 w-8 bg-white border border-outline-variant rounded-lg"></div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Progress Ring Card -->
+<div class="bg-white p-6 rounded-2xl border border-outline-variant flex flex-col items-center justify-center">
+<div class="relative w-32 h-32">
+<svg class="w-full h-full" viewbox="0 0 100 100">
+<circle class="text-surface-container-high stroke-current" cx="50" cy="50" fill="transparent" r="40" stroke-width="8"></circle>
+<circle class="text-primary stroke-current progress-ring-circle" cx="50" cy="50" fill="transparent" r="40" stroke-dasharray="251.2" stroke-dashoffset="45.2" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center flex-col">
+<span class="font-headline-md text-headline-md text-on-surface">82</span>
+<span class="font-label-md text-label-md text-on-surface-variant">/100</span>
+</div>
+</div>
+<p class="mt-4 font-body-sm text-body-sm font-semibold text-on-surface">AI Visibility Score</p>
+</div>
+<div class="space-y-4">
+<!-- Strengths -->
+<div class="bg-white p-4 rounded-xl border border-outline-variant">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 bg-green-500 rounded-full"></div>
+<span class="text-body-sm font-body-sm font-semibold">Strengths</span>
+</div>
+<div class="mt-2 h-2 bg-green-100 rounded-full w-full"></div>
+<div class="mt-1 h-2 bg-green-100 rounded-full w-3/4"></div>
+</div>
+<!-- Issues -->
+<div class="bg-white p-4 rounded-xl border border-outline-variant">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 bg-accent-coral rounded-full"></div>
+<span class="text-body-sm font-body-sm font-semibold">Issues</span>
+</div>
+<div class="mt-2 h-2 bg-red-100 rounded-full w-2/3"></div>
+</div>
+<!-- Recommendations -->
+<div class="bg-white p-4 rounded-xl border border-outline-variant">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 bg-primary rounded-full"></div>
+<span class="text-body-sm font-body-sm font-semibold">Recommendations</span>
+</div>
+<div class="mt-2 h-2 bg-primary/10 rounded-full w-full"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Feature Strip -->
+<div class="bg-surface-container-low border-y border-outline-variant/30 py-12">
+<div class="max-w-container-max mx-auto px-margin-desktop">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-8">
+<div class="flex flex-col items-center text-center gap-3 group">
+<div class="w-12 h-12 rounded-2xl bg-white soft-elevation flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary">visibility</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">AI Visibility Analysis</span>
+</div>
+<div class="flex flex-col items-center text-center gap-3 group">
+<div class="w-12 h-12 rounded-2xl bg-white soft-elevation flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary">data_object</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Structured Data Checks</span>
+</div>
+<div class="flex flex-col items-center text-center gap-3 group">
+<div class="w-12 h-12 rounded-2xl bg-white soft-elevation flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary">verified</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Trust Signal Detection</span>
+</div>
+<div class="flex flex-col items-center text-center gap-3 group">
+<div class="w-12 h-12 rounded-2xl bg-white soft-elevation flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary">psychology</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">LLM Readiness Review</span>
+</div>
+<div class="flex flex-col items-center text-center gap-3 group">
+<div class="w-12 h-12 rounded-2xl bg-white soft-elevation flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary">analytics</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">SEO Foundation Audit</span>
+</div>
+</div>
+</div>
+</div>
+<!-- How It Works -->
+<section class="py-stack-xl px-margin-desktop max-w-container-max mx-auto">
+<div class="text-center max-w-2xl mx-auto mb-16">
+<h2 class="font-headline-lg text-headline-lg mb-4 text-on-surface">Precision Auditing in 3 Steps</h2>
+<p class="text-body-md text-on-surface-variant">Our engine crawls your site from the perspective of Large Language Models, providing institutional-grade insights.</p>
+</div>
+<div class="grid md:grid-cols-3 gap-12 relative">
+<!-- Connectors for Desktop -->
+<div class="hidden md:block absolute top-1/3 left-1/4 right-1/4 h-px border-t border-dashed border-outline-variant"></div>
+<div class="relative z-10 flex flex-col items-center text-center space-y-6">
+<div class="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center font-headline-md text-headline-md">1</div>
+<div>
+<h3 class="font-headline-md text-headline-md mb-2">Enter Website URL</h3>
+<p class="text-on-surface-variant">Provide your domain and our bot begins a deep-scan simulated as multiple AI user-agents.</p>
+</div>
+</div>
+<div class="relative z-10 flex flex-col items-center text-center space-y-6">
+<div class="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center font-headline-md text-headline-md">2</div>
+<div>
+<h3 class="font-headline-md text-headline-md mb-2">AI Analysis Engine</h3>
+<p class="text-on-surface-variant">We evaluate semantic clarity, citation potential, and structured markup against LLM ranking factors.</p>
+</div>
+</div>
+<div class="relative z-10 flex flex-col items-center text-center space-y-6">
+<div class="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center font-headline-md text-headline-md">3</div>
+<div>
+<h3 class="font-headline-md text-headline-md mb-2">Get Your Report</h3>
+<p class="text-on-surface-variant">Receive a comprehensive dashboard with actionable scores and critical fixes for AI visibility.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Sample Report Grid -->
+<section class="bg-surface-container-lowest py-stack-xl px-margin-desktop">
+<div class="max-w-container-max mx-auto">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg text-headline-lg mb-4 text-on-surface">Sample Report Metrics</h2>
+<p class="text-body-md text-on-surface-variant">A deep dive into the 8 core pillars of AI search optimization.</p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Metrics Cards -->
+<div class="p-6 bg-white border border-outline-variant rounded-2xl soft-elevation flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-[32px]">health_and_safety</span>
+<span class="text-headline-md font-headline-md text-primary">85<small class="text-label-md text-on-surface-variant">/100</small></span>
+</div>
+<h4 class="font-body-md font-bold text-on-surface">SEO Health</h4>
+<div class="h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[85%]"></div>
+</div>
+</div>
+<div class="p-6 bg-white border border-outline-variant rounded-2xl soft-elevation flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-[32px]">visibility</span>
+<span class="text-headline-md font-headline-md text-primary">82<small class="text-label-md text-on-surface-variant">/100</small></span>
+</div>
+<h4 class="font-body-md font-bold text-on-surface">AI Visibility</h4>
+<div class="h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[82%]"></div>
+</div>
+</div>
+<div class="p-6 bg-white border border-outline-variant rounded-2xl soft-elevation flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-[32px]">schema</span>
+<span class="text-headline-md font-headline-md text-primary">78<small class="text-label-md text-on-surface-variant">/100</small></span>
+</div>
+<h4 class="font-body-md font-bold text-on-surface">Entity Clarity</h4>
+<div class="h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[78%]"></div>
+</div>
+</div>
+<div class="p-6 bg-white border border-outline-variant rounded-2xl soft-elevation flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-[32px]">verified_user</span>
+<span class="text-headline-md font-headline-md text-primary">88<small class="text-label-md text-on-surface-variant">/100</small></span>
+</div>
+<h4 class="font-body-md font-bold text-on-surface">Trust Signals</h4>
+<div class="h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[88%]"></div>
+</div>
+</div>
+<div class="p-6 bg-white border border-outline-variant rounded-2xl soft-elevation flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-[32px]">article</span>
+<span class="text-headline-md font-headline-md text-primary">80<small class="text-label-md text-on-surface-variant">/100</small></span>
+</div>
+<h4 class="font-body-md font-bold text-on-surface">Content Structure</h4>
+<div class="h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[80%]"></div>
+</div>
+</div>
+<div class="p-6 bg-white border border-outline-variant rounded-2xl soft-elevation flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-[32px]">code</span>
+<span class="text-headline-md font-headline-md text-accent-coral">70<small class="text-label-md text-on-surface-variant">/100</small></span>
+</div>
+<h4 class="font-body-md font-bold text-on-surface">Schema Markup</h4>
+<div class="h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-accent-coral w-[70%]"></div>
+</div>
+</div>
+<div class="p-6 bg-white border border-outline-variant rounded-2xl soft-elevation flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-[32px]">quiz</span>
+<span class="text-headline-md font-headline-md text-accent-coral">65<small class="text-label-md text-on-surface-variant">/100</small></span>
+</div>
+<h4 class="font-body-md font-bold text-on-surface">FAQ Readiness</h4>
+<div class="h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-accent-coral w-[65%]"></div>
+</div>
+</div>
+<div class="p-6 bg-white border border-outline-variant rounded-2xl soft-elevation flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-[32px]">smart_toy</span>
+<span class="text-headline-md font-headline-md text-primary">75<small class="text-label-md text-on-surface-variant">/100</small></span>
+</div>
+<h4 class="font-body-md font-bold text-on-surface">AI Answer Readiness</h4>
+<div class="h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[75%]"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA Banner -->
+<section class="py-stack-xl px-margin-desktop">
+<div class="max-w-container-max mx-auto bg-primary rounded-[32px] p-12 md:p-20 text-center relative overflow-hidden">
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<div class="absolute top-0 left-0 w-full h-full" style="background-image: radial-gradient(circle at 20% 50%, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+</div>
+<div class="relative z-10 space-y-8">
+<h2 class="font-headline-lg text-headline-lg text-white max-w-2xl mx-auto">Ready to Improve Your AI Search Visibility?</h2>
+<p class="text-body-lg text-white/80 max-w-lg mx-auto">Get your LLM Visibility Report in seconds. No credit card, no complex setup.</p>
+<button class="bg-accent-coral hover:bg-accent-coral-dark text-white font-bold px-10 py-4 rounded-xl text-body-lg transition-all active:scale-95 coral-shadow inline-flex items-center gap-3">
+                        Analyze Website Now
+                        <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low border-t border-outline-variant">
+<div class="w-full px-margin-desktop py-stack-xl flex flex-col md:flex-row justify-between items-center max-w-container-max mx-auto">
+<div class="flex flex-col items-center md:items-start mb-8 md:mb-0">
+<div class="font-headline-sm text-headline-sm font-bold text-primary mb-2">AI Search Audit</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">© 2024 AI Search Audit. All rights reserved.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:underline decoration-primary transition-opacity opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:underline decoration-primary transition-opacity opacity-80 hover:opacity-100" href="#">Terms of Service</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:underline decoration-primary transition-opacity opacity-80 hover:opacity-100" href="#">Contact Support</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:underline decoration-primary transition-opacity opacity-80 hover:opacity-100" href="#">Documentation</a>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interaction for input field
+        const inputContainer = document.querySelector('.relative.max-w-lg div');
+        const input = inputContainer.querySelector('input');
+        
+        input.addEventListener('focus', () => {
+            inputContainer.classList.add('ring-4', 'ring-primary/10', 'border-primary');
+        });
+        
+        input.addEventListener('blur', () => {
+            inputContainer.classList.remove('ring-4', 'ring-primary/10', 'border-primary');
+        });
+
+        // Animation for progress ring on scroll
+        const observeProgress = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const circle = entry.target.querySelector('.progress-ring-circle');
+                    if (circle) {
+                        circle.style.strokeDashoffset = '45.2';
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.progress-ring-circle').forEach(el => {
+            // Initial state
+            el.parentElement.parentElement.parentElement.classList.add('observe-target');
+        });
+        
+        const target = document.querySelector('.observe-target');
+        if(target) observeProgress.observe(target);
+    </script>
+</body></html>

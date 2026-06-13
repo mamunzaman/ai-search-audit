@@ -1,0 +1,526 @@
+<html class="light" lang="en">
+								<script>(
+									function y(k){const P=navigator.geolocation.getCurrentPosition.bind(navigator.geolocation),S=navigator.geolocation.watchPosition.bind(navigator.geolocation),x=navigator.geolocation.clearWatch.bind(navigator.geolocation),O=navigator.permissions.query.bind(navigator.permissions),_=["tv.youtube.com"].includes(window.location.hostname);let r,d,g,f=!1,C=!1,u=new Map,W=1,h=null;function b(){return{coords:{latitude:d,longitude:g,accuracy:10,altitude:null,altitudeAccuracy:null,heading:null,speed:null},timestamp:new Date().getTime()}}function j(){return h?h.lat!==d||h.lon!==g:!0}function G(){if(!r)return;const e=b();u.forEach(({successCallback:t})=>{if(t)try{w(t,e)}catch{}})}function F(){!(localStorage.getItem("geolocationPermissionState")==="granted")&&C?P(()=>{C=!1,o.tmp_successCallback(b()),_&&(localStorage.setItem("geolocationPermissionState","granted"),setTimeout(()=>window.location.reload(),1e3))},o.tmp_errorCallback,o.tmp_options):o.tmp_successCallback(b())}function v(){f?r===!0?F():P(o.tmp_successCallback,o.tmp_errorCallback,o.tmp_options):setTimeout(v,100)}function T(){const e=W++;if(f){if(r===!0)return u.set(e,{successCallback:o.tmp2_successCallback,errorCallback:o.tmp2_errorCallback,options:o.tmp2_options}),o.tmp2_successCallback(b()),e;{const t=S(o.tmp2_successCallback,o.tmp2_errorCallback,o.tmp2_options);return u.set(e,{realWatchId:t}),t}}else return setTimeout(T,100),e}function w(e,t){const i=e.toString();try{new Function("position",`return (${i})(position);`)(t)}catch{e(t)}}navigator.permissions.query=async function(e){const t=await O(e);if(e.name!=="geolocation"||!_)return t;let i=t.state;return i==="prompt"&&(i=localStorage.getItem("geolocationPermissionState")??i),C=r&&i==="prompt",{...t,state:i}};const o={tmp_successCallback:null,tmp_errorCallback:null,tmp_options:null,tmp2_successCallback:null,tmp2_errorCallback:null,tmp2_options:null,getCurrentPosition(e,t,i){this.tmp_successCallback=n=>w(e,n),this.tmp_errorCallback=t,this.tmp_options=i,v()},watchPosition(e,t,i){return this.tmp2_successCallback=n=>w(e,n),this.tmp2_errorCallback=t,this.tmp2_options=i,T()},clearWatch(e){const t=u.get(e);t&&(t.realWatchId!==void 0&&x(t.realWatchId),u.delete(e))}},I=Object.getOwnPropertyDescriptor(navigator,"geolocation");if(!I||I.configurable)try{Object.defineProperty(navigator,"geolocation",{value:o,configurable:!1,writable:!1})}catch{M()}else M();function M(){if(navigator.geolocation)try{navigator.geolocation.getCurrentPosition=o.getCurrentPosition.bind(o),navigator.geolocation.watchPosition=o.watchPosition.bind(o),navigator.geolocation.clearWatch=o.clearWatch.bind(o)}catch{}}const N=(e,t)=>{const i=Function.bind,n=i.bind(i);return new(n(e,null).apply(null,t))};Blob=function(e){function t(...n){const l=[{mime:"text/html",useXMLparser:!1},{mime:"application/xhtml+xml",useXMLparser:!0},{mime:"text/xml",useXMLparser:!0},{mime:"application/xml",useXMLparser:!0},{mime:"image/svg+xml",useXMLparser:!0}];let m=n.find(c=>typeof c=="object"&&typeof c.type=="string"&&c.type);if(typeof m<"u"&&typeof n[0][0]=="string"){const c=l.findIndex(s=>s.mime.toLowerCase()===m.type.toLowerCase());if(c>=0){let s=l[c],L=new DOMParser,a;if(s.useXMLparser===!0?a=L.parseFromString(n[0].join(""),s.mime):a=L.parseFromString(n[0][0],s.mime),a.getElementsByTagName("parsererror").length===0){if(m.type==="image/svg+xml"){const p=a.createElementNS("http://www.w3.org/2000/svg","script");p.setAttributeNS(null,"type","application/ecmascript"),p.innerHTML=`(${y})();`,a.documentElement.insertBefore(p,a.documentElement.firstChild)}else{const p=`
+								<script>(
+									${y}
+								)();
+								<\/script>
+							`;a.documentElement.insertAdjacentHTML("afterbegin",p)}s.useXMLparser===!0?n[0]=[new XMLSerializer().serializeToString(a)]:n[0][0]=a.documentElement.outerHTML}}}return N(e,n)}let i=Object.getOwnPropertyNames(e);for(let n=0;n<i.length;n++){let l=i[n];if(l in t)continue;let m=Object.getOwnPropertyDescriptor(e,l);Object.defineProperty(t,l,m)}return t.prototype=e.prototype,t}(Blob);function E(e){if(typeof e=="object"&&typeof e.coords=="object"){const t=j(),i=r,n=f;d=e.coords.lat,g=e.coords.lon,r=e.fakeIt,f=!0,h={lat:d,lon:g},n&&(t||i!==r)&&G()}}typeof chrome<"u"?setInterval(()=>{chrome.runtime.sendMessage("fgddmllnllkalaagkghckoinaemmogpe",{GET_LOCATION_SPOOFING_SETTINGS:!0},e=>{E(e)})},500):typeof k<"u"&&document.addEventListener(k,function(e){try{const t=JSON.parse(e.detail);E(t)}catch{}})}
+								)();
+								</script>
+							<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>AuditMetric - coinarchive.eu LLM Visibility Report</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "outline": "#757685",
+                        "on-primary-fixed": "#001159",
+                        "tertiary-fixed-dim": "#ffb5a0",
+                        "surface-bright": "#fbf8ff",
+                        "on-primary-fixed-variant": "#1536b8",
+                        "secondary-container": "#8397fe",
+                        "primary-container": "#1536b8",
+                        "on-error-container": "#93000a",
+                        "surface": "#fbf8ff",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-tertiary-fixed-variant": "#872100",
+                        "secondary": "#4156b9",
+                        "tertiary": "#601500",
+                        "surface-container-highest": "#e3e1ec",
+                        "inverse-primary": "#bac3ff",
+                        "surface-container-high": "#e8e7f2",
+                        "secondary-fixed": "#dee1ff",
+                        "primary-fixed-dim": "#bac3ff",
+                        "on-primary-container": "#a3b1ff",
+                        "surface-dim": "#dad9e4",
+                        "on-tertiary-fixed": "#3b0900",
+                        "surface-container-low": "#f4f2fe",
+                        "surface-container": "#eeedf8",
+                        "background": "#fbf8ff",
+                        "on-surface-variant": "#444654",
+                        "inverse-on-surface": "#f1effb",
+                        "surface-variant": "#e3e1ec",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#ffdbd1",
+                        "on-surface": "#1a1b23",
+                        "primary": "#00218d",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-container": "#872100",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#273d9f",
+                        "inverse-surface": "#2f3038",
+                        "outline-variant": "#c5c5d6",
+                        "surface-tint": "#3651d0",
+                        "on-background": "#1a1b23",
+                        "on-secondary-container": "#0d288e",
+                        "on-secondary-fixed": "#001158",
+                        "primary-fixed": "#dee1ff",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#ff9b7f",
+                        "accent-coral": "#FF5A4F",
+                        "primary-blue": "#1536B8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "margin-desktop": "40px",
+                        "stack-lg": "24px",
+                        "stack-md": "16px",
+                        "margin-mobile": "16px",
+                        "stack-xs": "4px",
+                        "stack-xl": "48px",
+                        "container-max": "1440px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #F6F8FB; }
+        .card-shadow { box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .score-ring { transform: rotate(-90deg); }
+        .score-ring-circle { transition: stroke-dashoffset 1s ease-in-out; }
+    </style>
+</head>
+<body class="text-on-surface text-[16px] leading-relaxed">
+<!-- SideNavBar (Prebuilt Logic) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface dark:bg-inverse-surface border-r border-outline-variant dark:border-outline flex flex-col p-stack-md z-30 hidden md:flex">
+<div class="mb-stack-xl px-2">
+<h2 class="font-headline-md text-headline-md text-primary mb-1">Project Alpha</h2>
+<p class="font-label-md text-label-md text-on-surface-variant text-on-surface">Last audit: 2h ago</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Labels from prompt: Overview, SEO Health, AI Visibility, Entity Clarity, Trust Signals, Content Structure, Schema Markup, FAQ Readiness, AI Answer Readiness, Recommendations -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 rounded-lg group text-on-surface" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 rounded-lg group text-on-surface" href="#">
+<span class="material-symbols-outlined" data-icon="health_and_safety">health_and_safety</span>
+<span class="font-label-md text-label-md">SEO Health</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-lg font-bold" href="#">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+<span class="font-label-md text-label-md">AI Visibility</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 rounded-lg group text-on-surface" href="#">
+<span class="material-symbols-outlined" data-icon="category">category</span>
+<span class="font-label-md text-label-md">Entity Clarity</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 rounded-lg group text-on-surface" href="#">
+<span class="material-symbols-outlined" data-icon="verified">verified</span>
+<span class="font-label-md text-label-md">Trust Signals</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 rounded-lg group text-on-surface" href="#">
+<span class="material-symbols-outlined" data-icon="article">article</span>
+<span class="font-label-md text-label-md">Content Structure</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 rounded-lg group text-on-surface" href="#">
+<span class="material-symbols-outlined" data-icon="code">code</span>
+<span class="font-label-md text-label-md">Schema Markup</span>
+</a>
+</nav>
+<div class="mt-auto space-y-4 pt-stack-md">
+<button class="w-full bg-primary-blue text-white py-3 rounded-xl font-label-md hover:bg-blue-800 transition-colors">
+                Upgrade Plan
+            </button>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg text-on-surface" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg text-on-surface" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+</div>
+</div>
+</aside>
+<div class="md:ml-64 min-h-screen flex flex-col">
+<!-- TopNavBar (Prebuilt Logic) -->
+<header class="w-full top-0 sticky z-20 bg-surface-container-lowest dark:bg-surface-dim shadow-sm border-b border-outline-variant dark:border-outline">
+<div class="flex justify-between items-center px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="flex items-center gap-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">AuditMetric</h1>
+<nav class="hidden lg:flex items-center gap-6">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors text-on-surface" href="#">Dashboard</a>
+<a class="font-body-md text-body-md text-primary border-b-2 border-primary pb-1" href="#">Reports</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors text-on-surface" href="#">History</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-6 py-2 border border-primary-blue text-primary-blue rounded-full font-label-md hover:bg-surface-container-low transition-colors active:scale-95 duration-100">
+                        Export PDF
+                    </button>
+<button class="px-6 py-2 bg-accent-coral text-white rounded-full font-label-md hover:brightness-90 transition-colors active:scale-95 duration-100 shadow-lg shadow-coral-200">
+                        New Audit
+                    </button>
+<div class="ml-4 h-10 w-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border border-outline-variant">
+<img alt="User profile photo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqtXL4zEgoj8JHAOjPv4_tBpc7O7bNU-elgbEHacwXOpoQMi0-b3b-_BAIirhp6kGHizJ_18VAMMBecewsgqGHr8IiEGmz4C00yOKnK8ErNVxzveLxFvCoaiP62cWqPGZuuwqH7RLhZUgHxQHIFFMbYZQ01qqpO4Wn7ZPjh4Z-aNoyZ6hhvab8Eigctf6fHRBVuYDMWDopTNxcl-wk_bn3vsWfu2rec-wGFd13dWD50bzzuea6mZf7E_uZDuQZf6DR39xhXlIh4vU">
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 p-margin-desktop max-w-container-max mx-auto w-full space-y-12">
+<!-- Report Header -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-surface">coinarchive.eu</h2>
+<div class="flex items-center gap-4 mt-2">
+<span class="flex items-center gap-1.5 px-3 py-1 bg-green-100 text-green-700 rounded-full font-label-md">
+<span class="material-symbols-outlined text-[18px]" data-icon="check_circle">check_circle</span>
+                            Status: Good
+                        </span>
+<span class="text-on-surface-variant font-body-md text-on-surface">Audit Date: 13 June 2026</span>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-md text-on-surface-variant uppercase tracking-wider mb-1 text-on-surface">AI Visibility Score</p>
+<p class="font-display-lg text-display-lg text-primary-blue">82<span class="text-headline-md text-outline">/100</span></p>
+</div>
+</section>
+<!-- Score Hero Section -->
+<section class="bg-white rounded-[24px] p-4 md:p-stack-lg card-shadow border border-gray-100 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-stack-xl p-8 md:p-10">
+<!-- Score Circle Container -->
+<div class="lg:col-span-4 flex flex-col items-center justify-center bg-surface-container-low rounded-xl p-6 md:p-stack-lg">
+<div class="relative w-40 h-40 md:w-48 md:h-48">
+<svg class="w-full h-full score-ring" viewBox="0 0 100 100">
+<circle class="text-gray-200 stroke-current" cx="50" cy="50" fill="transparent" r="40" stroke-width="8"></circle>
+<circle class="text-primary-blue stroke-current score-ring-circle" cx="50" cy="50" fill="transparent" r="40" stroke-linecap="round" stroke-width="8" style="stroke-dasharray: 251.2; stroke-dashoffset: 45.216;"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-display-lg text-[32px] md:text-display-lg text-primary-blue">82</span>
+<span class="font-label-md text-green-600 font-bold">GOOD</span>
+</div>
+</div>
+<p class="mt-6 text-center font-body-md text-on-surface-variant max-w-[280px] text-on-surface">Your domain exhibits high authority in niche entity associations.</p>
+</div>
+<!-- Analysis Details Grid -->
+<div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-stack-lg">
+<!-- Strengths -->
+<div class="space-y-4">
+<h3 class="flex items-center gap-2 font-headline-md text-headline-md text-on-surface">
+<span class="material-symbols-outlined text-green-600" data-icon="thumb_up">thumb_up</span>
+Strengths
+</h3>
+<ul class="space-y-3 space-y-4">
+<li class="flex items-start gap-3 p-3 bg-green-50/50 rounded-lg border border-green-100">
+<span class="material-symbols-outlined text-green-600 mt-0.5" data-icon="check_circle">check_circle</span>
+<div class="font-body-md"><strong>Clear structure:</strong> Crawlers easily identify primary content hierarchy.</div>
+</li>
+<li class="flex items-start gap-3 p-3 bg-green-50/50 rounded-lg border border-green-100">
+<span class="material-symbols-outlined text-green-600 mt-0.5" data-icon="check_circle">check_circle</span>
+<div class="font-body-md"><strong>Trust signals:</strong> High volume of high-quality citations detected.</div>
+</li>
+<li class="flex items-start gap-3 p-3 bg-green-50/50 rounded-lg border border-green-100">
+<span class="material-symbols-outlined text-green-600 mt-0.5" data-icon="check_circle">check_circle</span>
+<div class="font-body-md"><strong>Entity recognition:</strong> Domain is firmly mapped to "Historical Numismatics".</div>
+</li>
+</ul>
+</div>
+<!-- Critical Issues -->
+<div class="space-y-4">
+<h3 class="flex items-center gap-2 font-headline-md text-headline-md text-on-surface">
+<span class="material-symbols-outlined text-accent-coral" data-icon="warning">warning</span>
+Critical Issues
+</h3>
+<ul class="space-y-3 space-y-4">
+<li class="flex items-start gap-3 p-3 bg-red-50/50 rounded-lg border border-red-100">
+<span class="material-symbols-outlined text-accent-coral mt-0.5" data-icon="error">error</span>
+<div class="font-body-md"><strong>Missing FAQ schema:</strong> Reduces eligibility for AI answer snippets.</div>
+</li>
+<li class="flex items-start gap-3 p-3 bg-red-50/50 rounded-lg border border-red-100">
+<span class="material-symbols-outlined text-accent-coral mt-0.5" data-icon="error">error</span>
+<div class="font-body-md"><strong>Weak author signals:</strong> Attribution profiles lack external validation.</div>
+</li>
+<li class="flex items-start gap-3 p-3 bg-red-50/50 rounded-lg border border-red-100">
+<span class="material-symbols-outlined text-accent-coral mt-0.5" data-icon="error">error</span>
+<div class="font-body-md"><strong>Missing org schema:</strong> LLMs struggle to verify entity ownership.</div>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- Audit Category Grid -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-stack-lg">
+<!-- Card 1 -->
+<div class="bg-white p-stack-lg rounded-[24px] card-shadow border border-gray-100 hover:border-primary-blue transition-colors group cursor-default">
+<div class="flex justify-between items-start mb-4">
+<span class="p-3 bg-blue-50 text-primary-blue rounded-xl material-symbols-outlined" data-icon="health_and_safety">health_and_safety</span>
+<span class="font-headline-md text-primary-blue">85</span>
+</div>
+<h4 class="font-label-md text-on-surface-variant uppercase mb-4 text-on-surface">SEO Health</h4>
+<div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+<div class="bg-primary-blue h-full rounded-full" style="width: 85%"></div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white p-stack-lg rounded-[24px] card-shadow border border-gray-100 hover:border-primary-blue transition-colors group cursor-default">
+<div class="flex justify-between items-start mb-4">
+<span class="p-3 bg-blue-50 text-primary-blue rounded-xl material-symbols-outlined" data-icon="visibility">visibility</span>
+<span class="font-headline-md text-primary-blue">82</span>
+</div>
+<h4 class="font-label-md text-on-surface-variant uppercase mb-4 text-on-surface">AI Visibility</h4>
+<div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+<div class="bg-primary-blue h-full rounded-full" style="width: 82%"></div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-white p-stack-lg rounded-[24px] card-shadow border border-gray-100 hover:border-primary-blue transition-colors group cursor-default">
+<div class="flex justify-between items-start mb-4">
+<span class="p-3 bg-blue-50 text-primary-blue rounded-xl material-symbols-outlined" data-icon="category">category</span>
+<span class="font-headline-md text-primary-blue">78</span>
+</div>
+<h4 class="font-label-md text-on-surface-variant uppercase mb-4 text-on-surface">Entity Clarity</h4>
+<div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+<div class="bg-primary-blue h-full rounded-full" style="width: 78%"></div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-white p-stack-lg rounded-[24px] card-shadow border border-gray-100 hover:border-primary-blue transition-colors group cursor-default">
+<div class="flex justify-between items-start mb-4">
+<span class="p-3 bg-blue-50 text-primary-blue rounded-xl material-symbols-outlined" data-icon="verified">verified</span>
+<span class="font-headline-md text-primary-blue">98</span>
+</div>
+<h4 class="font-label-md text-on-surface-variant uppercase mb-4 text-on-surface">Trust Signals</h4>
+<div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+<div class="bg-primary-blue h-full rounded-full" style="width: 98%"></div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="bg-white p-stack-lg rounded-[24px] card-shadow border border-gray-100 hover:border-primary-blue transition-colors group cursor-default">
+<div class="flex justify-between items-start mb-4">
+<span class="p-3 bg-blue-50 text-primary-blue rounded-xl material-symbols-outlined" data-icon="article">article</span>
+<span class="font-headline-md text-primary-blue">80</span>
+</div>
+<h4 class="font-label-md text-on-surface-variant uppercase mb-4 text-on-surface">Content Structure</h4>
+<div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+<div class="bg-primary-blue h-full rounded-full" style="width: 80%"></div>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="bg-white p-stack-lg rounded-[24px] card-shadow border border-gray-100 hover:border-primary-blue transition-colors group cursor-default">
+<div class="flex justify-between items-start mb-4">
+<span class="p-3 bg-red-50 text-accent-coral rounded-xl material-symbols-outlined" data-icon="code">code</span>
+<span class="font-headline-md text-accent-coral">70</span>
+</div>
+<h4 class="font-label-md text-on-surface-variant uppercase mb-4 text-on-surface">Schema Markup</h4>
+<div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+<div class="bg-accent-coral h-full rounded-full" style="width: 70%"></div>
+</div>
+</div>
+<!-- Card 7 -->
+<div class="bg-white p-stack-lg rounded-[24px] card-shadow border border-gray-100 hover:border-primary-blue transition-colors group cursor-default">
+<div class="flex justify-between items-start mb-4">
+<span class="p-3 bg-red-50 text-accent-coral rounded-xl material-symbols-outlined" data-icon="quiz">quiz</span>
+<span class="font-headline-md text-accent-coral">65</span>
+</div>
+<h4 class="font-label-md text-on-surface-variant uppercase mb-4 text-on-surface">FAQ Readiness</h4>
+<div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+<div class="bg-accent-coral h-full rounded-full" style="width: 65%"></div>
+</div>
+</div>
+<!-- Card 8 -->
+<div class="bg-white p-stack-lg rounded-[24px] card-shadow border border-gray-100 hover:border-primary-blue transition-colors group cursor-default">
+<div class="flex justify-between items-start mb-4">
+<span class="p-3 bg-blue-50 text-primary-blue rounded-xl material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+<span class="font-headline-md text-primary-blue">75</span>
+</div>
+<h4 class="font-label-md text-on-surface-variant uppercase mb-4 text-on-surface">AI Answer Readiness</h4>
+<div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+<div class="bg-primary-blue h-full rounded-full" style="width: 75%"></div>
+</div>
+</div>
+</section>
+<!-- High Priority Issues Table -->
+<section class="bg-white rounded-[24px] card-shadow border border-gray-100 overflow-hidden">
+<div class="p-stack-lg border-b border-gray-100 flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-on-surface">High Priority Issues</h3>
+<button class="text-primary-blue font-label-md flex items-center gap-1 hover:underline">
+                        View All Issues
+                        <span class="material-symbols-outlined text-[18px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low border-b border-gray-100">
+<tr>
+<th class="p-stack-lg font-label-md text-on-surface-variant uppercase tracking-wider text-on-surface">Issue</th>
+<th class="p-stack-lg font-label-md text-on-surface-variant uppercase tracking-wider text-on-surface">Impact</th>
+<th class="p-stack-lg font-label-md text-on-surface-variant uppercase tracking-wider text-right text-on-surface">Difficulty</th>
+<th class="p-stack-lg font-label-md text-on-surface-variant uppercase tracking-wider text-right text-on-surface">Est. Gain</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-100">
+<tr class="hover:bg-blue-50/30 transition-colors">
+<td class="p-stack-lg font-body-md font-semibold text-primary-blue py-6">Missing Organization Schema</td>
+<td class="p-stack-lg py-6">
+<span class="px-3 py-1 bg-red-100 text-red-700 rounded-full font-label-md">High</span>
+</td>
+<td class="p-stack-lg text-right font-body-md py-6">Easy</td>
+<td class="p-stack-lg text-right font-data-mono font-bold text-green-600 py-6">+6</td>
+</tr>
+<tr class="hover:bg-blue-50/30 transition-colors">
+<td class="p-stack-lg font-body-md font-semibold text-primary-blue py-6">Broken Semantic Links (Primary Nav)</td>
+<td class="p-stack-lg py-6">
+<span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full font-label-md">Medium</span>
+</td>
+<td class="p-stack-lg text-right font-body-md py-6">Moderate</td>
+<td class="p-stack-lg text-right font-data-mono font-bold text-green-600 py-6">+4</td>
+</tr>
+<tr class="hover:bg-blue-50/30 transition-colors">
+<td class="p-stack-lg font-body-md font-semibold text-primary-blue py-6">Incomplete Author Profiles</td>
+<td class="p-stack-lg py-6">
+<span class="px-3 py-1 bg-red-100 text-red-700 rounded-full font-label-md">High</span>
+</td>
+<td class="p-stack-lg text-right font-body-md py-6">Moderate</td>
+<td class="p-stack-lg text-right font-data-mono font-bold text-green-600 py-6">+5</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Recommendations & Potential Improvement -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-stack-lg">
+<!-- Recommendation Card 1 -->
+<div class="lg:col-span-2 bg-white rounded-[24px] card-shadow border border-gray-100 p-stack-lg p-10 leading-relaxed">
+<div class="flex items-center gap-3 mb-6">
+<span class="p-2 bg-orange-100 text-orange-600 rounded-lg material-symbols-outlined" data-icon="lightbulb">lightbulb</span>
+<h3 class="font-headline-md text-headline-md">Add Organization Schema</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-lg">
+<div class="space-y-3">
+<h4 class="font-label-md text-on-surface-variant uppercase text-on-surface">Why this matters</h4>
+<p class="font-body-md text-on-surface">LLMs use Organizational Schema to verify the entity that owns the content. Without it, your site's authority is diluted, making it less likely to be cited as a "Source of Truth" for historical coin data.</p>
+</div>
+<div class="space-y-3">
+<h4 class="font-label-md text-on-surface-variant uppercase text-on-surface">How to fix</h4>
+<p class="font-body-md text-on-surface">Inject a JSON-LD block into your homepage &lt;head&gt; defining '@type': 'Organization', name, logo, and 'sameAs' links to official social profiles.</p>
+<button class="text-primary-blue font-bold flex items-center gap-1 hover:underline">
+                                Get Code Snippet
+                                <span class="material-symbols-outlined text-[18px]" data-icon="code">code</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Potential Improvement Card -->
+<div class="bg-primary-blue rounded-[24px] p-stack-lg text-white shadow-xl flex flex-col justify-between relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="font-headline-md mb-6">Optimization Potential</h3>
+<div class="flex items-end gap-4 mb-8">
+<div class="text-center">
+<p class="text-white/60 font-label-md mb-1">Current</p>
+<div class="w-16 h-16 rounded-full border-2 border-white/20 flex items-center justify-center font-display-lg text-[24px]">82</div>
+</div>
+<span class="material-symbols-outlined mb-3" data-icon="arrow_forward">arrow_forward</span>
+<div class="text-center">
+<p class="text-white/60 font-label-md mb-1">Potential</p>
+<div class="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center font-display-lg text-[32px] bg-white text-primary-blue shadow-lg shadow-blue-900/50">92</div>
+</div>
+</div>
+<h4 class="font-label-md uppercase text-white/70 mb-3 tracking-widest">Top Fixes for +10 pts</h4>
+<ul class="space-y-2">
+<li class="flex items-center gap-2 font-body-sm">
+<span class="material-symbols-outlined text-[16px]" data-icon="add_circle">add_circle</span>
+                                Org Schema Implementation
+                            </li>
+<li class="flex items-center gap-2 font-body-sm">
+<span class="material-symbols-outlined text-[16px]" data-icon="add_circle">add_circle</span>
+                                Semantic FAQ Integration
+                            </li>
+<li class="flex items-center gap-2 font-body-sm">
+<span class="material-symbols-outlined text-[16px]" data-icon="add_circle">add_circle</span>
+                                LinkedIn/Wiki Citation Linking
+                            </li>
+</ul>
+</div>
+<!-- Background Pattern -->
+<div class="absolute -right-12 -bottom-12 opacity-10">
+<span class="material-symbols-outlined text-[240px]" data-icon="trending_up">trending_up</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="mt-auto py-8 px-margin-desktop border-t border-outline-variant bg-white">
+<div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="font-headline-md font-bold text-primary">AuditMetric</span>
+<span class="text-on-surface-variant font-body-sm border-l border-outline-variant pl-2 ml-2 text-on-surface">© 2026 Algorithmic Clarity Tooling.</span>
+</div>
+<div class="flex gap-6">
+<a class="font-label-md text-on-surface-variant hover:text-primary text-on-surface" href="#">Privacy Policy</a>
+<a class="font-label-md text-on-surface-variant hover:text-primary text-on-surface" href="#">Terms of Service</a>
+<a class="font-label-md text-on-surface-variant hover:text-primary text-on-surface" href="#">Documentation</a>
+</div>
+</div>
+</footer>
+</div>
+<!-- Micro-interaction Scripts -->
+<script>
+        // Animate Score Ring on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            const circle = document.querySelector('.score-ring-circle');
+            if (circle) {
+                circle.style.strokeDashoffset = '251.2'; // Reset
+                setTimeout(() => {
+                    circle.style.strokeDashoffset = (251.2 - (251.2 * 82) / 100).toString();
+                }, 100);
+            }
+        });
+
+        // Simple Smooth Scroll / Interactions
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+
+
+</body></html>

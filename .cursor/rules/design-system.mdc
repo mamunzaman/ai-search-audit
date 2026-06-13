@@ -1,0 +1,38 @@
+---
+alwaysApply: true
+---
+
+# AI Search Audit Design Rule
+
+Source of truth:
+
+1. docs/DESIGN_SYSTEM.md
+2. docs/homepage-reference.png
+
+If there is any conflict, DESIGN_SYSTEM.md wins.
+
+Requirements:
+
+- Read docs/DESIGN_SYSTEM.md before making any UI decision.
+- Review docs/homepage-reference.png before changing layouts or components.
+- Do not introduce new colors.
+- Do not introduce new typography scales.
+- Do not introduce new spacing systems.
+- Do not introduce new shadows.
+- Do not introduce new border radius values.
+- Do not introduce new component styles.
+- Do not redesign approved UI.
+- Build reusable components.
+- Maintain consistency across all pages.
+- Reuse existing components whenever possible.
+- If a design change is required, update docs/DESIGN_SYSTEM.md first.
+
+For every UI task:
+
+1. Review docs/DESIGN_SYSTEM.md
+2. Review docs/homepage-reference.png
+3. Check for an existing reusable component before creating a new one
+4. Implement the change
+5. Keep the design system consistent
+
+Never make design assumptions that are not defined in the design system.

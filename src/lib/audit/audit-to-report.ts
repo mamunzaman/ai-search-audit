@@ -1,0 +1,297 @@
+import { normalizeDomain } from "@/lib/domain";
+import type { ActivityLogEntry, ProcessingMetric } from "@/lib/processing-data";
+import {
+  categories as placeholderCategories,
+  criticalIssues,
+  priorityIssues,
+  reportMeta,
+  strengths,
+  type ReportCategory,
+  type ReportIssue,
+  type ReportRecommendation,
+} from "@/lib/report-data";
+import {
+  buildHeroIssues,
+  buildHeroStrengths,
+  calculateAuditScores,
+  scoreToStatusLabel,
+} from "./audit-score";
+import { normalizeAuditResponse } from "./audit-normalize";
+import type { AuditCheck, AuditResponse, CategoryScore } from "./types";
+
+export type ReportStrength = {
+  title: string;
+  text: string;
+};
+
+export type ExtractedDataSummary = {
+  h1Count: number;
+  h2Count: number;
+  schemaTypesCount: number;
+  schemaTypes: string[];
+  internalLinks: number;
+  externalLinks: number;
+};
+
+export type ReportViewData = {
+  domain: string;
+  title: string;
+  metaDescription: string;
+  finalUrl: string;
+  statusCode: number | null;
+  isRealData: boolean;
+  score: number;
+  status: string;
+  auditDate: string;
+  headingsCount: number;
+  h1Count: number;
+  h2Count: number;
+  schemaTypes: string[];
+  links: AuditResponse["links"];
+  checks: AuditCheck[];
+  extractedSummary: ExtractedDataSummary;
+  strengths: ReportStrength[];
+  criticalIssues: ReportStrength[];
+  categories: ReportCategory[];
+  priorityIssues: ReportIssue[];
+  recommendations: ReportRecommendation[];
+};
+
+const CATEGORY_ORDER = [
+  "SEO Health",
+  "AI Visibility",
+  "Entity Clarity",
+  "Trust Signals",
+  "Content Structure",
+  "Schema Markup",
+  "FAQ Readiness",
+  "AI Answer Readiness",
+] as const;
+
+const categoryIconMap = Object.fromEntries(
+  placeholderCategories.map((category) => [category.title, category.icon]),
+) as Record<string, string>;
+
+function mapCategoryScores(categoryScores: CategoryScore[]): ReportCategory[] {
+  const scoreMap = Object.fromEntries(
+    categoryScores.map((category) => [category.label, category]),
+  );
+
+  return CATEGORY_ORDER.map((title) => {
+    const category = scoreMap[title];
+    const score = category?.score ?? 0;
+    const isCritical =
+      category?.status === "fail" ||
+      (category?.status === "warning" && score < 70);
+
+    return {
+      icon: categoryIconMap[title] ?? "dashboard",
+      title,
+      score,
+      critical: isCritical,
+      summary: category?.summary,
+      issueCount: category?.issueCount,
+    };
+  });
+}
+
+function mapPriorityIssues(
+  issues: ReturnType<typeof calculateAuditScores>["priorityIssues"],
+): ReportIssue[] {
+  return issues.map((issue) => ({
+    title: issue.title,
+    impact: issue.impact,
+    difficulty: issue.difficulty,
+    gain: issue.estimatedGain,
+    explanation: issue.explanation,
+  }));
+}
+
+function countHeadings(audit: AuditResponse): number {
+  return (
+    audit.headings.h1.length +
+    audit.headings.h2.length +
+    audit.headings.h3.length
+  );
+}
+
+function buildExtractedSummary(audit: AuditResponse): ExtractedDataSummary {
+  return {
+    h1Count: audit.headings.h1.length,
+    h2Count: audit.headings.h2.length,
+    schemaTypesCount: audit.schemaTypes.length,
+    schemaTypes: audit.schemaTypes,
+    internalLinks: audit.links.internal,
+    externalLinks: audit.links.external,
+  };
+}
+
+export function auditToProcessingMetrics(
+  audit: AuditResponse,
+): ProcessingMetric[] {
+  return [
+    { label: "Page Audited", value: 1 },
+    { label: "Headings Found", value: countHeadings(audit) },
+    { label: "Schema Types", value: audit.schemaTypes.length },
+    {
+      label: "Passed Checks",
+      value: audit.checks.filter((check) => check.status === "pass").length,
+    },
+  ];
+}
+
+function formatActivityTime(base: Date, offsetSeconds: number): string {
+  const timestamp = new Date(base.getTime() + offsetSeconds * 1000);
+  return timestamp.toTimeString().slice(0, 8);
+}
+
+function hasFaqPageSchema(audit: AuditResponse): boolean {
+  return audit.schemaTypes.some(
+    (schemaType) => schemaType.toLowerCase() === "faqpage",
+  );
+}
+
+export function auditToActivityLog(audit: AuditResponse): ActivityLogEntry[] {
+  const now = new Date();
+  const headingsCount = countHeadings(audit);
+  const schemaCount = audit.schemaTypes.length;
+  const passedChecks = audit.checks.filter((check) => check.status === "pass")
+    .length;
+  const totalChecks = audit.checks.length;
+  const faqFound = hasFaqPageSchema(audit);
+
+  return [
+    {
+      time: formatActivityTime(now, 0),
+      message: "Crawling homepage...",
+      status: "OK",
+    },
+    {
+      time: formatActivityTime(now, 2),
+      message: "Checking structured data...",
+      status:
+        schemaCount > 0
+          ? `${schemaCount} schema types detected`
+          : "none detected",
+    },
+    {
+      time: formatActivityTime(now, 4),
+      message: "Detecting headings...",
+      status: `${headingsCount} headings found`,
+    },
+    {
+      time: formatActivityTime(now, 6),
+      message: "Running SEO checks...",
+      status: `${passedChecks}/${totalChecks} checks passed`,
+    },
+    {
+      time: formatActivityTime(now, 8),
+      message: "Evaluating FAQ readiness...",
+      status: faqFound ? "FAQPage found" : "not found",
+    },
+  ];
+}
+
+export function auditToReportView(
+  audit: AuditResponse,
+  fallbackDomain: string,
+): ReportViewData {
+  const normalized = normalizeAuditResponse(audit);
+
+  if (!normalized) {
+    return getPlaceholderReportView(fallbackDomain);
+  }
+
+  const domain = normalizeDomain(normalized.finalUrl) || fallbackDomain;
+  const scores = calculateAuditScores(normalized);
+
+  return {
+    domain,
+    title: normalized.title,
+    metaDescription: normalized.metaDescription,
+    finalUrl: normalized.finalUrl,
+    statusCode: normalized.statusCode,
+    isRealData: true,
+    score: scores.overallScore,
+    status: scoreToStatusLabel(scores.overallScore),
+    auditDate: reportMeta.auditDate,
+    headingsCount: countHeadings(normalized),
+    h1Count: normalized.headings.h1.length,
+    h2Count: normalized.headings.h2.length,
+    schemaTypes: normalized.schemaTypes,
+    links: normalized.links,
+    checks: normalized.checks,
+    extractedSummary: buildExtractedSummary(normalized),
+    strengths: buildHeroStrengths(scores.categories),
+    criticalIssues: buildHeroIssues(scores.categories),
+    categories: mapCategoryScores(scores.categories),
+    priorityIssues: mapPriorityIssues(scores.priorityIssues),
+    recommendations: scores.recommendations,
+  };
+}
+
+export function getPlaceholderReportView(domain: string): ReportViewData {
+  return {
+    domain,
+    title: "",
+    metaDescription: "",
+    finalUrl: "",
+    statusCode: null,
+    isRealData: false,
+    score: reportMeta.score,
+    status: reportMeta.status,
+    auditDate: reportMeta.auditDate,
+    headingsCount: 0,
+    h1Count: 0,
+    h2Count: 0,
+    schemaTypes: [],
+    links: { internal: 0, external: 0 },
+    checks: [],
+    extractedSummary: {
+      h1Count: 0,
+      h2Count: 0,
+      schemaTypesCount: 0,
+      schemaTypes: [],
+      internalLinks: 0,
+      externalLinks: 0,
+    },
+    strengths,
+    criticalIssues,
+    categories: placeholderCategories,
+    priorityIssues,
+    recommendations: [],
+  };
+}
+
+export function buildReportView(
+  audit: AuditResponse | null,
+  fallbackDomain: string,
+): ReportViewData {
+  if (!audit) {
+    return getPlaceholderReportView(fallbackDomain);
+  }
+
+  const normalized = normalizeAuditResponse(audit);
+
+  if (!normalized) {
+    return getPlaceholderReportView(fallbackDomain);
+  }
+
+  return auditToReportView(normalized, fallbackDomain);
+}
+
+export function buildScoreHeroSummary(view: ReportViewData): string {
+  if (view.title && view.metaDescription) {
+    return `Page "${view.title}" — ${view.metaDescription}`;
+  }
+
+  if (view.title) {
+    return `Page "${view.title}" analyzed.`;
+  }
+
+  if (view.metaDescription) {
+    return view.metaDescription;
+  }
+
+  return "Your domain exhibits high authority in niche entity associations.";
+}
