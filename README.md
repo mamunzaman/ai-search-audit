@@ -1,41 +1,48 @@
-🚀 AI Search Audit
+# 🚀 AI Search Audit
+
 Get your LLM Visibility Report in seconds.
 
-Analyze how well your website can be understood, trusted, and cited by AI search systems including ChatGPT, Gemini, Claude, and Perplexity.
+AI Search Audit analyzes websites from the perspective of AI-powered search systems such as ChatGPT, Gemini, Claude, and Perplexity.
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Features
 
-## Getting Started
+* LLM Visibility Report
+* AI Visibility Score
+* SEO Health Analysis
+* Schema Markup Detection
+* Trust Signal Analysis
+* Entity Clarity Checks
+* FAQ Readiness Review
+* AI Answer Readiness Checks
+* Dynamic Recommendations
+* Processing & Reporting Dashboard
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* Next.js
+* TypeScript
+* Tailwind CSS
+* Cheerio
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Roadmap
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### v0.1.0
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+* Homepage
+* Processing flow
+* Report dashboard
+* Real HTML analysis
+* Rule-based scoring
 
-## Learn More
+### v0.2.0
 
-To learn more about Next.js, take a look at the following resources:
+* Multi-page crawling
+* robots.txt analysis
+* sitemap.xml analysis
+* Open Graph validation
+* Twitter Card validation
+* Entity extraction
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Status
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Active development.
