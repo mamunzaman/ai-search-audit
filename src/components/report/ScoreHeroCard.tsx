@@ -45,6 +45,46 @@ function ExtractedDataPanel({ summary }: { summary: ExtractedDataSummary }) {
     { label: "Schema", value: `${summary.schemaTypesCount} (${schemaLabel})` },
     { label: "Internal links", value: summary.internalLinks },
     { label: "External links", value: summary.externalLinks },
+    {
+      label: "robots.txt",
+      value: summary.robotsTxtExists ? "Found" : "Missing",
+    },
+    {
+      label: "Sitemaps in robots",
+      value: summary.robotsSitemapCount,
+    },
+    {
+      label: "Disallow rules",
+      value: summary.robotsDisallowCount,
+    },
+    {
+      label: "Sitemap.xml",
+      value: summary.sitemapExists ? "Found" : "Missing",
+    },
+    {
+      label: "Sitemap URLs",
+      value: summary.sitemapUrlCount,
+    },
+    {
+      label: "Child sitemaps",
+      value: summary.sitemapChildCount,
+    },
+    {
+      label: "OG title",
+      value: summary.ogTitleFound ? "Found" : "Missing",
+    },
+    {
+      label: "OG description",
+      value: summary.ogDescriptionFound ? "Found" : "Missing",
+    },
+    {
+      label: "OG image",
+      value: summary.ogImageFound ? "Found" : "Missing",
+    },
+    {
+      label: "Twitter card",
+      value: summary.twitterCard,
+    },
   ];
 
   return (

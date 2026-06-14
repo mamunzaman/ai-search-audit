@@ -11,9 +11,16 @@ import type {
 } from "./types";
 import {
   getAiVisibilitySignals,
+  getRobotsAnalysis,
+  getSitemapAnalysis,
+  getSocialMetadata,
   getTrustSignals,
   normalizeAuditResponse,
 } from "./audit-normalize";
+import {
+  hasCompleteOpenGraph,
+  hasTwitterCard,
+} from "./social-metadata";
 
 const FAIL_PENALTY = 15;
 const WARN_PENALTY = 7;
@@ -220,6 +227,9 @@ function scoreSchemaMarkup(audit: AuditResponse): CategoryScore {
 
 function scoreContentStructure(audit: AuditResponse): CategoryScore {
   const internalCheck = getCheck(audit, "internal-links-found");
+  const sitemapAnalysis = getSitemapAnalysis(audit);
+  const hasSitemapUrls =
+    sitemapAnalysis.urlCount > 0 || sitemapAnalysis.childSitemapCount > 0;
   const signals: { score: number; status: AuditCheckStatus }[] = [
     {
       score: audit.headings.h1.length >= 1 ? 100 : 0,
@@ -236,6 +246,10 @@ function scoreContentStructure(audit: AuditResponse): CategoryScore {
     {
       score: internalCheck ? checkToPoints(internalCheck.status) : 0,
       status: internalCheck?.status ?? "fail",
+    },
+    {
+      score: hasSitemapUrls ? 100 : 50,
+      status: hasSitemapUrls ? "pass" : "warn",
     },
   ];
 
@@ -272,7 +286,25 @@ function scoreContentStructure(audit: AuditResponse): CategoryScore {
     recommendations.push("Add internal links.");
   }
 
-  const summary = `Content uses ${audit.headings.h1.length + audit.headings.h2.length + audit.headings.h3.length} headings and ${audit.links.internal} internal links.`;
+  if (sitemapAnalysis.exists) {
+    if (sitemapAnalysis.urlCount > 0) {
+      positives.push(
+        `Sitemap lists ${sitemapAnalysis.urlCount} URL(s) for site structure discovery.`,
+      );
+    } else if (sitemapAnalysis.childSitemapCount > 0) {
+      positives.push(
+        `Sitemap index references ${sitemapAnalysis.childSitemapCount} child sitemap(s).`,
+      );
+    } else {
+      problems.push("Sitemap was found but no URLs were discovered.");
+    }
+  } else {
+    problems.push("No sitemap.xml could be fetched for content discovery.");
+  }
+
+  const summary = sitemapAnalysis.exists
+    ? `Content uses ${audit.headings.h1.length + audit.headings.h2.length + audit.headings.h3.length} headings, ${audit.links.internal} internal links, and a discoverable sitemap.`
+    : `Content uses ${audit.headings.h1.length + audit.headings.h2.length + audit.headings.h3.length} headings and ${audit.links.internal} internal links.`;
 
   return finalizeCategory({
     id: "content-structure",
@@ -287,6 +319,12 @@ function scoreContentStructure(audit: AuditResponse): CategoryScore {
 function scoreTrustSignals(audit: AuditResponse): CategoryScore {
   const trustSignals = getTrustSignals(audit);
   const aiVisibilitySignals = getAiVisibilitySignals(audit);
+  const robotsAnalysis = getRobotsAnalysis(audit);
+  const sitemapAnalysis = getSitemapAnalysis(audit);
+  const socialMetadata = getSocialMetadata(audit);
+  const hasCompleteOg = hasCompleteOpenGraph(socialMetadata);
+  const hasTwitter = hasTwitterCard(socialMetadata);
+  const hasSocialPreview = hasCompleteOg && hasTwitter;
   const signals: { score: number; status: AuditCheckStatus }[] = [
     {
       score: trustSignals.aboutPage ? 100 : 50,
@@ -317,6 +355,22 @@ function scoreTrustSignals(audit: AuditResponse): CategoryScore {
     {
       score: audit.robotsMeta ? 100 : 50,
       status: audit.robotsMeta ? "pass" : "warn",
+    },
+    {
+      score: robotsAnalysis.exists ? 100 : 50,
+      status: robotsAnalysis.exists ? "pass" : "warn",
+    },
+    {
+      score: robotsAnalysis.sitemapCount > 0 ? 100 : 50,
+      status: robotsAnalysis.sitemapCount > 0 ? "pass" : "warn",
+    },
+    {
+      score: sitemapAnalysis.exists ? 100 : 50,
+      status: sitemapAnalysis.exists ? "pass" : "warn",
+    },
+    {
+      score: hasSocialPreview ? 100 : hasCompleteOg || hasTwitter ? 75 : 50,
+      status: hasSocialPreview ? "pass" : hasCompleteOg || hasTwitter ? "warn" : "warn",
     },
   ];
 
@@ -375,10 +429,56 @@ function scoreTrustSignals(audit: AuditResponse): CategoryScore {
     problems.push("Robots meta tag was not detected.");
   }
 
+  if (robotsAnalysis.exists) {
+    positives.push(
+      `robots.txt found with ${robotsAnalysis.disallowCount} disallow rule(s).`,
+    );
+
+    if (robotsAnalysis.sitemapCount > 0) {
+      positives.push(
+        `${robotsAnalysis.sitemapCount} sitemap declaration(s) found in robots.txt.`,
+      );
+    } else {
+      problems.push("robots.txt exists but no Sitemap directive was found.");
+    }
+  } else {
+    problems.push("No robots.txt file was found for this domain.");
+  }
+
+  if (sitemapAnalysis.exists) {
+    positives.push(
+      `Sitemap fetched from ${sitemapAnalysis.source} source with ${sitemapAnalysis.urlCount} URL(s).`,
+    );
+
+    if (sitemapAnalysis.childSitemapCount > 0) {
+      positives.push(
+        `Sitemap index includes ${sitemapAnalysis.childSitemapCount} child sitemap(s).`,
+      );
+    }
+  } else {
+    problems.push("No sitemap.xml file could be fetched for this domain.");
+  }
+
+  if (hasCompleteOg && hasTwitter) {
+    positives.push(
+      "Complete Open Graph and Twitter Card metadata support trusted link previews.",
+    );
+  } else if (hasCompleteOg) {
+    positives.push("Open Graph title, description, and image are present.");
+    problems.push("Twitter Card metadata is incomplete for social previews.");
+  } else if (hasTwitter) {
+    positives.push(`Twitter Card type "${socialMetadata.twitter.card}" detected.`);
+    problems.push("Open Graph metadata is incomplete for rich link previews.");
+  } else {
+    problems.push("Social preview metadata (Open Graph/Twitter) is missing.");
+  }
+
   const summary =
-    aiVisibilitySignals.trustPages
-      ? "Trust pages, social links, and technical trust signals strengthen credibility."
-      : "Trust pages or authority references are limited on this page.";
+    robotsAnalysis.exists && sitemapAnalysis.exists && aiVisibilitySignals.trustPages
+      ? "Trust pages, robots.txt, sitemap, and technical trust signals strengthen credibility."
+      : robotsAnalysis.exists || sitemapAnalysis.exists
+        ? "Some technical trust signals are present; on-page trust can still improve."
+        : "Trust pages, robots.txt, sitemap, or authority references are limited on this site.";
 
   return finalizeCategory({
     id: "trust-signals",
@@ -392,6 +492,12 @@ function scoreTrustSignals(audit: AuditResponse): CategoryScore {
 
 function scoreAiVisibility(audit: AuditResponse): CategoryScore {
   const signals = getAiVisibilitySignals(audit);
+  const sitemapAnalysis = getSitemapAnalysis(audit);
+  const socialMetadata = getSocialMetadata(audit);
+  const hasCompleteOg = hasCompleteOpenGraph(socialMetadata);
+  const hasTwitter = hasTwitterCard(socialMetadata);
+  const hasSitemapUrls =
+    sitemapAnalysis.urlCount > 0 || sitemapAnalysis.childSitemapCount > 0;
   const signalEntries: { score: number; status: AuditCheckStatus }[] = [
     {
       score: signals.organizationSchema ? 100 : 50,
@@ -420,6 +526,18 @@ function scoreAiVisibility(audit: AuditResponse): CategoryScore {
     {
       score: signals.trustPages ? 100 : 50,
       status: signals.trustPages ? "pass" : "warn",
+    },
+    {
+      score: hasSitemapUrls ? 100 : 50,
+      status: hasSitemapUrls ? "pass" : "warn",
+    },
+    {
+      score: hasCompleteOg ? 100 : 50,
+      status: hasCompleteOg ? "pass" : "warn",
+    },
+    {
+      score: hasTwitter ? 100 : 50,
+      status: hasTwitter ? "pass" : "warn",
     },
   ];
 
@@ -476,6 +594,32 @@ function scoreAiVisibility(audit: AuditResponse): CategoryScore {
     problems.push("Trust pages are missing from detected navigation.");
   }
 
+  if (hasSitemapUrls) {
+    positives.push(
+      `Sitemap exposes ${sitemapAnalysis.urlCount || sitemapAnalysis.childSitemapCount} discoverable URL(s) for AI crawling.`,
+    );
+  } else {
+    problems.push("No sitemap URLs were discovered for AI crawl discovery.");
+  }
+
+  if (hasCompleteOg) {
+    positives.push(
+      "Complete Open Graph metadata helps AI systems and platforms summarize this page.",
+    );
+  } else {
+    problems.push("Open Graph metadata is incomplete for AI and social summaries.");
+    recommendations.push("Add og:title, og:description, and og:image tags.");
+  }
+
+  if (hasTwitter) {
+    positives.push(
+      `Twitter Card metadata (${socialMetadata.twitter.card}) improves preview consistency.`,
+    );
+  } else {
+    problems.push("Twitter Card metadata is missing for social/AI preview channels.");
+    recommendations.push("Add twitter:card and related Twitter meta tags.");
+  }
+
   const summary =
     base.score >= 80
       ? "Core AI visibility signals are largely in place."
@@ -493,10 +637,14 @@ function scoreAiVisibility(audit: AuditResponse): CategoryScore {
 
 function scoreEntityClarity(audit: AuditResponse): CategoryScore {
   const aiSignals = getAiVisibilitySignals(audit);
+  const socialMetadata = getSocialMetadata(audit);
   const hasOrganization = aiSignals.organizationSchema;
   const hasTitle = Boolean(audit.title);
   const hasMeta = Boolean(audit.metaDescription);
   const hasClearH1 = aiSignals.clearH1;
+  const hasOgSiteName = Boolean(socialMetadata.openGraph.siteName);
+  const hasOgType = Boolean(socialMetadata.openGraph.type);
+  const hasOgEntityHints = hasOgSiteName && hasOgType;
   const positives: string[] = [];
   const problems: string[] = [];
   const recommendations: string[] = [];
@@ -525,6 +673,19 @@ function scoreEntityClarity(audit: AuditResponse): CategoryScore {
     problems.push("Unclear H1 weakens entity/topic clarity.");
   }
 
+  if (hasOgEntityHints) {
+    positives.push(
+      `og:site_name (${socialMetadata.openGraph.siteName}) and og:type (${socialMetadata.openGraph.type}) clarify entity identity.`,
+    );
+  } else if (!hasOrganization) {
+    if (!hasOgSiteName) {
+      problems.push("og:site_name is missing for entity identification in previews.");
+    }
+    if (!hasOgType) {
+      problems.push("og:type is missing to classify the page entity context.");
+    }
+  }
+
   let score: number;
   let status: CategoryScoreStatus;
   let issueCount: number;
@@ -533,7 +694,15 @@ function scoreEntityClarity(audit: AuditResponse): CategoryScore {
     score = 100;
     status = "pass";
     issueCount = 0;
+  } else if (hasTitle && hasMeta && hasClearH1 && hasOgEntityHints) {
+    score = 70;
+    status = "warning";
+    issueCount = 1;
   } else if (hasTitle && hasMeta && hasClearH1) {
+    score = 65;
+    status = "warning";
+    issueCount = 1;
+  } else if (hasTitle && hasMeta && hasOgEntityHints) {
     score = 65;
     status = "warning";
     issueCount = 1;
@@ -553,9 +722,11 @@ function scoreEntityClarity(audit: AuditResponse): CategoryScore {
 
   const summary = hasOrganization
     ? "Strong entity clarity from Organization schema."
-    : hasTitle && hasMeta
-      ? "Partial entity clarity from title/meta only; Organization schema is missing."
-      : "Weak entity clarity without Organization schema or complete page metadata.";
+    : hasOgEntityHints
+      ? "Partial entity clarity from Open Graph site identity hints; Organization schema is missing."
+      : hasTitle && hasMeta
+        ? "Partial entity clarity from title/meta only; Organization schema is missing."
+        : "Weak entity clarity without Organization schema or complete page metadata.";
 
   return finalizeCategory({
     id: "entity-clarity",

@@ -1,14 +1,20 @@
 import { hasTrustPages } from "./trust-signals";
+import { defaultRobotsAnalysis } from "./robots-check";
+import { defaultSitemapAnalysis } from "./sitemap-check";
+import { defaultSocialMetadata } from "./social-metadata";
 import type {
   AiVisibilitySignals,
   AuditCheck,
   AuditHeadings,
   AuditLinks,
   AuditResponse,
+  RobotsAnalysis,
+  SitemapAnalysis,
+  SocialMetadata,
   TrustSignals,
 } from "./types";
 
-export const AUDIT_SCHEMA_VERSION = 2;
+export const AUDIT_SCHEMA_VERSION = 5;
 
 export const defaultTrustSignals: TrustSignals = {
   aboutPage: false,
@@ -131,6 +137,97 @@ function deriveAiVisibilitySignals(
   };
 }
 
+function deriveRobotsAnalysis(
+  robotsAnalysis: RobotsAnalysis | undefined,
+): RobotsAnalysis {
+  if (!robotsAnalysis || typeof robotsAnalysis !== "object") {
+    return { ...defaultRobotsAnalysis };
+  }
+
+  return {
+    exists: Boolean(robotsAnalysis.exists),
+    sitemapCount:
+      typeof robotsAnalysis.sitemapCount === "number"
+        ? robotsAnalysis.sitemapCount
+        : 0,
+    disallowCount:
+      typeof robotsAnalysis.disallowCount === "number"
+        ? robotsAnalysis.disallowCount
+        : 0,
+  };
+}
+
+function deriveSitemapAnalysis(
+  sitemapAnalysis: SitemapAnalysis | undefined,
+): SitemapAnalysis {
+  if (!sitemapAnalysis || typeof sitemapAnalysis !== "object") {
+    return { ...defaultSitemapAnalysis };
+  }
+
+  const source =
+    sitemapAnalysis.source === "robots" ||
+    sitemapAnalysis.source === "default" ||
+    sitemapAnalysis.source === "none"
+      ? sitemapAnalysis.source
+      : "none";
+
+  return {
+    exists: Boolean(sitemapAnalysis.exists),
+    source,
+    sitemapCount:
+      typeof sitemapAnalysis.sitemapCount === "number"
+        ? sitemapAnalysis.sitemapCount
+        : 0,
+    urlCount:
+      typeof sitemapAnalysis.urlCount === "number" ? sitemapAnalysis.urlCount : 0,
+    childSitemapCount:
+      typeof sitemapAnalysis.childSitemapCount === "number"
+        ? sitemapAnalysis.childSitemapCount
+        : 0,
+    sampleUrls: Array.isArray(sitemapAnalysis.sampleUrls)
+      ? sitemapAnalysis.sampleUrls.filter((url) => typeof url === "string")
+      : [],
+  };
+}
+
+function optionalString(value: unknown): string | undefined {
+  return typeof value === "string" && value.trim() ? value.trim() : undefined;
+}
+
+function deriveSocialMetadata(
+  socialMetadata: SocialMetadata | undefined,
+): SocialMetadata {
+  if (!socialMetadata || typeof socialMetadata !== "object") {
+    return { ...defaultSocialMetadata };
+  }
+
+  const openGraph =
+    socialMetadata.openGraph && typeof socialMetadata.openGraph === "object"
+      ? socialMetadata.openGraph
+      : {};
+  const twitter =
+    socialMetadata.twitter && typeof socialMetadata.twitter === "object"
+      ? socialMetadata.twitter
+      : {};
+
+  return {
+    openGraph: {
+      title: optionalString(openGraph.title),
+      description: optionalString(openGraph.description),
+      image: optionalString(openGraph.image),
+      url: optionalString(openGraph.url),
+      type: optionalString(openGraph.type),
+      siteName: optionalString(openGraph.siteName),
+    },
+    twitter: {
+      card: optionalString(twitter.card),
+      title: optionalString(twitter.title),
+      description: optionalString(twitter.description),
+      image: optionalString(twitter.image),
+    },
+  };
+}
+
 export function isValidStoredAudit(data: unknown): boolean {
   if (!data || typeof data !== "object" || Array.isArray(data)) {
     return false;
@@ -180,8 +277,19 @@ export function normalizeAuditResponse(data: unknown): AuditResponse | null {
       },
       audit.aiVisibilitySignals,
     ),
+    robotsAnalysis: deriveRobotsAnalysis(audit.robotsAnalysis),
+    sitemapAnalysis: deriveSitemapAnalysis(audit.sitemapAnalysis),
+    socialMetadata: deriveSocialMetadata(audit.socialMetadata),
     checks: normalizeChecks(audit.checks),
   };
+}
+
+export function getSitemapAnalysis(audit: AuditResponse): SitemapAnalysis {
+  return audit.sitemapAnalysis ?? defaultSitemapAnalysis;
+}
+
+export function getRobotsAnalysis(audit: AuditResponse): RobotsAnalysis {
+  return audit.robotsAnalysis ?? defaultRobotsAnalysis;
 }
 
 export function getTrustSignals(audit: AuditResponse): TrustSignals {
@@ -190,4 +298,8 @@ export function getTrustSignals(audit: AuditResponse): TrustSignals {
 
 export function getAiVisibilitySignals(audit: AuditResponse): AiVisibilitySignals {
   return audit.aiVisibilitySignals ?? defaultAiVisibilitySignals;
+}
+
+export function getSocialMetadata(audit: AuditResponse): SocialMetadata {
+  return audit.socialMetadata ?? defaultSocialMetadata;
 }

@@ -87,6 +87,38 @@ function isAuditResponse(data) {
     return false;
   }
 
+  if (
+    !data.robotsAnalysis ||
+    typeof data.robotsAnalysis.exists !== "boolean" ||
+    typeof data.robotsAnalysis.sitemapCount !== "number" ||
+    typeof data.robotsAnalysis.disallowCount !== "number"
+  ) {
+    return false;
+  }
+
+  if (
+    !data.sitemapAnalysis ||
+    typeof data.sitemapAnalysis.exists !== "boolean" ||
+    typeof data.sitemapAnalysis.source !== "string" ||
+    typeof data.sitemapAnalysis.sitemapCount !== "number" ||
+    typeof data.sitemapAnalysis.urlCount !== "number" ||
+    typeof data.sitemapAnalysis.childSitemapCount !== "number" ||
+    !Array.isArray(data.sitemapAnalysis.sampleUrls)
+  ) {
+    return false;
+  }
+
+  if (
+    !data.socialMetadata ||
+    typeof data.socialMetadata !== "object" ||
+    !data.socialMetadata.openGraph ||
+    typeof data.socialMetadata.openGraph !== "object" ||
+    !data.socialMetadata.twitter ||
+    typeof data.socialMetadata.twitter !== "object"
+  ) {
+    return false;
+  }
+
   return data.checks.every(
     (check) =>
       check &&
@@ -133,6 +165,15 @@ async function runTest(test) {
   );
   console.log(
     `aiVisibility: org=${data.aiVisibilitySignals.organizationSchema}, faq=${data.aiVisibilitySignals.faqSchema}, trustPages=${data.aiVisibilitySignals.trustPages}`,
+  );
+  console.log(
+    `robots: exists=${data.robotsAnalysis.exists}, sitemaps=${data.robotsAnalysis.sitemapCount}, disallow=${data.robotsAnalysis.disallowCount}`,
+  );
+  console.log(
+    `sitemap: exists=${data.sitemapAnalysis.exists}, source=${data.sitemapAnalysis.source}, urls=${data.sitemapAnalysis.urlCount}, children=${data.sitemapAnalysis.childSitemapCount}`,
+  );
+  console.log(
+    `social: ogTitle=${Boolean(data.socialMetadata.openGraph.title)}, ogDesc=${Boolean(data.socialMetadata.openGraph.description)}, ogImage=${Boolean(data.socialMetadata.openGraph.image)}, twitterCard=${data.socialMetadata.twitter.card ?? "none"}`,
   );
   console.log(`checks: ${summarizeChecks(data.checks)}`);
 

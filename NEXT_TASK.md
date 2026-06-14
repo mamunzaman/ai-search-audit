@@ -8,5 +8,5 @@
 
 ## Done
 
-- Backward-safe audit normalization for old sessionStorage reports
-- schemaVersion 2 on saved audits; demo fallback when data invalid
+- Open Graph + Twitter Card analysis: extraction, checks, trust/AI/entity scoring
+- schemaVersion 5 on saved audits with socialMetadata defaults

@@ -66,6 +66,23 @@ export type ParsedAnchor = {
   text: string;
 };
 
+export type RobotsAnalysis = {
+  exists: boolean;
+  sitemapCount: number;
+  disallowCount: number;
+};
+
+export type SitemapSource = "robots" | "default" | "none";
+
+export type SitemapAnalysis = {
+  exists: boolean;
+  source: SitemapSource;
+  sitemapCount: number;
+  urlCount: number;
+  childSitemapCount: number;
+  sampleUrls: string[];
+};
+
 export type TrustSignals = {
   aboutPage: boolean;
   contactPage: boolean;
@@ -86,6 +103,27 @@ export type AiVisibilitySignals = {
   visibleFaqHints: boolean;
 };
 
+export type OpenGraphMetadata = {
+  title?: string;
+  description?: string;
+  image?: string;
+  url?: string;
+  type?: string;
+  siteName?: string;
+};
+
+export type TwitterCardMetadata = {
+  card?: string;
+  title?: string;
+  description?: string;
+  image?: string;
+};
+
+export type SocialMetadata = {
+  openGraph: OpenGraphMetadata;
+  twitter: TwitterCardMetadata;
+};
+
 export type AuditResponse = {
   url: string;
   finalUrl: string;
@@ -99,6 +137,9 @@ export type AuditResponse = {
   links: AuditLinks;
   trustSignals: TrustSignals;
   aiVisibilitySignals: AiVisibilitySignals;
+  robotsAnalysis: RobotsAnalysis;
+  sitemapAnalysis: SitemapAnalysis;
+  socialMetadata: SocialMetadata;
   checks: AuditCheck[];
 };
 

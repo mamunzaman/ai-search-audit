@@ -4,6 +4,12 @@ import {
 } from "@/lib/audit/ai-visibility-checks";
 import { AuditFetchError, fetchPage } from "@/lib/audit/fetch-page";
 import { parseHtml } from "@/lib/audit/html-parser";
+import { analyzeRobotsTxt, runRobotsChecks } from "@/lib/audit/robots-check";
+import { analyzeSitemaps, runSitemapChecks } from "@/lib/audit/sitemap-check";
+import {
+  extractSocialMetadata,
+  runSocialMetadataChecks,
+} from "@/lib/audit/social-metadata";
 import { detectSchemaTypes } from "@/lib/audit/schema-detector";
 import { runSeoChecks } from "@/lib/audit/seo-checks";
 import { detectTrustSignals } from "@/lib/audit/trust-signals";
@@ -11,16 +17,19 @@ import type { AuditRequest, AuditResponse } from "@/lib/audit/types";
 import { validateAuditUrl } from "@/lib/audit/url-validator";
 import { NextResponse } from "next/server";
 
-function buildAuditResponse(
+async function buildAuditResponse(
   url: string,
   page: { finalUrl: string; statusCode: number; html: string },
-): AuditResponse {
+): Promise<AuditResponse> {
   const parsed = parseHtml(page.html, page.finalUrl);
   const schemaTypes = detectSchemaTypes(page.html) ?? [];
   const trustSignals = detectTrustSignals({
     pageUrl: page.finalUrl,
     anchors: parsed.anchors ?? [],
   });
+  const robotsAnalysis = await analyzeRobotsTxt(page.finalUrl);
+  const sitemapAnalysis = await analyzeSitemaps(page.finalUrl, robotsAnalysis);
+  const socialMetadata = extractSocialMetadata(page.html);
   const aiVisibilitySignals = detectAiVisibilitySignals({
     title: parsed.title ?? "",
     metaDescription: parsed.metaDescription ?? "",
@@ -40,6 +49,9 @@ function buildAuditResponse(
     aiVisibilitySignals,
     visibleFaqHints: aiVisibilitySignals.visibleFaqHints,
   });
+  const robotsChecks = runRobotsChecks(robotsAnalysis);
+  const sitemapChecks = runSitemapChecks(sitemapAnalysis);
+  const socialChecks = runSocialMetadataChecks(socialMetadata);
 
   return {
     url,
@@ -61,7 +73,16 @@ function buildAuditResponse(
     },
     trustSignals,
     aiVisibilitySignals,
-    checks: [...seoChecks, ...trustAndAiChecks],
+    robotsAnalysis,
+    sitemapAnalysis,
+    socialMetadata,
+    checks: [
+      ...seoChecks,
+      ...trustAndAiChecks,
+      ...robotsChecks,
+      ...sitemapChecks,
+      ...socialChecks,
+    ],
   };
 }
 
@@ -83,7 +104,9 @@ export async function POST(request: Request) {
 
     const page = await fetchPage(validation.url);
 
-    return NextResponse.json(buildAuditResponse(validation.url, page));
+    return NextResponse.json(
+      await buildAuditResponse(validation.url, page),
+    );
   } catch (error) {
     if (error instanceof AuditFetchError) {
       return NextResponse.json(

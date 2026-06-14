@@ -1,6 +1,6 @@
 # Project Status
 
-**Last Update:** 13 June 2026 (backward-safe sessionStorage audit normalization)
+**Last Update:** 13 June 2026 (Open Graph + Twitter Card analysis)
 
 ## Completed Features
 - [x] Backup branch `backup/ui-before-html-rebuild` with pre-rebuild UI
@@ -14,7 +14,9 @@
 - [x] Deterministic scoring — overall + 8 category scores from audit checks and schema data
 - [x] Explainable scoring — category summaries, dynamic issues/recommendations from audit data
 - [x] Balanced priority tiers — Critical/High/Medium issues; FAQ deprioritized when SEO basics fail
-- [x] Trust + AI visibility checks — about/contact/legal pages, social links, org/FAQ schema signals
+- [x] robots.txt analysis — fetch, parse sitemap/disallow rules, trust scoring checks
+- [x] sitemap.xml analysis — fetch up to 3 sitemaps, parse URLs/index, trust/AI scoring
+- [x] Open Graph + Twitter Card analysis — social preview metadata, trust/AI/entity scoring
 - [x] Design tokens in `globals.css` (DESIGN_SYSTEM + Stitch HTML)
 - [x] Audit API live-tested + hardened (malformed JSON 400, response shape guards)
 - [x] Component structure: `ui/`, `home/`, `report/`, `processing/`, `icons/`, `lib/`

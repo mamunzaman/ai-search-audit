@@ -16,7 +16,12 @@ import {
   calculateAuditScores,
   scoreToStatusLabel,
 } from "./audit-score";
-import { normalizeAuditResponse } from "./audit-normalize";
+import {
+  getRobotsAnalysis,
+  getSitemapAnalysis,
+  getSocialMetadata,
+  normalizeAuditResponse,
+} from "./audit-normalize";
 import type { AuditCheck, AuditResponse, CategoryScore } from "./types";
 
 export type ReportStrength = {
@@ -31,6 +36,16 @@ export type ExtractedDataSummary = {
   schemaTypes: string[];
   internalLinks: number;
   externalLinks: number;
+  robotsTxtExists: boolean;
+  robotsSitemapCount: number;
+  robotsDisallowCount: number;
+  sitemapExists: boolean;
+  sitemapUrlCount: number;
+  sitemapChildCount: number;
+  ogTitleFound: boolean;
+  ogDescriptionFound: boolean;
+  ogImageFound: boolean;
+  twitterCard: string;
 };
 
 export type ReportViewData = {
@@ -116,6 +131,10 @@ function countHeadings(audit: AuditResponse): number {
 }
 
 function buildExtractedSummary(audit: AuditResponse): ExtractedDataSummary {
+  const robotsAnalysis = getRobotsAnalysis(audit);
+  const sitemapAnalysis = getSitemapAnalysis(audit);
+  const socialMetadata = getSocialMetadata(audit);
+
   return {
     h1Count: audit.headings.h1.length,
     h2Count: audit.headings.h2.length,
@@ -123,6 +142,16 @@ function buildExtractedSummary(audit: AuditResponse): ExtractedDataSummary {
     schemaTypes: audit.schemaTypes,
     internalLinks: audit.links.internal,
     externalLinks: audit.links.external,
+    robotsTxtExists: robotsAnalysis.exists,
+    robotsSitemapCount: robotsAnalysis.sitemapCount,
+    robotsDisallowCount: robotsAnalysis.disallowCount,
+    sitemapExists: sitemapAnalysis.exists,
+    sitemapUrlCount: sitemapAnalysis.urlCount,
+    sitemapChildCount: sitemapAnalysis.childSitemapCount,
+    ogTitleFound: Boolean(socialMetadata.openGraph.title),
+    ogDescriptionFound: Boolean(socialMetadata.openGraph.description),
+    ogImageFound: Boolean(socialMetadata.openGraph.image),
+    twitterCard: socialMetadata.twitter.card ?? "Missing",
   };
 }
 
@@ -254,6 +283,16 @@ export function getPlaceholderReportView(domain: string): ReportViewData {
       schemaTypes: [],
       internalLinks: 0,
       externalLinks: 0,
+      robotsTxtExists: false,
+      robotsSitemapCount: 0,
+      robotsDisallowCount: 0,
+      sitemapExists: false,
+      sitemapUrlCount: 0,
+      sitemapChildCount: 0,
+      ogTitleFound: false,
+      ogDescriptionFound: false,
+      ogImageFound: false,
+      twitterCard: "Missing",
     },
     strengths,
     criticalIssues,
