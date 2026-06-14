@@ -4,9 +4,8 @@
 
 **Verify:**
 - AI summaries augment rule-based trust/visibility signals
-- PotentialImprovementCard uses top recommendations list
+- V2 report layout stays balanced with real + AI narrative data
 
 ## Done
 
-- Readability + AI answer readiness checks: word/paragraph depth, lists/tables, FAQ text
-- schemaVersion 7 on saved audits with readabilityAnalysis defaults
+- Executive Summary visual density — compact score card, concise audit summary, 3 KPI row

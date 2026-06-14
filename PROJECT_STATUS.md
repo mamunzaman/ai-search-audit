@@ -1,15 +1,15 @@
 # Project Status
 
-**Last Update:** 13 June 2026 (readability + AI answer readiness)
+**Last Update:** 13 June 2026 (Executive Summary visual density)
 
 ## Completed Features
 - [x] Backup branch `backup/ui-before-html-rebuild` with pre-rebuild UI
 - [x] Clean `src/` rebuild from Stitch HTML references
 - [x] Homepage (`/`) — header, hero, dashboard preview, features, how-it-works, sample metrics, CTA, footer
-- [x] Report page (`/report`) — sidebar, top nav, header, score hero, categories, issues table, recommendations, optimization card, footer
+- [x] Report page (`/report`) — V2 executive layout: sidebar, top nav, score card, strategic overview, radar, growth, trend, recommendations, footer
 - [x] Processing page (`/processing`) — simulated progress + real `/api/audit` call
 - [x] Processing → Report flow — sessionStorage `ai-search-audit:last-report`, redirect on success
-- [x] Report uses real audit data visibly — title, final URL, HTTP 200, extracted counts, check mapping
+- [x] Report uses real audit data visibly — dynamic scores, radar, growth potential, strategic overview, recommendations
 - [x] Processing page real feedback — accurate metric labels + activity log from audit
 - [x] Deterministic scoring — overall + 8 category scores from audit checks and schema data
 - [x] Explainable scoring — category summaries, dynamic issues/recommendations from audit data
@@ -19,6 +19,8 @@
 - [x] Open Graph + Twitter Card analysis — social preview metadata, trust/AI/entity scoring
 - [x] Entity extraction — rule-based primary entity, type, confidence, related terms for LLM visibility
 - [x] Readability analysis — body depth, scannable paragraphs, lists/tables, FAQ text for AI answer readiness
+- [x] V2 report data layer — `buildReportV2View()` maps audit to executive dashboard metrics
+- [x] Executive Summary density — compact score ring, 3-sentence audit summary, Indexability/Schema/AI Visibility KPIs
 - [x] Design tokens in `globals.css` (DESIGN_SYSTEM + Stitch HTML)
 - [x] Audit API live-tested + hardened (malformed JSON 400, response shape guards)
 - [x] Component structure: `ui/`, `home/`, `report/`, `processing/`, `icons/`, `lib/`

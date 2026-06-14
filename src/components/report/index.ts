@@ -1,11 +1,11 @@
-export { CategoryGrid } from "./CategoryGrid";
-export { PotentialImprovementCard } from "./PotentialImprovementCard";
-export { PriorityIssues } from "./PriorityIssues";
-export { RecommendationsSection } from "./RecommendationsSection";
+export { CategoryRadarCard } from "./CategoryRadarCard";
+export { ExecutiveScoreCard } from "./ExecutiveScoreCard";
+export { GrowthPotentialCard } from "./GrowthPotentialCard";
+export { HighImpactRecommendationsTable } from "./HighImpactRecommendationsTable";
+export { ReadinessTrendCard } from "./ReadinessTrendCard";
 export { ReportPageClient } from "./ReportPageClient";
 export { ReportFooter } from "./ReportFooter";
-export { ReportHeader } from "./ReportHeader";
 export { ReportLayout } from "./ReportLayout";
 export { ReportSidebar } from "./ReportSidebar";
 export { ReportTopNav } from "./ReportTopNav";
-export { ScoreHeroCard } from "./ScoreHeroCard";
+export { StrategicOverviewCard } from "./StrategicOverviewCard";

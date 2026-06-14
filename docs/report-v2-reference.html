@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AuditMetric | Visual Analytics Report - coinarchive.eu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#fbf8ff",
+                        "outline": "#757685",
+                        "on-secondary-container": "#0d288e",
+                        "on-primary-fixed": "#001159",
+                        "background": "#fbf8ff",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "surface-container-high": "#e8e7f2",
+                        "primary": "#00218d",
+                        "surface-dim": "#dad9e4",
+                        "secondary": "#4156b9",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#1a1b23",
+                        "outline-variant": "#c5c5d6",
+                        "primary-fixed": "#dee1ff",
+                        "on-tertiary-fixed-variant": "#872100",
+                        "on-surface": "#1a1b23",
+                        "surface-container-low": "#f4f2fe",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdbd1",
+                        "on-primary-container": "#a3b1ff",
+                        "primary-container": "#1536b8",
+                        "surface-container": "#eeedf8",
+                        "tertiary": "#601500",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#8397fe",
+                        "on-primary-fixed-variant": "#1536b8",
+                        "surface-variant": "#e3e1ec",
+                        "on-secondary-fixed": "#001158",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#f1effb",
+                        "secondary-fixed": "#dee1ff",
+                        "on-surface-variant": "#444654",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#fbf8ff",
+                        "primary-fixed-dim": "#bac3ff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#3b0900",
+                        "inverse-surface": "#2f3038",
+                        "tertiary-fixed-dim": "#ffb5a0",
+                        "on-secondary-fixed-variant": "#273d9f",
+                        "inverse-primary": "#bac3ff",
+                        "surface-tint": "#3651d0",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-container": "#872100",
+                        "surface-container-highest": "#e3e1ec",
+                        "on-tertiary-container": "#ff9b7f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "24px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px",
+                        "stack-xs": "4px",
+                        "stack-xl": "48px",
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "container-max": "1440px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .chart-container { position: relative; width: 100%; height: 300px; }
+        .card-shadow { box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05); }
+        .radar-line { stroke: #1536B8; stroke-width: 2; fill: rgba(21, 54, 184, 0.1); }
+        .bar-potential { fill: #dee1ff; }
+        .bar-current { fill: #1536b8; }
+        .line-trend { stroke: #1536B8; stroke-width: 3; fill: none; }
+        .area-trend { fill: url(#area-gradient); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-[#F6F8FB] text-on-surface">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col p-stack-md z-50">
+<div class="mb-stack-xl px-2">
+<span class="font-headline-md text-headline-md font-bold text-primary">AuditMetric</span>
+</div>
+<div class="mb-stack-lg px-2">
+<div class="flex items-center gap-stack-sm mb-stack-xs">
+<div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[20px]">account_balance</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">Project Alpha</p>
+<p class="text-[10px] text-on-surface-variant">Last audit: 2h ago</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container text-on-secondary-container rounded-lg font-bold transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">health_and_safety</span>
+<span class="font-label-md text-label-md">SEO Health</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings_suggest</span>
+<span class="font-label-md text-label-md">Technical Audit</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">article</span>
+<span class="font-label-md text-label-md">Content Quality</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-md text-label-md">Competitor Analysis</span>
+</a>
+</nav>
+<div class="mt-auto pt-stack-md border-t border-outline-variant">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg mb-1" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+<button class="w-full mt-stack-md bg-[#FF5A4F] text-white py-3 rounded-xl font-bold hover:brightness-90 transition-all text-label-md uppercase tracking-wider">
+                Upgrade Plan
+            </button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 min-h-screen">
+<!-- Top Bar -->
+<header class="w-full top-0 sticky bg-surface-container-lowest z-40 border-b border-outline-variant shadow-sm px-margin-desktop py-4 flex justify-between items-center">
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">coinarchive.eu Report</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Visual Analytics Executive Summary</p>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="bg-white border border-primary text-primary px-4 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+<span class="font-label-md text-label-md">Export PDF</span>
+</button>
+<button class="bg-primary text-white px-6 py-2 rounded-lg font-bold hover:brightness-110 transition-transform active:scale-95 duration-100">
+                    New Audit
+                </button>
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden border border-outline-variant">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="A professional headshot of a corporate executive in a sharp navy suit, looking confident and smiling slightly. The background is a blurred high-end office environment with soft natural lighting and cool blue tones. The portrait is high-resolution with a focus on professional approachability and institutional trust." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6h6oYPH7fsqYO6MgbwmcuyCm8zrKS8qXyyetPqKGPXPP-iGsuxEUKpEKLgc62hhTytn0QlrOTMoSJ__dZiKC07XbHosPUGjctcbIcONKlB532cNyoIxMLfiC3VpNuJZDNFXDw2SVf1Z5BQZmF4c_9q3sWwJkSkRxmbOExZRgCaeDaZXvZU8SO3JMsAI5QHuVWbHekBXGKjJd0wgf2uV1HbgMUeCQyEDcTc5aZioamvZzQd1_jjtubip-GoMqPCBAYzVuUaNmpQ-k"/>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-margin-desktop max-w-container-max mx-auto space-y-stack-lg">
+<!-- Hero Section: ScoreRing & Summary -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
+<div class="lg:col-span-4 flex flex-col items-center justify-center bg-white p-stack-xl rounded-[24px] border border-outline-variant card-shadow animate-fade-in" style="animation-delay: 0.1s">
+<div class="relative w-64 h-64">
+<!-- Background Circle -->
+<svg class="w-full h-full" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="45" stroke="#E5E7EB" stroke-width="8"></circle>
+<!-- Active Progress -->
+<circle class="transition-all duration-1000 ease-out" cx="50" cy="50" fill="none" r="45" stroke="#1536B8" stroke-dasharray="282.7" stroke-dashoffset="50.8" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-display-lg text-display-lg text-primary">82</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Global Score</span>
+</div>
+</div>
+<div class="mt-stack-lg text-center">
+<p class="font-headline-md text-headline-md text-primary">+4.2% from last month</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2">Overall AI Readiness &amp; Domain Trust</p>
+</div>
+</div>
+<div class="lg:col-span-8 bg-white p-stack-xl rounded-[24px] border border-outline-variant card-shadow h-full flex flex-col justify-center animate-fade-in" style="animation-delay: 0.2s">
+<h2 class="font-headline-lg text-headline-lg mb-stack-md">Strategic Overview</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-stack-lg leading-relaxed">
+                        CoinArchive.eu demonstrates strong institutional authority and historical depth. The current score of <span class="font-bold text-primary">82</span> reflects excellent technical SEO and domain age. However, there is a <span class="font-bold text-secondary">10-point delta</span> to achieve "AI Search Dominance," specifically within structured schema markups and semantic content clusters.
+                    </p>
+<div class="grid grid-cols-3 gap-stack-md">
+<div class="p-stack-md bg-surface-container-low rounded-xl border border-outline-variant">
+<span class="font-label-md text-label-md text-outline uppercase block mb-1">Indexability</span>
+<span class="font-headline-md text-headline-md text-primary">94%</span>
+</div>
+<div class="p-stack-md bg-surface-container-low rounded-xl border border-outline-variant">
+<span class="font-label-md text-label-md text-outline uppercase block mb-1">Schema Health</span>
+<span class="font-headline-md text-headline-md text-secondary">68%</span>
+</div>
+<div class="p-stack-md bg-surface-container-low rounded-xl border border-outline-variant">
+<span class="font-label-md text-label-md text-outline uppercase block mb-1">E-E-A-T Score</span>
+<span class="font-headline-md text-headline-md text-primary">89%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Visual Analytics Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- 1. Radar Chart: Performance Categories -->
+<div class="bg-white p-stack-lg rounded-[24px] border border-outline-variant card-shadow animate-fade-in" style="animation-delay: 0.3s">
+<div class="flex justify-between items-center mb-stack-md border-b border-outline-variant pb-stack-sm">
+<h3 class="font-headline-md text-headline-md">Category Radar</h3>
+<span class="material-symbols-outlined text-outline">hub</span>
+</div>
+<div class="chart-container flex items-center justify-center p-4">
+<svg class="w-full h-full max-w-[240px]" viewbox="0 0 200 200">
+<!-- Grid -->
+<polygon fill="none" points="100,20 156,43 180,100 156,157 100,180 44,157 20,100 44,43" stroke="#E5E7EB" stroke-width="1"></polygon>
+<polygon fill="none" points="100,40 142,57 160,100 142,143 100,160 58,143 40,100 58,57" stroke="#E5E7EB" stroke-width="1"></polygon>
+<polygon fill="none" points="100,60 128,71 140,100 128,129 100,140 72,129 60,100 72,71" stroke="#E5E7EB" stroke-width="1"></polygon>
+<!-- Web Axis -->
+<line stroke="#E5E7EB" stroke-width="1" x1="100" x2="100" y1="20" y2="180"></line>
+<line stroke="#E5E7EB" stroke-width="1" x1="20" x2="180" y1="100" y2="100"></line>
+<line stroke="#E5E7EB" stroke-width="1" x1="44" x2="156" y1="43" y2="157"></line>
+<line stroke="#E5E7EB" stroke-width="1" x1="156" x2="44" y1="43" y2="157"></line>
+<!-- Data Shape -->
+<polygon class="radar-line" points="100,30 140,55 170,100 140,145 100,170 60,145 45,100 75,55"></polygon>
+<!-- Labels (Simplified) -->
+<text class="text-[8px] font-bold fill-outline" text-anchor="middle" x="100" y="15">SEO</text>
+<text class="text-[8px] font-bold fill-outline" text-anchor="start" x="175" y="105">SCHEMA</text>
+<text class="text-[8px] font-bold fill-outline" text-anchor="middle" x="100" y="195">TRUST</text>
+<text class="text-[8px] font-bold fill-outline" text-anchor="end" x="25" y="105">TECH</text>
+</svg>
+</div>
+</div>
+<!-- 2. Bar Chart: Current vs Potential -->
+<div class="bg-white p-stack-lg rounded-[24px] border border-outline-variant card-shadow animate-fade-in" style="animation-delay: 0.4s">
+<div class="flex justify-between items-center mb-stack-md border-b border-outline-variant pb-stack-sm">
+<h3 class="font-headline-md text-headline-md">Growth Potential</h3>
+<span class="material-symbols-outlined text-outline">bar_chart</span>
+</div>
+<div class="chart-container flex flex-col justify-end gap-6 px-4">
+<!-- Bar Groups -->
+<div class="space-y-4">
+<!-- Category 1 -->
+<div class="space-y-1">
+<div class="flex justify-between text-[10px] font-bold uppercase text-outline">
+<span>Semantic Quality</span>
+<span>72 / 95</span>
+</div>
+<div class="h-4 w-full bg-surface-container rounded-full overflow-hidden flex">
+<div class="h-full bg-primary" style="width: 72%"></div>
+<div class="h-full bg-primary-fixed" style="width: 23%"></div>
+</div>
+</div>
+<!-- Category 2 -->
+<div class="space-y-1">
+<div class="flex justify-between text-[10px] font-bold uppercase text-outline">
+<span>Data Structure</span>
+<span>64 / 92</span>
+</div>
+<div class="h-4 w-full bg-surface-container rounded-full overflow-hidden flex">
+<div class="h-full bg-primary" style="width: 64%"></div>
+<div class="h-full bg-primary-fixed" style="width: 28%"></div>
+</div>
+</div>
+<!-- Category 3 -->
+<div class="space-y-1">
+<div class="flex justify-between text-[10px] font-bold uppercase text-outline">
+<span>Authority/E-E-A-T</span>
+<span>88 / 98</span>
+</div>
+<div class="h-4 w-full bg-surface-container rounded-full overflow-hidden flex">
+<div class="h-full bg-primary" style="width: 88%"></div>
+<div class="h-full bg-primary-fixed" style="width: 10%"></div>
+</div>
+</div>
+</div>
+<div class="flex gap-4 mt-2">
+<div class="flex items-center gap-1">
+<div class="w-3 h-3 rounded bg-primary"></div>
+<span class="text-[10px] font-bold text-on-surface-variant">Current</span>
+</div>
+<div class="flex items-center gap-1">
+<div class="w-3 h-3 rounded bg-primary-fixed"></div>
+<span class="text-[10px] font-bold text-on-surface-variant">Potential</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 3. Area Chart: AI Readiness 30 Day Trend -->
+<div class="bg-white p-stack-lg rounded-[24px] border border-outline-variant card-shadow animate-fade-in" style="animation-delay: 0.5s">
+<div class="flex justify-between items-center mb-stack-md border-b border-outline-variant pb-stack-sm">
+<h3 class="font-headline-md text-headline-md">Readiness Trend</h3>
+<span class="material-symbols-outlined text-outline">trending_up</span>
+</div>
+<div class="chart-container">
+<svg class="w-full h-full" viewbox="0 0 400 200">
+<defs>
+<lineargradient id="area-gradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#1536B8" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#1536B8" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<!-- Grid Lines -->
+<line stroke="#F1F5F9" stroke-width="1" x1="0" x2="400" y1="50" y2="50"></line>
+<line stroke="#F1F5F9" stroke-width="1" x1="0" x2="400" y1="100" y2="100"></line>
+<line stroke="#F1F5F9" stroke-width="1" x1="0" x2="400" y1="150" y2="150"></line>
+<!-- Area -->
+<path class="area-trend" d="M0,160 L40,155 L80,140 L120,145 L160,110 L200,95 L240,105 L280,70 L320,65 L360,50 L400,45 L400,200 L0,200 Z"></path>
+<!-- Line -->
+<path class="line-trend" d="M0,160 L40,155 L80,140 L120,145 L160,110 L200,95 L240,105 L280,70 L320,65 L360,50 L400,45"></path>
+<!-- Points -->
+<circle cx="200" cy="95" fill="#1536B8" r="5"></circle>
+<circle cx="400" cy="45" fill="#1536B8" r="5"></circle>
+</svg>
+<div class="flex justify-between text-[10px] font-bold text-outline mt-2 px-1">
+<span>AUG 01</span>
+<span>AUG 15</span>
+<span>AUG 30</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Detailed Analysis Table -->
+<section class="bg-white rounded-[24px] border border-outline-variant card-shadow overflow-hidden animate-fade-in" style="animation-delay: 0.6s">
+<div class="px-stack-lg py-stack-md border-b border-outline-variant bg-surface-container-low flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md">High-Impact Recommendations</h3>
+<div class="flex gap-stack-sm">
+<span class="flex items-center gap-1 text-label-md text-on-surface-variant bg-white px-3 py-1 rounded-full border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+                            3 Critical
+                        </span>
+<span class="flex items-center gap-1 text-label-md text-on-surface-variant bg-white px-3 py-1 rounded-full border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                            8 Optimization
+                        </span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="px-stack-lg py-4 font-label-md text-label-md text-on-surface-variant uppercase">Audit Vector</th>
+<th class="px-stack-lg py-4 font-label-md text-label-md text-on-surface-variant uppercase">Status</th>
+<th class="px-stack-lg py-4 font-label-md text-label-md text-on-surface-variant uppercase">Potential Impact</th>
+<th class="px-stack-lg py-4 font-label-md text-label-md text-on-surface-variant uppercase text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-primary-container/5 transition-colors group">
+<td class="px-stack-lg py-5">
+<div class="flex flex-col">
+<span class="font-bold text-primary">Microdata Entity Mapping</span>
+<span class="text-body-sm text-on-surface-variant">Resolve missing 'Organization' schema for historical archives.</span>
+</div>
+</td>
+<td class="px-stack-lg py-5">
+<span class="px-2 py-1 bg-error-container text-on-error-container text-[10px] font-bold rounded uppercase">Critical</span>
+</td>
+<td class="px-stack-lg py-5">
+<span class="font-data-mono text-data-mono text-primary">+12.4 AI Trust Points</span>
+</td>
+<td class="px-stack-lg py-5 text-right">
+<button class="text-primary font-bold text-label-md hover:underline">View Spec</button>
+</td>
+</tr>
+<tr class="hover:bg-primary-container/5 transition-colors group">
+<td class="px-stack-lg py-5">
+<div class="flex flex-col">
+<span class="font-bold text-primary">Content Cluster Pruning</span>
+<span class="text-body-sm text-on-surface-variant">Consolidate thin tag pages into high-value topics.</span>
+</div>
+</td>
+<td class="px-stack-lg py-5">
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded uppercase">Optimization</span>
+</td>
+<td class="px-stack-lg py-5">
+<span class="font-data-mono text-data-mono text-primary">+5.8 Crawl Efficiency</span>
+</td>
+<td class="px-stack-lg py-5 text-right">
+<button class="text-primary font-bold text-label-md hover:underline">View Spec</button>
+</td>
+</tr>
+<tr class="hover:bg-primary-container/5 transition-colors group">
+<td class="px-stack-lg py-5">
+<div class="flex flex-col">
+<span class="font-bold text-primary">Semantic Internal Linking</span>
+<span class="text-body-sm text-on-surface-variant">Automate cross-linking between coins and auctions.</span>
+</div>
+</td>
+<td class="px-stack-lg py-5">
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded uppercase">Optimization</span>
+</td>
+<td class="px-stack-lg py-5">
+<span class="font-data-mono text-data-mono text-primary">+8.1 Ranking Power</span>
+</td>
+<td class="px-stack-lg py-5 text-right">
+<button class="text-primary font-bold text-label-md hover:underline">View Spec</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- Footer -->
+<footer class="px-margin-desktop py-stack-lg border-t border-outline-variant text-center">
+<p class="font-label-md text-label-md text-outline">© 2024 AuditMetric Labs. Generated for coinarchive.eu. Confirmed for executive distribution.</p>
+</footer>
+</main>
+<!-- Floating Action Trigger -->
+<div class="fixed bottom-8 right-8 z-50">
+<button class="w-14 h-14 bg-[#FF5A4F] text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-200">
+<span class="material-symbols-outlined">auto_awesome</span>
+</button>
+</div>
+<script>
+        // Simple entry animations or interactive tooltips could be added here
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Visual Analytics Engine Active');
+        });
+    </script>
+</body></html>

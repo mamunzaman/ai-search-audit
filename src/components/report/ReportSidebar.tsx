@@ -1,16 +1,36 @@
 import { Icon } from "@/components/icons/Icon";
 import { reportMeta, sidebarNav } from "@/lib/report-data";
 
-export function ReportSidebar() {
+type ReportSidebarProps = {
+  domain: string;
+  auditDate?: string;
+};
+
+export function ReportSidebar({ domain, auditDate }: ReportSidebarProps) {
+  const projectLabel = domain || reportMeta.projectName;
+  const lastAudit = auditDate ?? reportMeta.lastAudit;
+
   return (
     <aside className="fixed left-0 top-0 z-30 hidden h-screen w-64 flex-col border-r border-outline-variant bg-surface p-stack-md md:flex">
       <div className="mb-stack-xl px-2">
-        <h2 className="mb-1 text-headline-md text-primary">
-          {reportMeta.projectName}
-        </h2>
-        <p className="text-label-md text-on-surface-variant">
-          Last audit: {reportMeta.lastAudit}
-        </p>
+        <span className="text-headline-md font-bold text-primary">
+          AuditMetric
+        </span>
+      </div>
+      <div className="mb-stack-lg px-2">
+        <div className="mb-stack-xs flex items-center gap-stack-sm">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-container text-on-primary">
+            <Icon name="account_balance" className="text-[20px]" />
+          </div>
+          <div>
+            <p className="text-label-md font-bold text-on-surface">
+              {projectLabel}
+            </p>
+            <p className="text-[10px] text-on-surface-variant">
+              Last audit: {lastAudit}
+            </p>
+          </div>
+        </div>
       </div>
       <nav className="flex-1 space-y-1">
         {sidebarNav.map((item) => (
@@ -19,8 +39,8 @@ export function ReportSidebar() {
             href="#"
             className={
               item.active
-                ? "flex items-center gap-3 rounded-lg bg-secondary-container px-3 py-2 font-bold text-on-secondary-container"
-                : "group flex items-center gap-3 rounded-lg px-3 py-2 text-on-surface-variant transition-all duration-200 hover:bg-surface-container-high"
+                ? "flex items-center gap-3 rounded-lg bg-secondary-container px-3 py-2 font-bold text-on-secondary-container transition-all duration-200"
+                : "flex items-center gap-3 rounded-lg px-3 py-2 text-on-surface-variant transition-all duration-200 hover:bg-surface-container-high"
             }
           >
             <Icon name={item.icon} />
@@ -28,29 +48,27 @@ export function ReportSidebar() {
           </a>
         ))}
       </nav>
-      <div className="mt-auto space-y-4 pt-stack-md">
+      <div className="mt-auto border-t border-outline-variant pt-stack-md">
+        <a
+          href="#"
+          className="mb-1 flex items-center gap-3 rounded-lg px-3 py-2 text-on-surface-variant hover:bg-surface-container-high"
+        >
+          <Icon name="settings" />
+          <span className="text-label-md">Settings</span>
+        </a>
+        <a
+          href="#"
+          className="flex items-center gap-3 rounded-lg px-3 py-2 text-on-surface-variant hover:bg-surface-container-high"
+        >
+          <Icon name="help" />
+          <span className="text-label-md">Support</span>
+        </a>
         <button
           type="button"
-          className="w-full rounded-xl bg-primary-blue py-3 text-label-md text-white transition-colors hover:bg-blue-800"
+          className="mt-stack-md w-full rounded-xl bg-[#FF5A4F] py-3 text-label-md font-bold uppercase tracking-wider text-white transition-all hover:brightness-90"
         >
           Upgrade Plan
         </button>
-        <div className="space-y-1">
-          <a
-            href="#"
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-on-surface-variant hover:bg-surface-container-high"
-          >
-            <Icon name="settings" />
-            <span className="text-label-md">Settings</span>
-          </a>
-          <a
-            href="#"
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-on-surface-variant hover:bg-surface-container-high"
-          >
-            <Icon name="help" />
-            <span className="text-label-md">Support</span>
-          </a>
-        </div>
       </div>
     </aside>
   );

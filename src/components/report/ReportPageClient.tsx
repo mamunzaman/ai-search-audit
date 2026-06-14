@@ -1,18 +1,16 @@
 "use client";
 
 import {
-  CategoryGrid,
-  PotentialImprovementCard,
-  PriorityIssues,
-  RecommendationsSection,
-  ReportHeader,
+  CategoryRadarCard,
+  ExecutiveScoreCard,
+  GrowthPotentialCard,
+  HighImpactRecommendationsTable,
+  ReadinessTrendCard,
   ReportLayout,
-  ScoreHeroCard,
+  StrategicOverviewCard,
 } from "@/components/report";
-import {
-  buildReportView,
-  buildScoreHeroSummary,
-} from "@/lib/audit/audit-to-report";
+import { buildReportView } from "@/lib/audit/audit-to-report";
+import { buildReportV2View } from "@/lib/audit/report-v2";
 import { loadAuditReportSafe } from "@/lib/audit/storage";
 
 type ReportPageClientProps = {
@@ -21,42 +19,26 @@ type ReportPageClientProps = {
 
 export function ReportPageClient({ domain }: ReportPageClientProps) {
   const view = buildReportView(loadAuditReportSafe(), domain);
-  const summary = buildScoreHeroSummary(view);
+  const data = buildReportV2View(view);
 
   return (
-    <ReportLayout>
-      <ReportHeader
-        domain={view.domain}
-        pageTitle={view.isRealData ? view.title : undefined}
-        primaryEntity={view.isRealData ? view.primaryEntity : undefined}
-        entityType={view.isRealData ? view.entityType : undefined}
-        entityConfidence={view.isRealData ? view.entityConfidence : undefined}
-        finalUrl={view.isRealData ? view.finalUrl : undefined}
-        httpStatus={view.statusCode}
-        score={view.score}
-        auditDate={view.auditDate}
-        isRealData={view.isRealData}
-      />
-      <ScoreHeroCard
-        score={view.score}
-        strengths={view.strengths}
-        criticalIssues={view.criticalIssues}
-        summary={summary}
-        isRealData={view.isRealData}
-        extractedSummary={
-          view.isRealData ? view.extractedSummary : undefined
-        }
-      />
-      <CategoryGrid categories={view.categories} />
-      <PriorityIssues issues={view.priorityIssues} />
-      <section className="grid grid-cols-1 gap-stack-lg lg:grid-cols-3">
-        <RecommendationsSection
-          recommendation={
-            view.isRealData ? view.recommendations[0] : undefined
-          }
-        />
-        <PotentialImprovementCard />
+    <ReportLayout domain={data.domain} auditDate={view.auditDate}>
+      <section className="grid grid-cols-1 items-stretch gap-gutter lg:grid-cols-12">
+        <ExecutiveScoreCard data={data} />
+        <StrategicOverviewCard data={data.strategicOverview} />
       </section>
+
+      <section className="grid grid-cols-1 gap-gutter md:grid-cols-2 lg:grid-cols-3">
+        <CategoryRadarCard points={data.radarPoints} />
+        <GrowthPotentialCard areas={data.growthAreas} />
+        <ReadinessTrendCard points={data.trendPoints} />
+      </section>
+
+      <HighImpactRecommendationsTable
+        rows={data.recommendations}
+        criticalCount={data.criticalCount}
+        optimizationCount={data.optimizationCount}
+      />
     </ReportLayout>
   );
 }
