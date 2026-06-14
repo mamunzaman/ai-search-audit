@@ -16,7 +16,7 @@ export function ReportLayout({
 }: ReportLayoutProps) {
   return (
     <div className="min-h-screen bg-canvas text-[16px] leading-relaxed text-on-surface">
-      <ReportSidebar domain={domain} auditDate={auditDate} />
+      <ReportSidebar domain={domain} activeNav="Overview" auditDate={auditDate} />
       <div className="flex min-h-screen flex-col md:ml-64">
         <ReportTopNav domain={domain} />
         <main className="mx-auto w-full max-w-container-max flex-1 space-y-stack-lg p-margin-desktop">
