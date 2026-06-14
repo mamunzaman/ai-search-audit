@@ -11,13 +11,25 @@ import {
 import { buildReportView } from "@/lib/audit/audit-to-report";
 import { buildReportV2View } from "@/lib/audit/report-v2";
 import { loadAuditReportSafe } from "@/lib/audit/storage";
+import { useEffect, useState } from "react";
 
 type ReportPageClientProps = {
   domain: string;
 };
 
 export function ReportPageClient({ domain }: ReportPageClientProps) {
-  const view = buildReportView(loadAuditReportSafe(), domain);
+  const [mounted, setMounted] = useState(false);
+  const [view, setView] = useState(() => buildReportView(null, domain));
+
+  useEffect(() => {
+    queueMicrotask(() => setMounted(true));
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    queueMicrotask(() => setView(buildReportView(loadAuditReportSafe(), domain)));
+  }, [mounted, domain]);
+
   const data = buildReportV2View(view);
 
   return (

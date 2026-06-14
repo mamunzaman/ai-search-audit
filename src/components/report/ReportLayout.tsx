@@ -15,11 +15,11 @@ export function ReportLayout({
   auditDate,
 }: ReportLayoutProps) {
   return (
-    <div className="min-h-screen bg-canvas text-[16px] leading-relaxed text-on-surface">
+    <div className="min-h-screen min-w-0 overflow-x-hidden bg-canvas text-[16px] leading-relaxed text-on-surface">
       <ReportSidebar domain={domain} activeNav="Overview" auditDate={auditDate} />
-      <div className="flex min-h-screen flex-col md:ml-64">
+      <div className="flex min-h-screen min-w-0 flex-col md:ml-64">
         <ReportTopNav domain={domain} />
-        <main className="mx-auto w-full max-w-container-max flex-1 space-y-stack-lg p-margin-desktop">
+        <main className="mx-auto w-full min-w-0 max-w-container-max flex-1 space-y-stack-lg overflow-x-hidden p-margin-desktop">
           {children}
         </main>
         <ReportFooter />

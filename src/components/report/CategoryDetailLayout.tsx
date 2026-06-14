@@ -23,11 +23,11 @@ export function CategoryDetailLayout({
   const reportHref = `/report?domain=${encodeURIComponent(domain)}`;
 
   return (
-    <div className="min-h-screen bg-canvas text-[16px] leading-relaxed text-on-surface">
+    <div className="min-h-screen min-w-0 overflow-x-hidden bg-canvas text-[16px] leading-relaxed text-on-surface">
       <ReportSidebar domain={domain} activeNav={activeNav} auditDate={auditDate} />
-      <div className="flex min-h-screen flex-col md:ml-64">
+      <div className="flex min-h-screen min-w-0 flex-col md:ml-64">
         <ReportTopNav domain={domain} />
-        <main className="mx-auto w-full max-w-container-max flex-1 p-margin-desktop">
+        <main className="mx-auto w-full min-w-0 max-w-container-max flex-1 overflow-x-hidden p-margin-desktop">
           <nav className="mb-stack-lg flex items-center gap-2 text-body-sm text-outline">
             <Link href={reportHref} className="transition-colors hover:text-primary">
               AI Search Audit

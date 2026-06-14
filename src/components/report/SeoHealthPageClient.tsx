@@ -12,8 +12,12 @@ import {
   CategoryKpiStrip,
   CategoryRecommendationsSection,
 } from "@/components/report";
-import { loadSeoHealthDetailView } from "@/lib/category-detail-data";
-import type { CategoryFinding } from "@/lib/category-detail-data";
+import {
+  buildSeoHealthDetailView,
+  loadSeoHealthDetailView,
+  type CategoryFinding,
+} from "@/lib/category-detail-data";
+import { useEffect, useState } from "react";
 
 type SeoHealthPageClientProps = {
   domain: string;
@@ -39,7 +43,18 @@ function buildOpportunities(
 }
 
 export function SeoHealthPageClient({ domain }: SeoHealthPageClientProps) {
-  const data = loadSeoHealthDetailView(domain);
+  const [mounted, setMounted] = useState(false);
+  const [data, setData] = useState(() => buildSeoHealthDetailView(null, domain));
+
+  useEffect(() => {
+    queueMicrotask(() => setMounted(true));
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    queueMicrotask(() => setData(loadSeoHealthDetailView(domain)));
+  }, [mounted, domain]);
+
   const strengths = buildStrengths(data.findings);
   const opportunities = buildOpportunities(
     data.findings,
