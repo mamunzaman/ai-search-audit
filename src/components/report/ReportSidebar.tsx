@@ -31,6 +31,10 @@ function buildNavHref(slug: string | undefined, domain: string): string {
     return `/report/entity-clarity?domain=${encoded}`;
   }
 
+  if (slug === "content-structure") {
+    return `/report/content-structure?domain=${encoded}`;
+  }
+
   return "#";
 }
 

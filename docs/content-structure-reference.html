@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Content Structure Detail | AuditMetric</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#872100",
+                        "surface": "#fbf8ff",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "secondary-container": "#8397fe",
+                        "primary-container": "#1536b8",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#1536b8",
+                        "tertiary-fixed-dim": "#ffb5a0",
+                        "surface-bright": "#fbf8ff",
+                        "outline": "#757685",
+                        "on-primary-fixed": "#001159",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#dad9e4",
+                        "on-primary-container": "#a3b1ff",
+                        "surface-container-high": "#e8e7f2",
+                        "secondary-fixed": "#dee1ff",
+                        "primary-fixed-dim": "#bac3ff",
+                        "inverse-primary": "#bac3ff",
+                        "surface-container-highest": "#e3e1ec",
+                        "tertiary": "#601500",
+                        "secondary": "#4156b9",
+                        "on-tertiary-fixed": "#3b0900",
+                        "background": "#fbf8ff",
+                        "surface-container": "#eeedf8",
+                        "surface-container-low": "#f4f2fe",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#e3e1ec",
+                        "on-surface-variant": "#444654",
+                        "inverse-on-surface": "#f1effb",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#00218d",
+                        "on-surface": "#1a1b23",
+                        "tertiary-fixed": "#ffdbd1",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#c5c5d6",
+                        "on-secondary-fixed-variant": "#273d9f",
+                        "inverse-surface": "#2f3038",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#872100",
+                        "on-tertiary-container": "#ff9b7f",
+                        "primary-fixed": "#dee1ff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#001158",
+                        "on-secondary-container": "#0d288e",
+                        "on-background": "#1a1b23",
+                        "surface-tint": "#3651d0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "stack-xl": "48px",
+                        "container-max": "1440px",
+                        "stack-xs": "4px",
+                        "stack-md": "16px",
+                        "margin-mobile": "16px",
+                        "stack-lg": "24px",
+                        "margin-desktop": "40px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { background-color: #F6F8FB; font-family: 'Inter', sans-serif; }
+        .card-shadow { box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05); }
+        .accent-coral { color: #FF5A4F; }
+        .bg-accent-coral { background-color: #FF5A4F; }
+        .primary-blue { color: #1536B8; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .progress-ring__circle { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        .glass-panel { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); }
+    </style>
+</head>
+<body class="text-on-background">
+<!-- TopNavBar (Large) -->
+<header class="bg-surface border-b border-outline-variant shadow-sm flex justify-between items-center w-full px-margin-desktop h-16 z-50 sticky top-0">
+<div class="flex items-center gap-stack-lg">
+<span class="font-headline-md text-headline-md font-bold text-primary">AuditMetric</span>
+<div class="hidden md:flex gap-stack-md ml-stack-xl">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Reports</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">History</a>
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="px-stack-md py-2 text-primary border border-primary rounded-lg font-body-md hover:bg-primary-fixed-dim transition-all">Export PDF</button>
+<button class="px-stack-md py-2 bg-accent-coral text-white rounded-lg font-body-md font-semibold hover:opacity-90 transition-all">New Audit</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border border-outline-variant">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a female technology executive in a well-lit corporate setting. She is wearing a modern navy blazer and has a confident, approachable expression. The background is a blurred office interior with soft blue and gray tones, maintaining a high-end corporate aesthetic with clean lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZk1hfVeQr1rUfAuJS6-bNOKXSmUD-ATW20HzQzk64atd3Galey4u5YiQoJRKZ4gRQElZp6wScOrdIkbF0y2U2MqEzftkmM5waWe4R2TTX2KDZvRTevmmC6zjolyeM3zOYHVEZnsCw_ysI7yppbSeZMgPu2cMbiu-DSivjLPzE8zzB1PQAHut57oae0r4hKuVJdP4cMqdz90rB6HLExfVDliiKsIO7QODLgupgBqJvayeV5OMuJTEiNxJ-gNlJV6QzPXyljvz8MbE"/>
+</div>
+</div>
+</header>
+<div class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-surface-container-low border-r border-outline-variant flex flex-col py-stack-lg px-stack-md">
+<div class="flex-1 space-y-2">
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">health_and_safety</span>
+<span class="font-label-md text-label-md">SEO Health</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">visibility</span>
+<span class="font-label-md text-label-md">AI Visibility</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">hub</span>
+<span class="font-label-md text-label-md">Entity Clarity</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">verified</span>
+<span class="font-label-md text-label-md">Trust Signals</span>
+</a>
+<a class="flex items-center gap-3 p-3 bg-secondary-container text-on-secondary-container rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="font-label-md text-label-md font-bold">Content Structure</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">code</span>
+<span class="font-label-md text-label-md">Schema Markup</span>
+</a>
+</div>
+<div class="mt-auto pt-stack-lg border-t border-outline-variant space-y-2">
+<div class="p-4 bg-primary rounded-xl mb-stack-lg text-center">
+<p class="text-white font-label-md mb-2">Pro Plan Active</p>
+<button class="w-full py-2 bg-white text-primary rounded-lg font-label-md font-bold hover:bg-opacity-90">Upgrade Plan</button>
+</div>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 flex-1 p-margin-desktop overflow-x-hidden">
+<div class="max-w-container-max mx-auto">
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 mb-stack-lg text-on-surface-variant font-label-md">
+<span>AI Search Audit</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span>LLM Visibility Report</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-primary font-bold">Content Structure</span>
+</nav>
+<!-- Header Section -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-stack-lg mb-stack-lg items-start">
+<div class="lg:col-span-8 bg-white p-stack-lg rounded-[24px] border border-outline-variant card-shadow flex gap-stack-lg items-center">
+<!-- Score Ring -->
+<div class="relative w-32 h-32 flex items-center justify-center shrink-0">
+<svg class="w-full h-full">
+<circle class="text-surface-container-highest" cx="64" cy="64" fill="transparent" r="54" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary" cx="64" cy="64" fill="transparent" r="54" stroke="currentColor" stroke-dasharray="339.29" stroke-dashoffset="64.46" stroke-linecap="round" stroke-width="8" style="transform: rotate(-90deg); transform-origin: 50% 50%;"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="font-headline-md text-headline-md font-bold">81</span>
+<span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant">Score</span>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="px-3 py-1 bg-green-100 text-green-700 rounded-full font-label-md">Good</span>
+<h1 class="font-headline-lg text-headline-lg">Content Structure Analysis</h1>
+</div>
+<p class="text-on-surface-variant font-body-md max-w-2xl">
+                                Your page maintains a high standard of semantic hierarchy. The content is well-structured for both human readability and LLM token chunking, with clear thematic breaks and consistent list usage.
+                            </p>
+</div>
+</div>
+<!-- Issues Card -->
+<div class="lg:col-span-4 bg-white p-stack-lg rounded-[24px] border border-outline-variant card-shadow h-full">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline-md text-primary">Top Opportunity</h3>
+<span class="material-symbols-outlined accent-coral">error</span>
+</div>
+<div class="bg-surface-container p-3 rounded-xl border-l-4 border-accent-coral">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-md text-on-surface font-bold">Paragraph Complexity</span>
+<span class="text-accent-coral font-bold">+5 pts</span>
+</div>
+<p class="text-on-surface-variant text-body-sm mb-3">Long paragraphs are harder for AI models to chunk into distinct semantic entities.</p>
+<button class="w-full py-2 bg-accent-coral text-white rounded-lg font-label-md font-bold">View Recommendation</button>
+</div>
+</div>
+</div>
+<!-- KPI Strip -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-stack-lg mb-stack-lg">
+<div class="bg-white p-stack-md rounded-[24px] border border-outline-variant card-shadow text-center">
+<span class="block text-on-surface-variant font-label-md mb-1">HEADING LOGIC</span>
+<span class="block font-headline-md text-headline-md text-primary">90%</span>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-3 overflow-hidden">
+<div class="bg-primary h-full w-[90%]"></div>
+</div>
+</div>
+<div class="bg-white p-stack-md rounded-[24px] border border-outline-variant card-shadow text-center">
+<span class="block text-on-surface-variant font-label-md mb-1">READABILITY INDEX</span>
+<span class="block font-headline-md text-headline-md text-primary">72</span>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-3 overflow-hidden">
+<div class="bg-primary h-full w-[72%]"></div>
+</div>
+</div>
+<div class="bg-white p-stack-md rounded-[24px] border border-outline-variant card-shadow text-center">
+<span class="block text-on-surface-variant font-label-md mb-1">LIST USAGE</span>
+<span class="block font-headline-md text-headline-md text-primary">100%</span>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-3 overflow-hidden">
+<div class="bg-primary h-full w-[100%]"></div>
+</div>
+</div>
+<div class="bg-white p-stack-md rounded-[24px] border border-outline-variant card-shadow text-center">
+<span class="block text-on-surface-variant font-label-md mb-1">CONTENT DEPTH</span>
+<span class="block font-headline-md text-headline-md text-primary">85%</span>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-3 overflow-hidden">
+<div class="bg-primary h-full w-[85%]"></div>
+</div>
+</div>
+</div>
+<!-- Bento Grid Visualization Area -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-stack-lg mb-stack-lg">
+<!-- Visual Analysis: Chart -->
+<div class="lg:col-span-2 bg-white p-stack-lg rounded-[24px] border border-outline-variant card-shadow">
+<div class="flex items-center justify-between mb-stack-lg border-b border-outline-variant pb-4">
+<div>
+<h3 class="font-headline-md">Heading vs Content Density</h3>
+<p class="text-body-sm text-on-surface-variant">Distribution of semantic information across content blocks</p>
+</div>
+<div class="flex gap-2">
+<div class="flex items-center gap-1">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-[10px] font-bold">Content</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="w-3 h-3 rounded-full bg-accent-coral"></span>
+<span class="text-[10px] font-bold">Heads</span>
+</div>
+</div>
+</div>
+<div class="h-64 flex items-end justify-between gap-4 px-4">
+<!-- Dummy Bar Chart -->
+<div class="flex flex-col items-center gap-2 flex-1">
+<div class="w-full flex items-end gap-1">
+<div class="bg-primary-container opacity-20 w-full h-32 rounded-t-sm"></div>
+<div class="bg-accent-coral w-full h-8 rounded-t-sm"></div>
+</div>
+<span class="font-label-md text-[10px]">H1/Intro</span>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1">
+<div class="w-full flex items-end gap-1">
+<div class="bg-primary-container w-full h-48 rounded-t-sm"></div>
+<div class="bg-accent-coral w-full h-12 rounded-t-sm"></div>
+</div>
+<span class="font-label-md text-[10px]">Section 1</span>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1">
+<div class="w-full flex items-end gap-1">
+<div class="bg-primary-container w-full h-56 rounded-t-sm"></div>
+<div class="bg-accent-coral w-full h-10 rounded-t-sm"></div>
+</div>
+<span class="font-label-md text-[10px]">Section 2</span>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1">
+<div class="w-full flex items-end gap-1">
+<div class="bg-primary-container opacity-60 w-full h-40 rounded-t-sm"></div>
+<div class="bg-accent-coral w-full h-6 rounded-t-sm"></div>
+</div>
+<span class="font-label-md text-[10px]">Section 3</span>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1">
+<div class="w-full flex items-end gap-1">
+<div class="bg-primary-container w-full h-24 rounded-t-sm"></div>
+<div class="bg-accent-coral w-full h-14 rounded-t-sm"></div>
+</div>
+<span class="font-label-md text-[10px]">Summary</span>
+</div>
+</div>
+</div>
+<!-- Benchmarking Comparison -->
+<div class="bg-white p-stack-lg rounded-[24px] border border-outline-variant card-shadow">
+<h3 class="font-headline-md mb-stack-md">Readability Benchmark</h3>
+<div class="space-y-6">
+<div class="relative pt-6">
+<span class="absolute top-0 right-0 font-bold text-primary">72</span>
+<span class="font-label-md text-on-surface-variant block mb-2">Current Page</span>
+<div class="w-full bg-surface-container h-4 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[72%]"></div>
+</div>
+</div>
+<div class="relative pt-6">
+<span class="absolute top-0 right-0 font-bold text-on-surface-variant">65</span>
+<span class="font-label-md text-on-surface-variant block mb-2">Industry Average</span>
+<div class="w-full bg-surface-container h-4 rounded-full overflow-hidden">
+<div class="bg-outline-variant h-full w-[65%]"></div>
+</div>
+</div>
+<div class="relative pt-6">
+<span class="absolute top-0 right-0 font-bold text-on-secondary-fixed-variant">88</span>
+<span class="font-label-md text-on-surface-variant block mb-2">Top 1% Performers</span>
+<div class="w-full bg-surface-container h-4 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[88%]"></div>
+</div>
+</div>
+<p class="text-body-sm text-on-surface-variant mt-4 italic border-t border-outline-variant pt-4">
+                                Pages with scores &gt;75 show 22% higher inclusion in LLM-generated summaries.
+                            </p>
+</div>
+</div>
+</div>
+<!-- Detailed Findings Table -->
+<div class="bg-white rounded-[24px] border border-outline-variant card-shadow overflow-hidden mb-stack-lg">
+<div class="p-stack-lg border-b border-outline-variant">
+<h3 class="font-headline-md">Detailed Findings</h3>
+</div>
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low border-b border-outline-variant">
+<tr>
+<th class="p-4 font-label-md text-on-surface-variant uppercase tracking-wider">Metric Component</th>
+<th class="p-4 font-label-md text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="p-4 font-label-md text-on-surface-variant uppercase tracking-wider text-right">Raw Data</th>
+<th class="p-4 font-label-md text-on-surface-variant uppercase tracking-wider text-right">Impact</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-primary-fixed-dim transition-colors cursor-default">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">title</span>
+<div>
+<p class="font-bold text-on-surface">Heading Hierarchy</p>
+<p class="text-xs text-on-surface-variant">H1-H4 sequencing</p>
+</div>
+</div>
+</td>
+<td class="p-4"><span class="text-green-600 font-bold">Optimal</span></td>
+<td class="p-4 text-right font-data-mono">1:2:5:8 Ratio</td>
+<td class="p-4 text-right text-primary font-bold">High</td>
+</tr>
+<tr class="hover:bg-primary-fixed-dim transition-colors cursor-default">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">format_align_left</span>
+<div>
+<p class="font-bold text-on-surface">Paragraph Structure</p>
+<p class="text-xs text-on-surface-variant">Average sentence length</p>
+</div>
+</div>
+</td>
+<td class="p-4"><span class="text-accent-coral font-bold">Alert</span></td>
+<td class="p-4 text-right font-data-mono">42 words/avg</td>
+<td class="p-4 text-right text-accent-coral font-bold">Medium</td>
+</tr>
+<tr class="hover:bg-primary-fixed-dim transition-colors cursor-default">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">checklist</span>
+<div>
+<p class="font-bold text-on-surface">Lists &amp; Bulletpoints</p>
+<p class="text-xs text-on-surface-variant">Information density</p>
+</div>
+</div>
+</td>
+<td class="p-4"><span class="text-green-600 font-bold">Optimal</span></td>
+<td class="p-4 text-right font-data-mono">12 list units</td>
+<td class="p-4 text-right text-primary font-bold">Critical</td>
+</tr>
+<tr class="hover:bg-primary-fixed-dim transition-colors cursor-default">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">description</span>
+<div>
+<p class="font-bold text-on-surface">Content Depth</p>
+<p class="text-xs text-on-surface-variant">Token count per section</p>
+</div>
+</div>
+</td>
+<td class="p-4"><span class="text-green-600 font-bold">Optimal</span></td>
+<td class="p-4 text-right font-data-mono">1,420 words</td>
+<td class="p-4 text-right text-primary font-bold">High</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Developer Accordion & Schema Preview -->
+<div class="bg-surface-dim p-stack-lg rounded-[24px] border border-outline border-dashed">
+<div class="flex items-center justify-between mb-4">
+<h4 class="font-headline-md flex items-center gap-2">
+<span class="material-symbols-outlined">terminal</span>
+                            Technical Structure Implementation
+                        </h4>
+<button class="text-primary font-bold font-label-md flex items-center gap-1" onclick="document.getElementById('code-prev').classList.toggle('hidden')">
+                            Toggle Snippet
+                            <span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+<div class="hidden animate-in fade-in slide-in-from-top-4" id="code-prev">
+<p class="text-body-sm text-on-surface-variant mb-4">Ensure your CMS renders semantic HTML5 landmarks to assist LLM parsers in identifying core content blocks.</p>
+<pre class="bg-on-surface text-surface-container p-6 rounded-xl font-data-mono text-sm overflow-x-auto border border-outline shadow-inner">&lt;main&gt;
+  &lt;article&gt;
+    &lt;header&gt;
+      &lt;h1&gt;The Strategic Value of AI Search Audits&lt;/h1&gt;
+    &lt;/header&gt;
+    &lt;section id="semantic-signals"&gt;
+      &lt;h2&gt;Understanding Semantic Signals&lt;/h2&gt;
+      &lt;p&gt;High-density information mapping for AI...&lt;/p&gt;
+    &lt;/section&gt;
+  &lt;/article&gt;
+&lt;/main&gt;</pre>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Scripts for Micro-interactions -->
+<script>
+        // Smooth reveal of elements on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.card-shadow');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease-out';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 50 * index);
+            });
+        });
+
+        // Simple accordion logic for Developer View
+        function toggleCode() {
+            const el = document.getElementById('code-prev');
+            el.classList.toggle('hidden');
+        }
+    </script>
+</body></html>
