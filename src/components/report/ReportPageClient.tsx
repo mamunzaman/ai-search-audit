@@ -24,7 +24,7 @@ export function ReportPageClient({ domain }: ReportPageClientProps) {
     <ReportLayout domain={data.domain} auditDate={view.auditDate}>
       <section className="grid grid-cols-1 items-stretch gap-gutter lg:grid-cols-12">
         <ExecutiveScoreCard data={data} />
-        <StrategicOverviewCard data={data.strategicOverview} />
+        <StrategicOverviewCard data={data.strategicOverview} domain={data.domain} />
       </section>
 
       <VisualInsightsCarousel

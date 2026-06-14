@@ -19,6 +19,10 @@ function buildNavHref(slug: string | undefined, domain: string): string {
     return `/report/seo-health?domain=${encoded}`;
   }
 
+  if (slug === "ai-visibility") {
+    return `/report/ai-visibility?domain=${encoded}`;
+  }
+
   return "#";
 }
 

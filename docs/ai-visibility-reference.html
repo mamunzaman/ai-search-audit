@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>AI Visibility Detail | AuditMetric</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; background-color: #f6f8fb; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  .radar-chart { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); }
+  .audit-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .audit-card:hover { transform: translateY(-2px); box-shadow: 0px 12px 32px rgba(16, 42, 143, 0.08); }
+</style>
+</head>
+<body class="bg-[#F6F8FB] text-on-surface">
+<header class="sticky top-0 z-50 flex h-16 w-full items-center justify-between border-b border-outline-variant bg-surface px-margin-desktop shadow-sm">
+  <div class="flex items-center gap-stack-lg">
+    <span class="text-headline-md font-bold text-primary">AuditMetric</span>
+  </div>
+  <div class="flex items-center gap-stack-md">
+    <button class="rounded-lg border border-[#1536B8] px-4 py-2 font-label-md text-[#1536B8]">Export PDF</button>
+    <button class="rounded-lg bg-[#FF5A4F] px-4 py-2 font-label-md text-white">New Audit</button>
+  </div>
+</header>
+<div class="flex min-h-screen">
+<aside class="fixed left-0 top-16 flex h-[calc(100vh-4rem)] w-64 flex-col overflow-y-auto border-r border-outline-variant bg-surface-container-low px-stack-md py-stack-lg">
+  <nav class="space-y-1">
+    <a class="flex items-center gap-3 rounded-lg px-3 py-2 text-on-surface-variant" href="#"><span class="material-symbols-outlined">dashboard</span><span class="text-label-md">Overview</span></a>
+    <a class="flex items-center gap-3 rounded-lg px-3 py-2 text-on-surface-variant" href="#"><span class="material-symbols-outlined">health_and_safety</span><span class="text-label-md">SEO Health</span></a>
+    <a class="flex items-center gap-3 rounded-lg bg-secondary-container px-3 py-2 text-on-secondary-container" href="#"><span class="material-symbols-outlined">visibility</span><span class="text-label-md">AI Visibility</span></a>
+  </nav>
+</aside>
+<main class="ml-64 max-w-[1440px] flex-1 p-margin-desktop">
+<nav class="mb-gutter flex items-center gap-2">
+  <span class="font-label-md text-on-surface-variant">AI Search Audit</span>
+  <span class="material-symbols-outlined text-sm opacity-50">chevron_right</span>
+  <span class="font-label-md text-on-surface-variant">LLM Visibility Report</span>
+  <span class="material-symbols-outlined text-sm opacity-50">chevron_right</span>
+  <span class="font-label-md text-primary">AI Visibility</span>
+</nav>
+<section class="mb-gutter rounded-3xl border border-outline-variant bg-white p-stack-lg shadow-sm">
+  <div class="flex flex-col items-center gap-10 md:flex-row">
+    <div class="relative mx-8 flex h-40 w-40 items-center justify-center">
+      <svg class="h-full w-full -rotate-90" viewBox="0 0 160 160">
+        <circle cx="80" cy="80" fill="transparent" r="70" stroke="#E5E7EB" stroke-width="12"></circle>
+        <circle cx="80" cy="80" fill="transparent" r="70" stroke="#1536B8" stroke-dasharray="440" stroke-dashoffset="96.8" stroke-linecap="round" stroke-width="12"></circle>
+      </svg>
+      <div class="absolute inset-0 flex flex-col items-center justify-center">
+        <span class="text-display-lg font-bold text-primary">78</span>
+        <span class="font-label-md text-on-surface-variant">/ 100</span>
+      </div>
+    </div>
+    <div class="flex-1">
+      <div class="mb-3 flex items-center gap-4">
+        <h1 class="text-headline-lg font-semibold">AI Visibility Matrix</h1>
+        <span class="rounded-full bg-green-100 px-3 py-1 font-label-md text-green-800">OPTIMIZED</span>
+      </div>
+      <p class="max-w-3xl text-body-lg text-on-surface-variant">Our proprietary LLM-analysis engine identifies a 75% probability of your content being cited in top-tier generative search responses.</p>
+    </div>
+    <div class="w-full rounded-2xl bg-surface-container p-stack-md md:w-64">
+      <h4 class="mb-4 font-label-md text-on-surface-variant">VS COMPETITORS</h4>
+      <div class="space-y-4">
+        <div><div class="mb-1 flex justify-between font-label-md"><span>Current Site</span><span class="font-bold">78</span></div><div class="h-1.5 overflow-hidden rounded-full bg-outline-variant"><div class="h-full w-[78%] bg-primary"></div></div></div>
+        <div><div class="mb-1 flex justify-between font-label-md"><span>AI-First Comp.</span><span class="font-bold">85</span></div><div class="h-1.5 overflow-hidden rounded-full bg-outline-variant"><div class="h-full w-[85%] bg-tertiary"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="mb-gutter grid grid-cols-1 gap-gutter md:grid-cols-4">
+  <div class="audit-card rounded-3xl border border-outline-variant bg-white p-6"><p class="mb-2 font-label-md text-on-surface-variant">AI Readiness</p><div class="flex items-baseline gap-2"><span class="text-headline-lg font-bold">82%</span><span class="flex items-center font-label-md text-green-600"><span class="material-symbols-outlined text-sm">arrow_upward</span> 4%</span></div></div>
+  <div class="audit-card rounded-3xl border border-outline-variant bg-white p-6"><p class="mb-2 font-label-md text-on-surface-variant">Citation Probability</p><div class="flex items-baseline gap-2"><span class="text-headline-lg font-bold">75%</span><span class="font-label-md text-on-surface-variant">Stable</span></div></div>
+  <div class="audit-card rounded-3xl border border-outline-variant bg-white p-6"><p class="mb-2 font-label-md text-on-surface-variant">FAQ Signals</p><div class="flex items-baseline gap-2"><span class="text-headline-lg font-bold text-error">60%</span><span class="flex items-center font-label-md text-error"><span class="material-symbols-outlined text-sm">warning</span> Low</span></div></div>
+  <div class="audit-card rounded-3xl border border-outline-variant bg-white p-6"><p class="mb-2 font-label-md text-on-surface-variant">Chunking Efficiency</p><div class="flex items-baseline gap-2"><span class="text-headline-lg font-bold">90%</span><span class="flex items-center font-label-md text-green-600"><span class="material-symbols-outlined text-sm">check_circle</span> Peak</span></div></div>
+</div>
+<div class="mb-gutter grid grid-cols-1 gap-gutter lg:grid-cols-3">
+  <div class="flex flex-col items-center rounded-3xl border border-outline-variant bg-white p-stack-lg lg:col-span-1">
+    <h3 class="mb-8 self-start text-headline-md">Equilibrium Matrix</h3>
+    <div class="relative flex h-64 w-64 items-center justify-center rounded-full bg-surface-container">
+      <div class="radar-chart h-48 w-48 animate-pulse border-2 border-primary/30 bg-primary/10"></div>
+    </div>
+    <p class="mt-8 text-center text-body-sm text-on-surface-variant">Your profile is heavily weighted toward technical readiness, while FAQ/Trust signals lag behind.</p>
+  </div>
+  <div class="overflow-hidden rounded-3xl border border-outline-variant bg-white lg:col-span-2">
+    <div class="border-b border-outline-variant bg-[#F6F8FB] px-stack-lg py-4"><h3 class="text-headline-md">Audit Breakdown</h3></div>
+    <div class="divide-y divide-outline-variant">
+      <div class="flex items-center gap-6 p-6"><span class="material-symbols-outlined rounded-xl bg-primary/10 p-3 text-primary">auto_awesome</span><div class="flex-1"><h4 class="font-semibold">LLM Visibility</h4><p class="text-body-sm text-on-surface-variant">Ability of crawlers to parse semantic intent from content clusters.</p></div><div class="text-right"><span class="block font-bold text-primary">88/100</span><span class="rounded bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase text-primary">High Impact</span></div></div>
+    </div>
+  </div>
+</div>
+<div class="mb-gutter grid grid-cols-1 gap-gutter md:grid-cols-2">
+  <div class="rounded-3xl border-2 border-error bg-[#FFF5F5] p-stack-lg"><h3 class="mb-4 text-lg font-semibold text-on-error-container">Critical Issue: Missing FAQ Signals</h3></div>
+  <div class="rounded-3xl bg-primary-container p-stack-lg text-white"><h3 class="mb-4 text-lg font-semibold">Top Recommendation</h3><h4 class="mb-2 text-xl font-bold">Deploy FAQPage Schema</h4></div>
+</div>
+<section class="mb-gutter overflow-hidden rounded-3xl border border-outline-variant bg-white shadow-sm">
+  <button class="flex w-full items-center justify-between px-stack-lg py-5 hover:bg-surface-container"><span class="flex items-center gap-3"><span class="material-symbols-outlined">terminal</span><span class="font-semibold">Developer Implementation: JSON-LD FAQ Pattern</span></span><span class="material-symbols-outlined">expand_more</span></button>
+</section>
+</main>
+</div>
+</body>
+</html>

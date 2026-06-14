@@ -1,7 +1,9 @@
+import Link from "next/link";
 import type { ReportV2ViewData } from "@/lib/audit/report-v2";
 
 type StrategicOverviewCardProps = {
   data: ReportV2ViewData["strategicOverview"];
+  domain?: string;
 };
 
 function KpiMiniBars({ value }: { value: number }) {
@@ -38,9 +40,37 @@ type KpiItemProps = {
   label: string;
   value: number;
   showDivider?: boolean;
+  href?: string;
 };
 
-function KpiItem({ label, value, showDivider }: KpiItemProps) {
+function KpiItem({ label, value, showDivider, href }: KpiItemProps) {
+  const content = (
+    <>
+      <div>
+        <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-outline">
+          {label}
+        </span>
+        <span className="text-headline-md text-primary">{value}%</span>
+      </div>
+      <KpiMiniBars value={value} />
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className={
+          showDivider
+            ? "flex flex-1 items-center justify-between gap-stack-sm border-r border-outline-variant px-stack-md transition-colors last:border-r-0 hover:bg-surface-container-low"
+            : "flex flex-1 items-center justify-between gap-stack-sm px-stack-md transition-colors hover:bg-surface-container-low"
+        }
+      >
+        {content}
+      </Link>
+    );
+  }
+
   return (
     <div
       className={
@@ -49,18 +79,16 @@ function KpiItem({ label, value, showDivider }: KpiItemProps) {
           : "flex flex-1 items-center justify-between gap-stack-sm px-stack-md"
       }
     >
-      <div>
-        <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-outline">
-          {label}
-        </span>
-        <span className="text-headline-md text-primary">{value}%</span>
-      </div>
-      <KpiMiniBars value={value} />
+      {content}
     </div>
   );
 }
 
-export function StrategicOverviewCard({ data }: StrategicOverviewCardProps) {
+export function StrategicOverviewCard({ data, domain }: StrategicOverviewCardProps) {
+  const aiVisibilityHref = domain
+    ? `/report/ai-visibility?domain=${encodeURIComponent(domain)}`
+    : undefined;
+
   return (
     <div
       className="flex animate-fade-in flex-col rounded-[24px] border border-outline-variant bg-white p-stack-xl card-shadow lg:col-span-8"
@@ -73,7 +101,7 @@ export function StrategicOverviewCard({ data }: StrategicOverviewCardProps) {
       <div className="mt-auto flex flex-col gap-stack-md border-t border-outline-variant pt-stack-lg sm:flex-row">
         <KpiItem label="Indexability" showDivider value={data.indexability} />
         <KpiItem label="Schema Health" showDivider value={data.schemaHealth} />
-        <KpiItem label="AI Visibility" value={data.aiVisibility} />
+        <KpiItem label="AI Visibility" href={aiVisibilityHref} value={data.aiVisibility} />
       </div>
     </div>
   );

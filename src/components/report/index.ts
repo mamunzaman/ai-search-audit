@@ -1,5 +1,6 @@
 export { AccessibilityAuditCard } from "./AccessibilityAuditCard";
 export { AccessibilityAuditReport } from "./AccessibilityAuditReport";
+export { AIVisibilityDetailPage } from "./AIVisibilityDetailPage";
 export { CategoryBenchmarkCard } from "./CategoryBenchmarkCard";
 export { CategoryDetailHeader } from "./CategoryDetailHeader";
 export { CategoryDetailLayout } from "./CategoryDetailLayout";
