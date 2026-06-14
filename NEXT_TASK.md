@@ -8,4 +8,5 @@
 
 ## Done
 
+- SEO Health reference layout — header+benchmark row, KPI strip, trend+spotlight, dense findings, issues/examples split
 - Executive Summary visual density — compact score card, concise audit summary, 3 KPI row

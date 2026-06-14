@@ -25,6 +25,7 @@ export type ReportRecommendation = {
 export type SidebarNavItem = {
   icon: string;
   label: string;
+  slug?: string;
   active?: boolean;
 };
 
@@ -43,13 +44,13 @@ export const reportDataMode = {
 } as const;
 
 export const sidebarNav: SidebarNavItem[] = [
-  { icon: "dashboard", label: "Overview" },
-  { icon: "health_and_safety", label: "SEO Health" },
-  { icon: "visibility", label: "AI Visibility", active: true },
-  { icon: "category", label: "Entity Clarity" },
-  { icon: "verified", label: "Trust Signals" },
-  { icon: "article", label: "Content Structure" },
-  { icon: "code", label: "Schema Markup" },
+  { icon: "dashboard", label: "Overview", slug: "overview" },
+  { icon: "health_and_safety", label: "SEO Health", slug: "seo-health" },
+  { icon: "visibility", label: "AI Visibility", slug: "ai-visibility" },
+  { icon: "category", label: "Entity Clarity", slug: "entity-clarity" },
+  { icon: "verified", label: "Trust Signals", slug: "trust-signals" },
+  { icon: "article", label: "Content Structure", slug: "content-structure" },
+  { icon: "code", label: "Schema Markup", slug: "schema-markup" },
 ];
 
 export const strengths = [

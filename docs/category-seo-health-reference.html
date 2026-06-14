@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SEO Health Detail - AuditMetric</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f6f8fb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .card-shadow { shadow: 0px 4px 20px rgba(0, 0, 0, 0.05); border: 1px solid #E5E7EB; }
+        .progress-ring-circle { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        .chart-grid { background-image: linear-gradient(#f1f5f9 1px, transparent 1px), linear-gradient(90deg, #f1f5f9 1px, transparent 1px); background-size: 40px 40px; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00218d",
+                        "on-primary": "#ffffff",
+                        "secondary": "#4156b9",
+                        "secondary-container": "#8397fe",
+                        "on-secondary-container": "#0d288e",
+                        "tertiary": "#601500",
+                        "surface": "#ffffff",
+                        "surface-dim": "#dad9e4",
+                        "surface-container-low": "#f4f2fe",
+                        "surface-container-high": "#e8e7f2",
+                        "outline": "#757685",
+                        "outline-variant": "#c5c5d6",
+                        "error": "#ba1a1a",
+                        "accent-coral": "#FF5A4F"
+                    },
+                    spacing: {
+                        "gutter": "24px",
+                        "stack-lg": "24px",
+                        "stack-md": "16px",
+                        "stack-sm": "8px",
+                        "margin-desktop": "40px"
+                    },
+                    fontFamily: {
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    fontSize: {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#F6F8FB] text-on-surface">
+<!-- Sidebar Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low border-r border-outline-variant flex flex-col py-stack-lg px-stack-md z-40">
+<div class="flex items-center gap-3 px-2 mb-10">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">A</div>
+<div>
+<h1 class="font-headline-sm text-[18px] font-black text-primary">AuditMetric</h1>
+<p class="text-[10px] text-outline font-bold tracking-wider uppercase">AI Search Auditor</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Overview</span>
+</a>
+<!-- Active State: SEO Health -->
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container text-on-secondary-container rounded-lg transition-all scale-95 duration-100" href="#">
+<span class="material-symbols-outlined">health_and_safety</span>
+<span class="font-label-md text-label-md">SEO Health</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">visibility</span>
+<span class="font-label-md text-label-md">AI Visibility</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">hub</span>
+<span class="font-label-md text-label-md">Entity Clarity</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">verified</span>
+<span class="font-label-md text-label-md">Trust Signals</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="font-label-md text-label-md">Content Structure</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">code</span>
+<span class="font-label-md text-label-md">Schema Markup</span>
+</a>
+</nav>
+<div class="mt-auto space-y-1">
+<div class="p-4 bg-primary text-on-primary rounded-xl mb-4">
+<p class="text-[11px] font-bold opacity-80 mb-1">CURRENT PLAN</p>
+<p class="font-bold mb-3">Enterprise Pro</p>
+<button class="w-full py-2 bg-white text-primary text-xs font-bold rounded-lg hover:bg-opacity-90 transition-all">Upgrade Plan</button>
+</div>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="h-16 sticky top-0 bg-surface border-b border-outline-variant flex justify-between items-center px-margin-desktop z-30 shadow-sm">
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px]">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container border-none rounded-full text-sm w-64 focus:ring-2 focus:ring-primary/20" placeholder="Search audits..." type="text"/>
+</div>
+<nav class="hidden md:flex items-center gap-6 ml-4">
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-primary border-b-2 border-primary pb-1 font-body-md text-body-md" href="#">Reports</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors" href="#">History</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-4 py-2 border border-primary text-primary font-bold text-sm rounded-lg hover:bg-primary/5 transition-all active:scale-95">Export PDF</button>
+<button class="px-4 py-2 bg-accent-coral text-white font-bold text-sm rounded-lg hover:bg-[#E04E44] transition-all active:scale-95 shadow-md shadow-accent-coral/20">New Audit</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBo3LyeL_gxgJUF_eGmmyYCEgrZyZnWFWEUvsLFo77BI2cVJSohUusQyhJV54q6Ifmbf09dW7oFxEkHGHZIYhj4Kn6CyJkz_VkD_-Lo4hmTQcaiSlf1qG4ZhnkdaIrgUdnA2KfXCN-tJ1icQ94IoJmgaphOjNEDWPVLGwnATxo4D1zD8xaJ5bt9W5dnyXbrwF2K4VoHH69qqN5s-D5rg3TpHXNBvuuTOXDoNoh6ui-Eok2_uc-F19bo_LTxpu_w7_d005ZU1L_FC0"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-margin-desktop max-w-[1440px] mx-auto">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-2 text-outline text-sm mb-8">
+<a class="hover:text-primary transition-colors" href="#">AI Search Audit</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">LLM Visibility Report</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-on-surface font-semibold">SEO Health</span>
+</nav>
+<!-- Hero Header Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-stack-lg mb-stack-lg">
+<div class="lg:col-span-2 bg-surface p-stack-lg rounded-[24px] border border-outline-variant flex items-center gap-stack-lg shadow-[0px_4px_20px_rgba(0,0,0,0.05)]">
+<div class="relative w-40 h-40">
+<svg class="w-full h-full" viewbox="0 0 100 100">
+<circle class="text-surface-container-high stroke-current" cx="50" cy="50" fill="transparent" r="42" stroke-width="8"></circle>
+<circle class="text-primary stroke-current progress-ring-circle" cx="50" cy="50" fill="transparent" r="42" stroke-linecap="round" stroke-width="8" style="stroke-dasharray: 263.89; stroke-dashoffset: 21.11;"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-[36px] font-bold text-on-surface leading-none">92</span>
+<span class="text-xs font-bold text-outline uppercase tracking-wider">Score</span>
+</div>
+</div>
+<div>
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-[#E8F5E9] text-[#2E7D32] rounded-full mb-3">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-xs font-bold uppercase tracking-wide">Excellent Health</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg mb-2">Technical Audit Summary</h2>
+<p class="text-on-surface-variant max-w-xl">Your domain demonstrates superior crawlability and indexing hygiene. 98% of core pages are discoverable by LLM crawlers. Minor optimizations in metadata length could further enhance entity clarity in semantic search contexts.</p>
+</div>
+</div>
+<!-- Benchmarking Card -->
+<div class="bg-surface p-stack-lg rounded-[24px] border border-outline-variant shadow-[0px_4px_20px_rgba(0,0,0,0.05)] flex flex-col">
+<h3 class="font-label-md text-outline uppercase mb-4">Benchmarking</h3>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="text-sm font-semibold">Your Score</span>
+<span class="text-xl font-bold text-primary">92</span>
+</div>
+<div class="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 92%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="text-sm font-semibold text-outline-variant">Industry Avg (SaaS)</span>
+<span class="text-xl font-bold text-outline">78</span>
+</div>
+<div class="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-outline" style="width: 78%"></div>
+</div>
+</div>
+<div class="mt-4 p-4 bg-surface-container-low rounded-xl">
+<p class="text-sm font-medium text-primary">You're performing in the top 5% of your industry segment for Technical SEO readiness.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- KPI Strip -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-stack-lg mb-stack-lg">
+<div class="bg-surface p-6 rounded-[24px] border border-outline-variant shadow-sm text-center">
+<p class="text-xs font-bold text-outline uppercase mb-1">Indexability</p>
+<p class="text-3xl font-black text-on-surface">100%</p>
+</div>
+<div class="bg-surface p-6 rounded-[24px] border border-outline-variant shadow-sm text-center">
+<p class="text-xs font-bold text-outline uppercase mb-1">Metadata</p>
+<p class="text-3xl font-black text-on-surface">88%</p>
+</div>
+<div class="bg-surface p-6 rounded-[24px] border border-outline-variant shadow-sm text-center">
+<p class="text-xs font-bold text-outline uppercase mb-1">Speed Index</p>
+<p class="text-3xl font-black text-on-surface">94%</p>
+</div>
+<div class="bg-surface p-6 rounded-[24px] border border-outline-variant shadow-sm text-center">
+<p class="text-xs font-bold text-outline uppercase mb-1">Mobile Audit</p>
+<p class="text-3xl font-black text-on-surface">100%</p>
+</div>
+</div>
+<!-- Main Data Grid (Bento Style) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-stack-lg items-start">
+<!-- Trend Chart Area -->
+<div class="lg:col-span-8 bg-surface rounded-[24px] border border-outline-variant shadow-sm overflow-hidden">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<div>
+<h3 class="font-headline-md text-[18px]">SEO Health Trend</h3>
+<p class="text-sm text-outline">6-month historical performance</p>
+</div>
+<div class="flex gap-2">
+<button class="px-3 py-1 bg-surface-container text-xs font-bold rounded">1M</button>
+<button class="px-3 py-1 bg-primary text-white text-xs font-bold rounded">6M</button>
+<button class="px-3 py-1 bg-surface-container text-xs font-bold rounded">1Y</button>
+</div>
+</div>
+<div class="h-64 p-6 relative chart-grid">
+<!-- Simplified SVG Chart Representation -->
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 800 200">
+<path d="M0,150 Q100,140 200,120 T400,80 T600,40 T800,30" fill="none" stroke="#00218d" stroke-linecap="round" stroke-width="4"></path>
+<path d="M0,150 Q100,140 200,120 T400,80 T600,40 T800,30 V200 H0 Z" fill="url(#grad1)" opacity="0.1"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:rgb(0,33,141);stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:rgb(0,33,141);stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+<!-- Tooltip Placeholder -->
+<div class="absolute top-12 left-1/2 -translate-x-1/2 bg-on-surface text-white p-3 rounded-lg shadow-xl text-xs z-10 pointer-events-none">
+<p class="font-bold opacity-60 mb-1">MAY 2024</p>
+<p class="text-sm">Score: <span class="font-bold">92.4</span></p>
+</div>
+</div>
+</div>
+<!-- Insights Sidebar -->
+<div class="lg:col-span-4 space-y-stack-lg">
+<!-- Issue Card -->
+<div class="bg-surface p-6 rounded-[24px] border border-outline-variant shadow-sm border-l-4 border-l-[#FFC107]">
+<div class="flex items-center gap-2 text-[#856404] mb-2">
+<span class="material-symbols-outlined text-[20px]">warning</span>
+<span class="text-xs font-bold uppercase tracking-wider">Medium Issue</span>
+</div>
+<h4 class="font-bold text-lg mb-1">Meta Description Length</h4>
+<p class="text-sm text-on-surface-variant mb-4">42 pages have descriptions exceeding the 160-character limit, causing truncation in search results.</p>
+<div class="bg-surface-container-low p-4 rounded-xl">
+<p class="text-xs font-bold text-primary mb-1">RECOMMENDATION</p>
+<p class="text-sm font-semibold">Optimize Meta Descriptions</p>
+<p class="text-xs text-outline mt-1">Estimated impact: <span class="text-[#2E7D32] font-bold">+4 health points</span></p>
+</div>
+</div>
+<!-- Developer Accordion -->
+<div class="bg-surface rounded-[24px] border border-outline-variant shadow-sm overflow-hidden">
+<button class="w-full p-6 flex justify-between items-center hover:bg-surface-container-low transition-colors" onclick="toggleAccordion('dev-accordion')">
+<h3 class="font-headline-md text-[16px] flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">terminal</span>
+                                Implementation Examples
+                            </h3>
+<span class="material-symbols-outlined transition-transform" id="dev-icon">expand_more</span>
+</button>
+<div class="hidden px-6 pb-6 space-y-4" id="dev-accordion">
+<div>
+<p class="text-xs font-bold text-outline mb-2">IDEAL TITLE TAG</p>
+<code class="block bg-surface-container p-3 rounded-lg text-xs font-mono text-on-surface-variant overflow-x-auto">
+                                    &lt;title&gt;SEO Health Audit | AI Search Visibility | AuditMetric&lt;/title&gt;
+                                </code>
+</div>
+<div>
+<p class="text-xs font-bold text-outline mb-2">IDEAL META DESCRIPTION</p>
+<code class="block bg-surface-container p-3 rounded-lg text-xs font-mono text-on-surface-variant overflow-x-auto">
+                                    &lt;meta name="description" content="Discover in-depth technical SEO health audits for AI-driven search. Optimize your crawlability and indexing for LLM visibility."&gt;
+                                </code>
+</div>
+</div>
+</div>
+</div>
+<!-- Findings Table -->
+<div class="lg:col-span-12 bg-surface rounded-[24px] border border-outline-variant shadow-sm overflow-hidden">
+<div class="px-6 py-4 border-b border-outline-variant">
+<h3 class="font-headline-md text-[18px]">Detailed Audit Findings</h3>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-[#F6F8FB]">
+<th class="px-6 py-4 font-label-md text-outline">PARAMETER</th>
+<th class="px-6 py-4 font-label-md text-outline">STATUS</th>
+<th class="px-6 py-4 font-label-md text-outline text-right">OPTIMIZATION</th>
+<th class="px-6 py-4 font-label-md text-outline text-right">ACTION</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-[#f0f4ff] transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">title</span>
+<span class="font-medium">Title Tags</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs px-2 py-1 bg-green-100 text-green-700 font-bold rounded-full">OPTIMIZED</span>
+</td>
+<td class="px-6 py-4 text-right font-mono text-sm">98.2%</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">View Details</button>
+</td>
+</tr>
+<tr class="hover:bg-[#f0f4ff] transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">description</span>
+<span class="font-medium">Meta Description</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs px-2 py-1 bg-[#FFF9C4] text-[#856404] font-bold rounded-full">NEEDS ATTENTION</span>
+</td>
+<td class="px-6 py-4 text-right font-mono text-sm">82.5%</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">Optimize</button>
+</td>
+</tr>
+<tr class="hover:bg-[#f0f4ff] transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">link</span>
+<span class="font-medium">Canonical Tags</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs px-2 py-1 bg-green-100 text-green-700 font-bold rounded-full">OPTIMIZED</span>
+</td>
+<td class="px-6 py-4 text-right font-mono text-sm">100%</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">View Details</button>
+</td>
+</tr>
+<tr class="hover:bg-[#f0f4ff] transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">smart_toy</span>
+<span class="font-medium">Robots.txt</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs px-2 py-1 bg-green-100 text-green-700 font-bold rounded-full">OPTIMIZED</span>
+</td>
+<td class="px-6 py-4 text-right font-mono text-sm">100%</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">View Details</button>
+</td>
+</tr>
+<tr class="hover:bg-[#f0f4ff] transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">mediation</span>
+<span class="font-medium">Internal Links</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs px-2 py-1 bg-green-100 text-green-700 font-bold rounded-full">OPTIMIZED</span>
+</td>
+<td class="px-6 py-4 text-right font-mono text-sm">94.8%</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">View Details</button>
+</td>
+</tr>
+<tr class="hover:bg-[#f0f4ff] transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">account_tree</span>
+<span class="font-medium">XML Sitemap</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs px-2 py-1 bg-green-100 text-green-700 font-bold rounded-full">OPTIMIZED</span>
+</td>
+<td class="px-6 py-4 text-right font-mono text-sm">100%</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">View Details</button>
+</td>
+</tr>
+<tr class="hover:bg-[#f0f4ff] transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">share</span>
+<span class="font-medium">Open Graph</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs px-2 py-1 bg-green-100 text-green-700 font-bold rounded-full">OPTIMIZED</span>
+</td>
+<td class="px-6 py-4 text-right font-mono text-sm">92.0%</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">View Details</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Footer for Quick Actions -->
+<footer class="mt-stack-xl p-margin-desktop bg-surface border-t border-outline-variant">
+<div class="flex justify-between items-center max-w-[1440px] mx-auto">
+<div class="flex gap-8">
+<div>
+<p class="text-xs font-bold text-outline mb-1">LAST AUDIT</p>
+<p class="text-sm font-semibold">Today, 10:45 AM</p>
+</div>
+<div>
+<p class="text-xs font-bold text-outline mb-1">CRAWL BUDGET</p>
+<p class="text-sm font-semibold text-[#2E7D32]">Efficient (12% Surplus)</p>
+</div>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-3 border border-outline text-on-surface font-bold rounded-xl hover:bg-surface-container transition-all">Re-run Specific Audit</button>
+<button class="px-6 py-3 bg-primary text-on-primary font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-primary/20">Full Site Recrawl</button>
+</div>
+</div>
+</footer>
+</main>
+<script>
+        function toggleAccordion(id) {
+            const el = document.getElementById(id);
+            const icon = document.getElementById('dev-icon');
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                el.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Simple animation for progress ring on load
+        window.addEventListener('load', () => {
+            const circle = document.querySelector('.progress-ring-circle');
+            const radius = circle.r.baseVal.value;
+            const circumference = radius * 2 * Math.PI;
+            circle.style.strokeDasharray = `${circumference} ${circumference}`;
+            const offset = circumference - (92 / 100 * circumference);
+            circle.style.strokeDashoffset = offset;
+        });
+    </script>
+</body></html>

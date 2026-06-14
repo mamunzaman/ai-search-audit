@@ -1,3 +1,12 @@
+export { CategoryBenchmarkCard } from "./CategoryBenchmarkCard";
+export { CategoryDetailHeader } from "./CategoryDetailHeader";
+export { CategoryDetailLayout } from "./CategoryDetailLayout";
+export { CategoryFindingsTable } from "./CategoryFindingsTable";
+export { CategoryHealthTrendCard } from "./CategoryHealthTrendCard";
+export { CategoryImplementationExamples } from "./CategoryImplementationExamples";
+export { CategoryIssueSpotlight, CategoryIssuesSection } from "./CategoryIssuesSection";
+export { CategoryKpiStrip } from "./CategoryKpiStrip";
+export { CategoryRecommendationsSection } from "./CategoryRecommendationsSection";
 export { CategoryRadarCard } from "./CategoryRadarCard";
 export { ExecutiveScoreCard } from "./ExecutiveScoreCard";
 export { GrowthPotentialCard } from "./GrowthPotentialCard";
@@ -8,4 +17,5 @@ export { ReportFooter } from "./ReportFooter";
 export { ReportLayout } from "./ReportLayout";
 export { ReportSidebar } from "./ReportSidebar";
 export { ReportTopNav } from "./ReportTopNav";
+export { SeoHealthPageClient } from "./SeoHealthPageClient";
 export { StrategicOverviewCard } from "./StrategicOverviewCard";
