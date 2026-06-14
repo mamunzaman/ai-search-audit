@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Schema Markup Detail | AuditMetric</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#872100",
+                        "surface": "#fbf8ff",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "secondary-container": "#8397fe",
+                        "primary-container": "#1536b8",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#1536b8",
+                        "tertiary-fixed-dim": "#ffb5a0",
+                        "surface-bright": "#fbf8ff",
+                        "outline": "#757685",
+                        "on-primary-fixed": "#001159",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#dad9e4",
+                        "on-primary-container": "#a3b1ff",
+                        "surface-container-high": "#e8e7f2",
+                        "secondary-fixed": "#dee1ff",
+                        "primary-fixed-dim": "#bac3ff",
+                        "inverse-primary": "#bac3ff",
+                        "surface-container-highest": "#e3e1ec",
+                        "tertiary": "#601500",
+                        "secondary": "#4156b9",
+                        "on-tertiary-fixed": "#3b0900",
+                        "background": "#fbf8ff",
+                        "surface-container": "#eeedf8",
+                        "surface-container-low": "#f4f2fe",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#e3e1ec",
+                        "on-surface-variant": "#444654",
+                        "inverse-on-surface": "#f1effb",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#00218d",
+                        "on-surface": "#1a1b23",
+                        "tertiary-fixed": "#ffdbd1",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#c5c5d6",
+                        "on-secondary-fixed-variant": "#273d9f",
+                        "inverse-surface": "#2f3038",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#872100",
+                        "on-tertiary-container": "#ff9b7f",
+                        "primary-fixed": "#dee1ff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#001158",
+                        "on-secondary-container": "#0d288e",
+                        "on-background": "#1a1b23",
+                        "surface-tint": "#3651d0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "stack-xl": "48px",
+                        "container-max": "1440px",
+                        "stack-xs": "4px",
+                        "stack-md": "16px",
+                        "margin-mobile": "16px",
+                        "stack-lg": "24px",
+                        "margin-desktop": "40px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #F6F8FB; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .card-shadow { box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05); }
+        .progress-ring-circle { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        .code-block { background-color: #1a1b23; color: #a3b1ff; font-family: monospace; }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low border-r border-outline-variant flex flex-col py-stack-lg px-stack-md z-40">
+<div class="flex items-center gap-stack-sm mb-stack-xl">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white" data-icon="terminal">terminal</span>
+</div>
+<div>
+<h1 class="font-headline-sm text-headline-md font-black text-primary">AuditMetric</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">AI Search Auditor</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all font-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Overview
+            </a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all font-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="health_and_safety">health_and_safety</span>
+                SEO Health
+            </a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all font-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+                AI Visibility
+            </a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all font-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="hub">hub</span>
+                Entity Clarity
+            </a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all font-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="verified">verified</span>
+                Trust Signals
+            </a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all font-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="account_tree">account_tree</span>
+                Content Structure
+            </a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm bg-secondary-container text-on-secondary-container rounded-lg transition-all font-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="code">code</span>
+                Schema Markup
+            </a>
+</nav>
+<div class="mt-auto space-y-4 pt-stack-xl">
+<button class="w-full bg-[#FF5A4F] text-white font-label-md py-stack-sm rounded-lg hover:brightness-90 transition-all">
+                Upgrade Plan
+            </button>
+<div class="space-y-1">
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all font-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                    Settings
+                </a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all font-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                    Support
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 ml-64 min-w-0">
+<!-- TopNavBar -->
+<header class="h-16 sticky top-0 bg-surface border-b border-outline-variant flex justify-between items-center px-margin-desktop z-30 shadow-sm">
+<div class="flex items-center gap-4">
+<div class="flex items-center bg-surface-container border border-outline-variant rounded-full px-4 py-1.5 w-96">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm w-full" placeholder="Search audit history..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex gap-6 font-body-md text-body-md">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Reports</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">History</a>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant mx-2"></div>
+<button class="bg-[#FF5A4F] text-white px-4 py-2 rounded-lg font-label-md hover:brightness-90 transition-all">New Audit</button>
+<img alt="User Profile" class="w-10 h-10 rounded-full border-2 border-primary-container object-cover" data-alt="A professional headshot of a middle-aged male technical director with a confident smile, set against a clean, light-colored background that reflects a high-end corporate office setting. The lighting is soft and flattering, emphasizing a mood of reliability and leadership. The overall aesthetic is clean and modern, fitting into a data-driven corporate culture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8a2qyo-4Vh2SE2dMFLocnLIHLYYagzQB1mdmmColnZ4UBXOV5cVVqQs9DzAhzh1Klbypq2adhXUk5wBwjPe9KRpTSfc43QYd36TVH6aZfd_Ed__z8tfOZ2ulr15S4IqyIo0RvJLaJRxcrIdgFQGjc0jwuvmmz5HUgjZ1Ix38Clkd2cFap9zIE_1rkHl2Fwqo81Op6PIfUBc7wAzZi0vrwlF3jXzmTSdUoHKyc7rWj_egaKd2-RVFw3rNIKbTShDYZeiwg9gQIvdQ"/>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="max-w-[1440px] mx-auto p-margin-desktop space-y-gutter">
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 text-on-surface-variant font-label-md">
+<a class="hover:text-primary" href="#">AI Search Audit</a>
+<span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+<a class="hover:text-primary" href="#">LLM Visibility Report</a>
+<span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-on-surface">Schema Markup</span>
+</nav>
+<!-- Header Section -->
+<div class="bg-white rounded-[24px] p-stack-lg card-shadow flex flex-col md:flex-row items-center gap-stack-lg border border-[#E5E7EB]">
+<div class="relative w-32 h-32 flex items-center justify-center shrink-0">
+<svg class="w-full h-full" viewbox="0 0 100 100">
+<circle class="text-[#E5E7EB]" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary progress-ring-circle" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="25.12" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-headline-md text-headline-md text-primary">91</span>
+<span class="font-label-md text-[10px] text-on-surface-variant uppercase tracking-wider">Score</span>
+</div>
+</div>
+<div class="flex-1 space-y-2 text-center md:text-left">
+<div class="flex items-center justify-center md:justify-start gap-3">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Schema Health: <span class="text-primary">Advanced</span></h2>
+<span class="bg-primary-container text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-widest">Optimized</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl leading-relaxed">
+                        Structured data coverage is exceptionally high. Your technical entity mapping is providing strong disambiguation signals to LLMs like GPT-4 and Claude 3, ensuring precise indexing of your core product specifications and expert content.
+                    </p>
+</div>
+<div class="shrink-0 flex gap-3">
+<button class="px-4 py-2 border border-primary text-primary font-label-md rounded-lg hover:bg-primary hover:text-white transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="download">download</span>
+                        Export PDF
+                    </button>
+<button class="px-4 py-2 bg-primary text-white font-label-md rounded-lg hover:brightness-110 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="refresh">refresh</span>
+                        Re-Audit
+                    </button>
+</div>
+</div>
+<!-- KPI Strip -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<div class="bg-white rounded-[24px] p-stack-lg card-shadow border border-[#E5E7EB]">
+<p class="font-label-md text-on-surface-variant mb-1">Detected Types</p>
+<div class="flex items-end justify-between">
+<span class="font-headline-md text-headline-md text-on-surface">4</span>
+<span class="text-primary font-label-md flex items-center">+1 this month</span>
+</div>
+</div>
+<div class="bg-white rounded-[24px] p-stack-lg card-shadow border border-[#E5E7EB]">
+<p class="font-label-md text-on-surface-variant mb-1">Validation Errors</p>
+<div class="flex items-end justify-between">
+<span class="font-headline-md text-headline-md text-on-surface">0</span>
+<span class="text-[#059669] font-label-md flex items-center">Perfect State</span>
+</div>
+</div>
+<div class="bg-white rounded-[24px] p-stack-lg card-shadow border border-[#E5E7EB]">
+<p class="font-label-md text-on-surface-variant mb-1">Coverage</p>
+<div class="flex items-end justify-between">
+<span class="font-headline-md text-headline-md text-on-surface">95%</span>
+<div class="w-16 h-1.5 bg-[#E5E7EB] rounded-full overflow-hidden mb-2">
+<div class="w-[95%] h-full bg-primary"></div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-[24px] p-stack-lg card-shadow border border-[#E5E7EB]">
+<p class="font-label-md text-on-surface-variant mb-1">Semantic Nesting</p>
+<div class="flex items-end justify-between">
+<span class="font-headline-md text-headline-md text-on-surface">88%</span>
+<span class="text-primary font-label-md flex items-center">High Depth</span>
+</div>
+</div>
+</div>
+<!-- Bento Grid Main Content -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Visual Analysis Chart (Left) -->
+<div class="col-span-12 lg:col-span-7 bg-white rounded-[24px] p-stack-lg card-shadow border border-[#E5E7EB] flex flex-col">
+<div class="flex justify-between items-start mb-stack-lg">
+<div>
+<h3 class="font-headline-md text-on-surface">Schema Distribution</h3>
+<p class="font-body-sm text-on-surface-variant">Relative weight of structured data entities across the domain.</p>
+</div>
+<select class="bg-surface-container border-none text-body-sm rounded-lg focus:ring-primary">
+<option>Last 30 Days</option>
+<option>Last 90 Days</option>
+</select>
+</div>
+<div class="flex-1 min-h-[300px] flex items-center justify-center gap-10">
+<div class="relative w-48 h-48">
+<!-- Custom Pie/Donut Visualization -->
+<svg class="w-full h-full" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#1536b8" stroke-dasharray="160 251.2" stroke-dashoffset="0" stroke-width="20"></circle>
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#FF5A4F" stroke-dasharray="60 251.2" stroke-dashoffset="-160" stroke-width="20"></circle>
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#8397fe" stroke-dasharray="31.2 251.2" stroke-dashoffset="-220" stroke-width="20"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center flex-col">
+<span class="font-headline-md text-headline-md">100%</span>
+<span class="font-label-md text-[10px] text-on-surface-variant">Validated</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<div class="flex flex-col">
+<span class="font-label-md text-on-surface">Article (64%)</span>
+<span class="text-[10px] text-on-surface-variant">High visibility in LLM context windows</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-[#FF5A4F]"></div>
+<div class="flex flex-col">
+<span class="font-label-md text-on-surface">Organization (24%)</span>
+<span class="text-[10px] text-on-surface-variant">Authoritative entity signals</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-secondary-container"></div>
+<div class="flex flex-col">
+<span class="font-label-md text-on-surface">FAQ / HowTo (12%)</span>
+<span class="text-[10px] text-on-surface-variant">Rich snippet eligibility</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Findings (Right) -->
+<div class="col-span-12 lg:col-span-5 flex flex-col gap-gutter">
+<div class="bg-white rounded-[24px] p-stack-lg card-shadow border border-[#E5E7EB] flex-1">
+<h3 class="font-headline-md text-on-surface mb-stack-md">Detailed Findings</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-stack-sm hover:bg-surface-container rounded-xl transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="check_circle">check_circle</span>
+<span class="font-body-md">Detected Schema</span>
+</div>
+<span class="font-data-mono text-on-surface-variant">Organization, Article, Breadcrumb, WebSite</span>
+</div>
+<div class="flex items-center justify-between p-stack-sm hover:bg-surface-container rounded-xl transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#FF5A4F]" data-icon="warning">warning</span>
+<span class="font-body-md">Missing Schema</span>
+</div>
+<span class="font-data-mono text-on-surface-variant">Product, AggregateRating</span>
+</div>
+<div class="flex items-center justify-between p-stack-sm hover:bg-surface-container rounded-xl transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="analytics">analytics</span>
+<span class="font-body-md">Coverage</span>
+</div>
+<span class="font-data-mono text-on-surface-variant">95.4% of URLs</span>
+</div>
+<div class="flex items-center justify-between p-stack-sm hover:bg-surface-container rounded-xl transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="lightbulb">lightbulb</span>
+<span class="font-body-md">Opportunities</span>
+</div>
+<span class="font-data-mono text-on-surface-variant">5 New Entities</span>
+</div>
+</div>
+</div>
+<!-- Recommendations / Issues -->
+<div class="bg-[#fef2f2] rounded-[24px] p-stack-lg border border-[#fecaca]">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-[#ef4444]" data-icon="priority_high">priority_high</span>
+<h4 class="font-label-md text-[#b91c1c] uppercase tracking-wider">Critical Recommendation</h4>
+</div>
+<p class="font-body-md text-[#991b1b] font-semibold mb-1">Implement JSON-LD for Related Entities</p>
+<p class="font-body-sm text-[#b91c1c] mb-4">Adding 'mentions' and 'about' properties will increase thematic relevance by 24% for LLM indexing.</p>
+<div class="flex items-center justify-between">
+<span class="font-label-md text-[#ef4444] font-bold">+6 Visibility Gain</span>
+<button class="bg-[#ef4444] text-white text-[10px] px-3 py-1.5 rounded-lg font-bold">Apply Now</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Issues Section -->
+<div class="bg-white rounded-[24px] p-stack-lg card-shadow border border-[#E5E7EB]">
+<h3 class="font-headline-md text-on-surface mb-stack-md">Low Severity Issues</h3>
+<div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl border border-outline-variant">
+<div class="w-10 h-10 bg-yellow-100 text-yellow-700 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md font-bold text-on-surface">Missing Product Aggregate Rating</p>
+<p class="font-body-sm text-on-surface-variant">Product pages contain price data but lack review aggregations. LLMs often prioritize products with social proof signals.</p>
+</div>
+<div class="text-right">
+<span class="font-label-md text-on-surface-variant">Status</span>
+<p class="text-[#FF5A4F] font-bold">Incomplete</p>
+</div>
+</div>
+</div>
+<!-- Developer Accordion -->
+<div class="space-y-gutter">
+<h3 class="font-headline-md text-on-surface">Implementation Reference (JSON-LD)</h3>
+<!-- Accordion Item 1 -->
+<details class="group bg-white rounded-[24px] card-shadow border border-[#E5E7EB] overflow-hidden" open="">
+<summary class="flex items-center justify-between p-stack-lg cursor-pointer hover:bg-surface-container transition-colors list-none">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="description">description</span>
+<span class="font-headline-sm text-on-surface">Article Markup</span>
+</div>
+<span class="material-symbols-outlined transition-transform group-open:rotate-180" data-icon="expand_more">expand_more</span>
+</summary>
+<div class="px-stack-lg pb-stack-lg">
+<div class="code-block p-stack-lg rounded-xl overflow-x-auto text-[13px] leading-relaxed relative">
+<button class="absolute top-4 right-4 text-outline hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="content_copy">content_copy</span>
+</button>
+<pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "AI Search Audit Optimization Strategies",
+  "author": {
+    "@type": "Person",
+    "name": "Alex Rivier",
+    "jobTitle": "Chief Data Scientist"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "AuditMetric",
+    "logo": "https://auditmetric.ai/logo.png"
+  },
+  "datePublished": "2024-05-20T08:00:00+08:00",
+  "description": "Deep dive into the algorithmic shifts in AI-driven search engines."
+}</code></pre>
+</div>
+</div>
+</details>
+<!-- Accordion Item 2 -->
+<details class="group bg-white rounded-[24px] card-shadow border border-[#E5E7EB] overflow-hidden">
+<summary class="flex items-center justify-between p-stack-lg cursor-pointer hover:bg-surface-container transition-colors list-none">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="corporate_fare">corporate_fare</span>
+<span class="font-headline-sm text-on-surface">Organization Identity</span>
+</div>
+<span class="material-symbols-outlined transition-transform group-open:rotate-180" data-icon="expand_more">expand_more</span>
+</summary>
+<div class="px-stack-lg pb-stack-lg">
+<div class="code-block p-stack-lg rounded-xl overflow-x-auto text-[13px] leading-relaxed">
+<pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "AuditMetric",
+  "url": "https://auditmetric.ai",
+  "sameAs": [
+    "https://twitter.com/auditmetric",
+    "https://linkedin.com/company/auditmetric"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+1-800-555-0199",
+    "contactType": "customer service"
+  }
+}</code></pre>
+</div>
+</div>
+</details>
+<!-- Accordion Item 3 -->
+<details class="group bg-white rounded-[24px] card-shadow border border-[#E5E7EB] overflow-hidden">
+<summary class="flex items-center justify-between p-stack-lg cursor-pointer hover:bg-surface-container transition-colors list-none">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="quiz">quiz</span>
+<span class="font-headline-sm text-on-surface">FAQ Rich Snippet</span>
+</div>
+<span class="material-symbols-outlined transition-transform group-open:rotate-180" data-icon="expand_more">expand_more</span>
+</summary>
+<div class="px-stack-lg pb-stack-lg">
+<div class="code-block p-stack-lg rounded-xl overflow-x-auto text-[13px] leading-relaxed">
+<pre><code>{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [{
+    "@type": "Question",
+    "name": "How does AI Search Audit work?",
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "AuditMetric uses neural network emulation to predict how LLMs rank content based on structured data signals."
+    }
+  }]
+}</code></pre>
+</div>
+</div>
+</details>
+</div>
+</div>
+<!-- Footer Footer (Minimal) -->
+<footer class="mt-stack-xl border-t border-outline-variant py-stack-lg px-margin-desktop text-center">
+<p class="font-label-md text-on-surface-variant">© 2024 AuditMetric AI Search Auditor. Technical Documentation v4.2.0</p>
+</footer>
+</main>
+<script>
+        // Micro-interaction: Smooth hover effect for chart circles
+        document.querySelectorAll('circle').forEach(circle => {
+            circle.addEventListener('mouseenter', function() {
+                this.style.opacity = '0.8';
+                this.style.strokeWidth = '22';
+            });
+            circle.addEventListener('mouseleave', function() {
+                this.style.opacity = '1';
+                this.style.strokeWidth = '20';
+            });
+        });
+    </script>
+</body></html>

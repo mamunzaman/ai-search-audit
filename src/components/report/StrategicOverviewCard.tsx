@@ -88,6 +88,9 @@ export function StrategicOverviewCard({ data, domain }: StrategicOverviewCardPro
   const aiVisibilityHref = domain
     ? `/report/ai-visibility?domain=${encodeURIComponent(domain)}`
     : undefined;
+  const schemaMarkupHref = domain
+    ? `/report/schema-markup?domain=${encodeURIComponent(domain)}`
+    : undefined;
 
   return (
     <div
@@ -100,7 +103,12 @@ export function StrategicOverviewCard({ data, domain }: StrategicOverviewCardPro
       </p>
       <div className="mt-auto flex flex-col gap-stack-md border-t border-outline-variant pt-stack-lg sm:flex-row">
         <KpiItem label="Indexability" showDivider value={data.indexability} />
-        <KpiItem label="Schema Health" showDivider value={data.schemaHealth} />
+        <KpiItem
+          label="Schema Health"
+          href={schemaMarkupHref}
+          showDivider
+          value={data.schemaHealth}
+        />
         <KpiItem label="AI Visibility" href={aiVisibilityHref} value={data.aiVisibility} />
       </div>
     </div>

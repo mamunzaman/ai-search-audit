@@ -22,6 +22,7 @@ export { ReportLayout } from "./ReportLayout";
 export { ReportSidebar } from "./ReportSidebar";
 export { ReportTopNav } from "./ReportTopNav";
 export { SemanticDistributionCard } from "./SemanticDistributionCard";
+export { SchemaMarkupDetailPage } from "./SchemaMarkupDetailPage";
 export { SeoHealthPageClient } from "./SeoHealthPageClient";
 export { StrategicOverviewCard } from "./StrategicOverviewCard";
 export { ContentStructureDetailPage } from "./ContentStructureDetailPage";

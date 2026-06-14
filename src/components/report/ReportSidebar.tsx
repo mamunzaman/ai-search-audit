@@ -35,6 +35,10 @@ function buildNavHref(slug: string | undefined, domain: string): string {
     return `/report/content-structure?domain=${encoded}`;
   }
 
+  if (slug === "schema-markup") {
+    return `/report/schema-markup?domain=${encoded}`;
+  }
+
   return "#";
 }
 
