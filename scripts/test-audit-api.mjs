@@ -146,6 +146,34 @@ function isAuditResponse(data) {
     return false;
   }
 
+  if (
+    !data.accessibilityAnalysis ||
+    typeof data.accessibilityAnalysis.score !== "number" ||
+    typeof data.accessibilityAnalysis.imageCount !== "number" ||
+    typeof data.accessibilityAnalysis.imagesMissingAlt !== "number" ||
+    typeof data.accessibilityAnalysis.altTextCoverage !== "number" ||
+    typeof data.accessibilityAnalysis.buttonCount !== "number" ||
+    typeof data.accessibilityAnalysis.buttonsWithoutText !== "number" ||
+    typeof data.accessibilityAnalysis.inputCount !== "number" ||
+    typeof data.accessibilityAnalysis.inputsMissingLabels !== "number" ||
+    typeof data.accessibilityAnalysis.headingOrderIssues !== "number" ||
+    typeof data.accessibilityAnalysis.landmarkCount !== "number" ||
+    typeof data.accessibilityAnalysis.hasMainLandmark !== "boolean" ||
+    typeof data.accessibilityAnalysis.hasNavLandmark !== "boolean" ||
+    typeof data.accessibilityAnalysis.hasHeaderLandmark !== "boolean" ||
+    typeof data.accessibilityAnalysis.hasFooterLandmark !== "boolean" ||
+    typeof data.accessibilityAnalysis.hasLangAttribute !== "boolean" ||
+    typeof data.accessibilityAnalysis.hasTitle !== "boolean" ||
+    typeof data.accessibilityAnalysis.skipLinkDetected !== "boolean" ||
+    typeof data.accessibilityAnalysis.ariaLabelCount !== "number" ||
+    typeof data.accessibilityAnalysis.ariaHiddenCount !== "number" ||
+    typeof data.accessibilityAnalysis.emptyLinkCount !== "number" ||
+    typeof data.accessibilityAnalysis.duplicateIdCount !== "number" ||
+    !Array.isArray(data.accessibilityAnalysis.findings)
+  ) {
+    return false;
+  }
+
   return data.checks.every(
     (check) =>
       check &&
@@ -207,6 +235,9 @@ async function runTest(test) {
   );
   console.log(
     `readability: words=${data.readabilityAnalysis.wordCount}, paragraphs=${data.readabilityAnalysis.paragraphCount}, lists=${data.readabilityAnalysis.listCount}, tables=${data.readabilityAnalysis.tableCount}, questions=${data.readabilityAnalysis.questionHeadingCount}, faqText=${data.readabilityAnalysis.hasFAQText}`,
+  );
+  console.log(
+    `wcag: score=${data.accessibilityAnalysis.score}, altCoverage=${data.accessibilityAnalysis.altTextCoverage}%, missingLabels=${data.accessibilityAnalysis.inputsMissingLabels}, landmarks main=${data.accessibilityAnalysis.hasMainLandmark} nav=${data.accessibilityAnalysis.hasNavLandmark} header=${data.accessibilityAnalysis.hasHeaderLandmark} footer=${data.accessibilityAnalysis.hasFooterLandmark}, findings=${data.accessibilityAnalysis.findings.length}`,
   );
   console.log(`checks: ${summarizeChecks(data.checks)}`);
 

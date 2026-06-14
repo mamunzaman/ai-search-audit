@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  AccessibilityAuditReport,
   ExecutiveScoreCard,
   HighImpactRecommendationsTable,
   ReportLayout,
@@ -32,7 +33,10 @@ export function ReportPageClient({ domain }: ReportPageClientProps) {
         trendPoints={data.trendPoints}
         semanticDistribution={data.semanticDistribution}
         llmIndexStatus={data.llmIndexStatus}
+        accessibilityCard={data.accessibilityCard}
       />
+
+      <AccessibilityAuditReport data={data.accessibilityReport} />
 
       <HighImpactRecommendationsTable
         rows={data.recommendations}

@@ -1,3 +1,4 @@
+import { defaultAccessibilityAnalysis } from "./accessibility-check";
 import { normalizeDomain } from "@/lib/domain";
 import type { ActivityLogEntry, ProcessingMetric } from "@/lib/processing-data";
 import {
@@ -17,6 +18,7 @@ import {
   scoreToStatusLabel,
 } from "./audit-score";
 import {
+  getAccessibilityAnalysis,
   getEntityAnalysis,
   getReadabilityAnalysis,
   getRobotsAnalysis,
@@ -24,7 +26,7 @@ import {
   getSocialMetadata,
   normalizeAuditResponse,
 } from "./audit-normalize";
-import type { AuditCheck, AuditResponse, CategoryScore } from "./types";
+import type { AccessibilityAnalysis, AuditCheck, AuditResponse, CategoryScore } from "./types";
 
 export type ReportStrength = {
   title: string;
@@ -85,6 +87,7 @@ export type ReportViewData = {
   categories: ReportCategory[];
   priorityIssues: ReportIssue[];
   recommendations: ReportRecommendation[];
+  accessibilityAnalysis: AccessibilityAnalysis;
 };
 
 const CATEGORY_ORDER = [
@@ -96,6 +99,7 @@ const CATEGORY_ORDER = [
   "Schema Markup",
   "FAQ Readiness",
   "AI Answer Readiness",
+  "WCAG 2.2 Readiness",
 ] as const;
 
 const categoryIconMap = Object.fromEntries(
@@ -287,6 +291,7 @@ export function auditToReportView(
     categories: mapCategoryScores(scores.categories),
     priorityIssues: mapPriorityIssues(scores.priorityIssues),
     recommendations: scores.recommendations,
+    accessibilityAnalysis: getAccessibilityAnalysis(normalized),
   };
 }
 
@@ -343,6 +348,7 @@ export function getPlaceholderReportView(domain: string): ReportViewData {
     categories: placeholderCategories,
     priorityIssues,
     recommendations: [],
+    accessibilityAnalysis: { ...defaultAccessibilityAnalysis },
   };
 }
 

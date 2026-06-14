@@ -1,6 +1,10 @@
 import type { ReportRecommendation, ReportCategory, ReportIssue } from "@/lib/report-data";
 import { categories as demoCategories } from "@/lib/report-data";
 import type { ReportViewData } from "./audit-to-report";
+import {
+  getFormLabelCoverage,
+} from "./accessibility-check";
+import type { AccessibilityAnalysis } from "./types";
 
 export const RADAR_CATEGORY_ORDER = [
   { label: "SEO Health", shortLabel: "SEO" },
@@ -41,6 +45,29 @@ export type ReportV2LlmReadiness = {
   value: number;
 };
 
+export type ReportV2AccessibilityCard = {
+  score: number;
+  altCoverage: number;
+  formLabelStatus: string;
+  landmarkStatus: string;
+  headingOrderStatus: string;
+  topIssue: string;
+};
+
+export type ReportV2AccessibilityFindingRow = {
+  id: string;
+  label: string;
+  wcag: string;
+  status: "pass" | "warning" | "fail";
+  recommendation: string;
+};
+
+export type ReportV2AccessibilityReport = {
+  score: number;
+  findings: ReportV2AccessibilityFindingRow[];
+  totalFindings: number;
+};
+
 export type ReportV2RecommendationRow = {
   title: string;
   description: string;
@@ -67,6 +94,8 @@ export type ReportV2ViewData = {
   trendPoints: number[];
   semanticDistribution: ReportV2SemanticBar[];
   llmIndexStatus: ReportV2LlmReadiness[];
+  accessibilityCard: ReportV2AccessibilityCard;
+  accessibilityReport: ReportV2AccessibilityReport;
   recommendations: ReportV2RecommendationRow[];
   criticalCount: number;
   optimizationCount: number;
@@ -203,6 +232,157 @@ function buildLlmIndexStatus(categories: ReportCategory[]): ReportV2LlmReadiness
   ];
 }
 
+function buildTopAccessibilityIssue(
+  analysis: AccessibilityAnalysis,
+  priorityIssues: ReportIssue[],
+): string {
+  const accessibilityIssue = priorityIssues.find((issue) =>
+    /alt text|landmark|heading order|lang attribute|form input|skip link|accessible/i.test(
+      issue.title,
+    ),
+  );
+
+  if (accessibilityIssue) {
+    return accessibilityIssue.title;
+  }
+
+  if (!analysis.hasLangAttribute) {
+    return "Add a valid HTML lang attribute.";
+  }
+
+  if (analysis.imagesMissingAlt > 0) {
+    return "Add missing alt text to images.";
+  }
+
+  if (analysis.inputsMissingLabels > 0) {
+    return "Add accessible labels to form inputs.";
+  }
+
+  if (!analysis.hasMainLandmark) {
+    return "Add a main landmark.";
+  }
+
+  if (analysis.headingOrderIssues > 0) {
+    return "Fix heading order.";
+  }
+
+  if (!analysis.skipLinkDetected) {
+    return "Add skip link for keyboard users.";
+  }
+
+  return "No major accessibility signal gaps detected.";
+}
+
+function buildAccessibilityCard(view: ReportViewData): ReportV2AccessibilityCard {
+  const analysis = view.accessibilityAnalysis;
+  const score =
+    analysis.score || getCategoryScore(view.categories, "WCAG 2.2 Readiness");
+  const formCoverage = getFormLabelCoverage(analysis);
+  const landmarks = [
+    analysis.hasMainLandmark ? "Main" : null,
+    analysis.hasNavLandmark ? "Nav" : null,
+    analysis.hasHeaderLandmark ? "Header" : null,
+    analysis.hasFooterLandmark ? "Footer" : null,
+  ].filter(Boolean);
+
+  return {
+    score,
+    altCoverage: analysis.altTextCoverage,
+    formLabelStatus:
+      formCoverage >= 90 ? "Good" : formCoverage >= 70 ? "Partial" : "Needs work",
+    landmarkStatus: landmarks.length > 0 ? landmarks.join(" + ") : "Missing",
+    headingOrderStatus:
+      analysis.headingOrderIssues === 0
+        ? "Logical"
+        : `${analysis.headingOrderIssues} issue(s)`,
+    topIssue: buildTopAccessibilityIssue(analysis, view.priorityIssues),
+  };
+}
+
+function buildAccessibilityReport(
+  view: ReportViewData,
+): ReportV2AccessibilityReport {
+  const analysis = view.accessibilityAnalysis;
+  const statusOrder = { fail: 0, warning: 1, pass: 2 };
+  const findings = [...analysis.findings]
+    .sort((left, right) => statusOrder[left.status] - statusOrder[right.status])
+    .map((finding) => ({
+      id: finding.id,
+      label: finding.label,
+      wcag: finding.wcag,
+      status: finding.status,
+      recommendation: finding.recommendation,
+    }));
+
+  return {
+    score: analysis.score || getCategoryScore(view.categories, "WCAG 2.2 Readiness"),
+    findings,
+    totalFindings: findings.length,
+  };
+}
+
+function buildDemoAccessibilityCard(): ReportV2AccessibilityCard {
+  return {
+    score: 72,
+    altCoverage: 88,
+    formLabelStatus: "Partial",
+    landmarkStatus: "Main + Nav",
+    headingOrderStatus: "Logical",
+    topIssue: "Add missing alt text to images.",
+  };
+}
+
+function buildDemoAccessibilityReport(): ReportV2AccessibilityReport {
+  return {
+    score: 72,
+    totalFindings: 6,
+    findings: [
+      {
+        id: "image-alt-text",
+        label: "Image alt text",
+        wcag: "WCAG 1.1.1 Non-text Content",
+        status: "warning",
+        recommendation: "Add descriptive alt text to meaningful images.",
+      },
+      {
+        id: "skip-link",
+        label: "Skip link",
+        wcag: "WCAG 2.4.1 Bypass Blocks",
+        status: "warning",
+        recommendation: "Add a visible-on-focus skip link that targets the main content area.",
+      },
+      {
+        id: "lang-attribute",
+        label: "HTML lang attribute",
+        wcag: "WCAG 3.1.1 Language of Page",
+        status: "pass",
+        recommendation: "Add lang=\"en\" (or the correct language code) to the <html> element.",
+      },
+      {
+        id: "page-title",
+        label: "Page title",
+        wcag: "WCAG 2.4.2 Page Titled",
+        status: "pass",
+        recommendation: "Add a descriptive <title> element to the page head.",
+      },
+      {
+        id: "landmarks",
+        label: "Page landmarks",
+        wcag: "WCAG 1.3.1 / 2.4.1 Bypass Blocks",
+        status: "pass",
+        recommendation: "Add <main>, <nav>, <header>, and <footer> landmarks where appropriate.",
+      },
+      {
+        id: "heading-order",
+        label: "Heading order",
+        wcag: "WCAG 1.3.1 Info and Relationships",
+        status: "pass",
+        recommendation: "Avoid skipping heading levels (for example, H2 directly to H4).",
+      },
+    ],
+  };
+}
+
 function buildAuditSummary(view: ReportViewData, potentialGain: number): string {
   const trustScore = getCategoryScore(view.categories, "Trust Signals");
   const seoScore = getCategoryScore(view.categories, "SEO Health");
@@ -287,6 +467,12 @@ export function buildReportV2View(view: ReportViewData): ReportV2ViewData {
     trendPoints: buildProjectedTrend(view.score),
     semanticDistribution: buildSemanticDistribution(categories),
     llmIndexStatus: buildLlmIndexStatus(categories),
+    accessibilityCard: view.isRealData
+      ? buildAccessibilityCard(view)
+      : buildDemoAccessibilityCard(),
+    accessibilityReport: view.isRealData
+      ? buildAccessibilityReport(view)
+      : buildDemoAccessibilityReport(),
     recommendations: recommendationRows,
     criticalCount: recommendationRows.filter((row) => row.status === "Critical")
       .length,

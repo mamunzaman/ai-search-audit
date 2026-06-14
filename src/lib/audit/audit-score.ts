@@ -10,6 +10,7 @@ import type {
   PriorityIssue,
 } from "./types";
 import {
+  getAccessibilityAnalysis,
   getAiVisibilitySignals,
   getEntityAnalysis,
   getReadabilityAnalysis,
@@ -1000,6 +1001,42 @@ function scoreAiAnswerReadiness(audit: AuditResponse): CategoryScore {
   });
 }
 
+function scoreWcag22(audit: AuditResponse): CategoryScore {
+  const analysis = getAccessibilityAnalysis(audit);
+  const failingFindings = analysis.findings.filter(
+    (finding) => finding.status !== "pass",
+  );
+  const status: CategoryScoreStatus =
+    analysis.score >= 80 ? "pass" : analysis.score >= 60 ? "warning" : "fail";
+  const positives = analysis.findings
+    .filter((finding) => finding.status === "pass")
+    .map((finding) => finding.message)
+    .slice(0, 5);
+  const problems = failingFindings.map((finding) => finding.message);
+  const recommendations = [
+    ...new Set(failingFindings.map((finding) => finding.recommendation)),
+  ];
+
+  const summary =
+    analysis.score >= 80
+      ? "Automated WCAG 2.2 readiness signals are strong. This is not legal compliance or certification."
+      : analysis.score >= 60
+        ? "Some automated WCAG 2.2 readiness signals need improvement."
+        : "Automated WCAG 2.2 readiness signals are weak across accessibility basics.";
+
+  return finalizeCategory({
+    id: "wcag-2-2-readiness",
+    label: "WCAG 2.2 Readiness",
+    score: analysis.score,
+    status,
+    issueCount: failingFindings.length,
+    summary,
+    positives,
+    problems,
+    recommendations,
+  });
+}
+
 function deriveOverallStatus(score: number): CategoryScoreStatus {
   if (score >= 80) {
     return "pass";
@@ -1173,6 +1210,85 @@ function generatePriorityIssues(audit: AuditResponse): PriorityIssue[] {
     });
   }
 
+  const accessibility = getAccessibilityAnalysis(audit);
+
+  if (!accessibility.hasLangAttribute) {
+    issues.push({
+      title: "Missing HTML lang attribute",
+      impact: "High",
+      difficulty: "Easy",
+      estimatedGain: 5,
+      explanation:
+        "No valid HTML lang attribute was detected, which affects language detection for assistive tech.",
+    });
+  }
+
+  if (
+    accessibility.imageCount > 0 &&
+    accessibility.imagesMissingAlt > 0 &&
+    (accessibility.imagesMissingAlt >= 3 ||
+      accessibility.imagesMissingAlt / accessibility.imageCount >= 0.5)
+  ) {
+    issues.push({
+      title: "Images missing alt text",
+      impact: "High",
+      difficulty: "Easy",
+      estimatedGain: 5,
+      explanation: `${accessibility.imagesMissingAlt} of ${accessibility.imageCount} image(s) lack alt text.`,
+    });
+  }
+
+  if (accessibility.inputsMissingLabels > 0) {
+    issues.push({
+      title: "Form inputs missing labels",
+      impact: "High",
+      difficulty: "Moderate",
+      estimatedGain: 4,
+      explanation: `${accessibility.inputsMissingLabels} form input(s) lack accessible labels.`,
+    });
+  }
+
+  if (!accessibility.hasMainLandmark) {
+    issues.push({
+      title: "Missing main landmark",
+      impact: "Medium",
+      difficulty: "Easy",
+      estimatedGain: 3,
+      explanation:
+        "No main landmark was detected to help assistive technology reach primary content.",
+    });
+  }
+
+  if (accessibility.headingOrderIssues >= 3) {
+    issues.push({
+      title: "Heading order issues",
+      impact: "Medium",
+      difficulty: "Moderate",
+      estimatedGain: 3,
+      explanation: `${accessibility.headingOrderIssues} heading order issue(s) were detected.`,
+    });
+  }
+
+  if (accessibility.buttonsWithoutText > 0) {
+    issues.push({
+      title: "Buttons missing accessible text",
+      impact: "High",
+      difficulty: "Easy",
+      estimatedGain: 4,
+      explanation: `${accessibility.buttonsWithoutText} button(s) lack accessible names.`,
+    });
+  }
+
+  if (accessibility.emptyLinkCount > 0) {
+    issues.push({
+      title: "Empty links detected",
+      impact: "High",
+      difficulty: "Easy",
+      estimatedGain: 4,
+      explanation: `${accessibility.emptyLinkCount} link(s) have no accessible name.`,
+    });
+  }
+
   return sortByImpactAndGain(issues);
 }
 
@@ -1252,6 +1368,62 @@ const RECOMMENDATION_LIBRARY: Record<
       "Add a unique, descriptive <title> element that names the page topic and brand clearly.",
     estimatedGain: 5,
   },
+  "Add missing alt text to images.": {
+    title: "Add missing alt text",
+    whyThisMatters:
+      "Alt text helps screen readers and improves machine-readable content structure for accessibility signals.",
+    howToFix:
+      "Add descriptive alt attributes to images that convey meaning, or alt=\"\" for decorative images.",
+    estimatedGain: 5,
+  },
+  "Add accessible labels to form inputs.": {
+    title: "Label form inputs",
+    whyThisMatters:
+      "Accessible form labels help users and assistive technology understand input purpose.",
+    howToFix:
+      "Associate each input with a <label>, or provide aria-label / aria-labelledby attributes.",
+    estimatedGain: 4,
+  },
+  "Add a main landmark.": {
+    title: "Add main landmark",
+    whyThisMatters:
+      "A main landmark helps assistive technology jump directly to primary page content.",
+    howToFix:
+      "Wrap primary content in <main> or add role=\"main\" to the primary content container.",
+    estimatedGain: 3,
+  },
+  "Fix heading order.": {
+    title: "Fix heading order",
+    whyThisMatters:
+      "Logical heading order improves navigation for screen readers and content hierarchy for parsers.",
+    howToFix:
+      "Ensure headings do not skip levels (for example, avoid jumping from H2 directly to H4).",
+    estimatedGain: 3,
+  },
+  "Add skip link for keyboard users.": {
+    title: "Add skip link",
+    whyThisMatters:
+      "Skip links let keyboard users bypass repetitive navigation and reach main content faster.",
+    howToFix:
+      "Add a visible-on-focus skip link near the top of the page that targets the main content area.",
+    estimatedGain: 2,
+  },
+  "Add a valid HTML lang attribute.": {
+    title: "Add HTML lang attribute",
+    whyThisMatters:
+      "The lang attribute helps browsers and assistive technology pronounce and parse content correctly.",
+    howToFix:
+      "Add lang=\"en\" (or the correct language code) to the <html> element.",
+    estimatedGain: 4,
+  },
+  "Add accessible text to buttons.": {
+    title: "Label buttons accessibly",
+    whyThisMatters:
+      "Buttons without accessible names are difficult for assistive technology users to operate.",
+    howToFix:
+      "Provide visible text, aria-label, or aria-labelledby for each button.",
+    estimatedGain: 3,
+  },
 };
 
 const RECOMMENDATION_IMPACT: Record<string, PriorityImpact> = {
@@ -1262,7 +1434,14 @@ const RECOMMENDATION_IMPACT: Record<string, PriorityImpact> = {
   "Add Organization schema.": "High",
   "Add a canonical URL.": "High",
   "Add internal links.": "High",
+  "Add missing alt text to images.": "High",
+  "Add accessible labels to form inputs.": "High",
+  "Add a valid HTML lang attribute.": "High",
   [FAQ_RECOMMENDATION_KEY]: "Medium",
+  "Add a main landmark.": "Medium",
+  "Fix heading order.": "Medium",
+  "Add accessible text to buttons.": "Medium",
+  "Add skip link for keyboard users.": "Medium",
   "Add external references/trust links.": "Medium",
 };
 
@@ -1371,6 +1550,7 @@ export function calculateAuditScores(audit: AuditResponse): AuditScoreResult {
     scoreSchemaMarkup(normalized),
     scoreFaqReadiness(normalized),
     scoreAiAnswerReadiness(normalized),
+    scoreWcag22(normalized),
   ];
 
   const overallFromChecks = calculateOverallScoreFromChecks(normalized.checks);

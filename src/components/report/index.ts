@@ -1,3 +1,5 @@
+export { AccessibilityAuditCard } from "./AccessibilityAuditCard";
+export { AccessibilityAuditReport } from "./AccessibilityAuditReport";
 export { CategoryRadarCard } from "./CategoryRadarCard";
 export { ExecutiveScoreCard } from "./ExecutiveScoreCard";
 export { GrowthPotentialCard } from "./GrowthPotentialCard";

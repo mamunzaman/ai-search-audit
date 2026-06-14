@@ -4,7 +4,10 @@ import { defaultSitemapAnalysis } from "./sitemap-check";
 import { defaultSocialMetadata } from "./social-metadata";
 import { defaultEntityAnalysis } from "./entity-extraction";
 import { defaultReadabilityAnalysis } from "./readability-check";
+import { defaultAccessibilityAnalysis } from "./accessibility-check";
 import type {
+  AccessibilityAnalysis,
+  AccessibilityFinding,
   AiVisibilitySignals,
   AuditCheck,
   AuditHeadings,
@@ -19,7 +22,7 @@ import type {
   TrustSignals,
 } from "./types";
 
-export const AUDIT_SCHEMA_VERSION = 7;
+export const AUDIT_SCHEMA_VERSION = 8;
 
 export const defaultTrustSignals: TrustSignals = {
   aboutPage: false,
@@ -312,6 +315,125 @@ function deriveReadabilityAnalysis(
   };
 }
 
+function deriveAccessibilityFindings(
+  findings: AccessibilityFinding[] | undefined,
+): AccessibilityFinding[] {
+  if (!Array.isArray(findings)) {
+    return [];
+  }
+
+  return findings
+    .filter(
+      (finding) =>
+        finding &&
+        typeof finding.id === "string" &&
+        typeof finding.label === "string" &&
+        typeof finding.status === "string" &&
+        typeof finding.wcag === "string" &&
+        typeof finding.message === "string" &&
+        typeof finding.recommendation === "string",
+    )
+    .map((finding) => ({
+      id: finding.id,
+      label: finding.label,
+      status:
+        finding.status === "pass" ||
+        finding.status === "warning" ||
+        finding.status === "fail"
+          ? finding.status
+          : "warning",
+      wcag: finding.wcag,
+      message: finding.message,
+      recommendation: finding.recommendation,
+    }));
+}
+
+function deriveAccessibilityAnalysis(
+  accessibilityAnalysis: AccessibilityAnalysis | undefined,
+): AccessibilityAnalysis {
+  if (!accessibilityAnalysis || typeof accessibilityAnalysis !== "object") {
+    return { ...defaultAccessibilityAnalysis };
+  }
+
+  const imageCount =
+    typeof accessibilityAnalysis.imageCount === "number"
+      ? accessibilityAnalysis.imageCount
+      : 0;
+  const imagesMissingAlt =
+    typeof accessibilityAnalysis.imagesMissingAlt === "number"
+      ? accessibilityAnalysis.imagesMissingAlt
+      : 0;
+  const inputCount =
+    typeof accessibilityAnalysis.inputCount === "number"
+      ? accessibilityAnalysis.inputCount
+      : 0;
+  const inputsMissingLabels =
+    typeof accessibilityAnalysis.inputsMissingLabels === "number"
+      ? accessibilityAnalysis.inputsMissingLabels
+      : 0;
+  const buttonCount =
+    typeof accessibilityAnalysis.buttonCount === "number"
+      ? accessibilityAnalysis.buttonCount
+      : 0;
+  const buttonsWithoutText =
+    typeof accessibilityAnalysis.buttonsWithoutText === "number"
+      ? accessibilityAnalysis.buttonsWithoutText
+      : 0;
+  const altTextCoverage =
+    typeof accessibilityAnalysis.altTextCoverage === "number"
+      ? accessibilityAnalysis.altTextCoverage
+      : imageCount === 0
+        ? 100
+        : Math.round(((imageCount - imagesMissingAlt) / imageCount) * 100);
+  const findings = deriveAccessibilityFindings(accessibilityAnalysis.findings);
+
+  return {
+    score:
+      typeof accessibilityAnalysis.score === "number"
+        ? Math.max(0, Math.min(100, accessibilityAnalysis.score))
+        : 0,
+    imageCount,
+    imagesMissingAlt,
+    altTextCoverage,
+    buttonCount,
+    buttonsWithoutText,
+    inputCount,
+    inputsMissingLabels,
+    headingOrderIssues:
+      typeof accessibilityAnalysis.headingOrderIssues === "number"
+        ? accessibilityAnalysis.headingOrderIssues
+        : 0,
+    landmarkCount:
+      typeof accessibilityAnalysis.landmarkCount === "number"
+        ? accessibilityAnalysis.landmarkCount
+        : 0,
+    hasMainLandmark: Boolean(accessibilityAnalysis.hasMainLandmark),
+    hasNavLandmark: Boolean(accessibilityAnalysis.hasNavLandmark),
+    hasHeaderLandmark: Boolean(accessibilityAnalysis.hasHeaderLandmark),
+    hasFooterLandmark: Boolean(accessibilityAnalysis.hasFooterLandmark),
+    hasLangAttribute: Boolean(accessibilityAnalysis.hasLangAttribute),
+    hasTitle: Boolean(accessibilityAnalysis.hasTitle),
+    skipLinkDetected: Boolean(accessibilityAnalysis.skipLinkDetected),
+    ariaLabelCount:
+      typeof accessibilityAnalysis.ariaLabelCount === "number"
+        ? accessibilityAnalysis.ariaLabelCount
+        : 0,
+    ariaHiddenCount:
+      typeof accessibilityAnalysis.ariaHiddenCount === "number"
+        ? accessibilityAnalysis.ariaHiddenCount
+        : 0,
+    emptyLinkCount:
+      typeof accessibilityAnalysis.emptyLinkCount === "number"
+        ? accessibilityAnalysis.emptyLinkCount
+        : 0,
+    duplicateIdCount:
+      typeof accessibilityAnalysis.duplicateIdCount === "number"
+        ? accessibilityAnalysis.duplicateIdCount
+        : 0,
+    findings,
+  };
+}
+
 export function isValidStoredAudit(data: unknown): boolean {
   if (!data || typeof data !== "object" || Array.isArray(data)) {
     return false;
@@ -366,6 +488,7 @@ export function normalizeAuditResponse(data: unknown): AuditResponse | null {
     socialMetadata: deriveSocialMetadata(audit.socialMetadata),
     entityAnalysis: deriveEntityAnalysis(audit.entityAnalysis),
     readabilityAnalysis: deriveReadabilityAnalysis(audit.readabilityAnalysis),
+    accessibilityAnalysis: deriveAccessibilityAnalysis(audit.accessibilityAnalysis),
     checks: normalizeChecks(audit.checks),
   };
 }
@@ -396,4 +519,10 @@ export function getEntityAnalysis(audit: AuditResponse): EntityAnalysis {
 
 export function getReadabilityAnalysis(audit: AuditResponse): ReadabilityAnalysis {
   return audit.readabilityAnalysis ?? defaultReadabilityAnalysis;
+}
+
+export function getAccessibilityAnalysis(
+  audit: AuditResponse,
+): AccessibilityAnalysis {
+  return audit.accessibilityAnalysis ?? defaultAccessibilityAnalysis;
 }

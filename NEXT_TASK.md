@@ -4,9 +4,8 @@
 
 **Verify:**
 - AI summaries augment rule-based trust/visibility signals
-- Visual Insights carousel stays balanced with real + AI narrative data
+- Accessibility audit section stays balanced with real + AI narrative data
 
 ## Done
 
-- Visual Insights carousel — 5 scrollable insight cards with snap + nav buttons
-- Visual Insights equal card height — fixed 360px slides, flex-fill chart areas
+- Full Accessibility Audit Report — WCAG 2.2 findings table, carousel card, detailed section

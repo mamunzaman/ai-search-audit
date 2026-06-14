@@ -151,6 +151,42 @@ export type ReadabilityAnalysis = {
   shortAnswerBlocks: number;
 };
 
+export type AccessibilityFindingStatus = "pass" | "warning" | "fail";
+
+export type AccessibilityFinding = {
+  id: string;
+  label: string;
+  status: AccessibilityFindingStatus;
+  wcag: string;
+  message: string;
+  recommendation: string;
+};
+
+export type AccessibilityAnalysis = {
+  score: number;
+  imageCount: number;
+  imagesMissingAlt: number;
+  altTextCoverage: number;
+  buttonCount: number;
+  buttonsWithoutText: number;
+  inputCount: number;
+  inputsMissingLabels: number;
+  headingOrderIssues: number;
+  landmarkCount: number;
+  hasMainLandmark: boolean;
+  hasNavLandmark: boolean;
+  hasHeaderLandmark: boolean;
+  hasFooterLandmark: boolean;
+  hasLangAttribute: boolean;
+  hasTitle: boolean;
+  skipLinkDetected: boolean;
+  ariaLabelCount: number;
+  ariaHiddenCount: number;
+  emptyLinkCount: number;
+  duplicateIdCount: number;
+  findings: AccessibilityFinding[];
+};
+
 export type AuditResponse = {
   url: string;
   finalUrl: string;
@@ -169,6 +205,7 @@ export type AuditResponse = {
   socialMetadata: SocialMetadata;
   entityAnalysis: EntityAnalysis;
   readabilityAnalysis: ReadabilityAnalysis;
+  accessibilityAnalysis: AccessibilityAnalysis;
   checks: AuditCheck[];
 };
 

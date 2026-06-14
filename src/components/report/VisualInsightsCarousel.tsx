@@ -12,7 +12,9 @@ import type {
   ReportV2LlmReadiness,
   ReportV2RadarPoint,
   ReportV2SemanticBar,
+  ReportV2AccessibilityCard,
 } from "@/lib/audit/report-v2";
+import { AccessibilityAuditCard } from "./AccessibilityAuditCard";
 
 type VisualInsightsCarouselProps = {
   radarPoints: ReportV2RadarPoint[];
@@ -20,6 +22,7 @@ type VisualInsightsCarouselProps = {
   trendPoints: number[];
   semanticDistribution: ReportV2SemanticBar[];
   llmIndexStatus: ReportV2LlmReadiness[];
+  accessibilityCard: ReportV2AccessibilityCard;
 };
 
 const SLIDE_CLASS =
@@ -31,6 +34,7 @@ export function VisualInsightsCarousel({
   trendPoints,
   semanticDistribution,
   llmIndexStatus,
+  accessibilityCard,
 }: VisualInsightsCarouselProps) {
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -55,6 +59,7 @@ export function VisualInsightsCarousel({
     <ReadinessTrendCard key="trend" points={trendPoints} />,
     <SemanticDistributionCard key="semantic" bars={semanticDistribution} />,
     <LLMIndexStatusCard key="llm" engines={llmIndexStatus} />,
+    <AccessibilityAuditCard key="accessibility" data={accessibilityCard} />,
   ];
 
   return (

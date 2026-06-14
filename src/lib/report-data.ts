@@ -50,6 +50,7 @@ export const sidebarNav: SidebarNavItem[] = [
   { icon: "verified", label: "Trust Signals" },
   { icon: "article", label: "Content Structure" },
   { icon: "code", label: "Schema Markup" },
+  { icon: "accessibility_new", label: "WCAG 2.2" },
 ];
 
 export const strengths = [
@@ -91,6 +92,7 @@ export const categories: ReportCategory[] = [
   { icon: "code", title: "Schema Markup", score: 70, critical: true },
   { icon: "quiz", title: "FAQ Readiness", score: 65, critical: true },
   { icon: "smart_toy", title: "AI Answer Readiness", score: 75 },
+  { icon: "accessibility_new", title: "WCAG 2.2 Readiness", score: 72 },
 ];
 
 export const priorityIssues: ReportIssue[] = [

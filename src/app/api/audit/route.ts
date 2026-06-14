@@ -16,6 +16,10 @@ import {
 } from "@/lib/audit/social-metadata";
 import { detectSchemaTypes } from "@/lib/audit/schema-detector";
 import {
+  analyzeAccessibility,
+  runAccessibilityChecks,
+} from "@/lib/audit/accessibility-check";
+import {
   analyzeReadability,
   runReadabilityChecks,
 } from "@/lib/audit/readability-check";
@@ -32,6 +36,10 @@ async function buildAuditResponse(
   const parsed = parseHtml(page.html, page.finalUrl);
   const schemaTypes = detectSchemaTypes(page.html) ?? [];
   const readabilityAnalysis = analyzeReadability(page.html, parsed.headings);
+  const accessibilityAnalysis = analyzeAccessibility(
+    page.html,
+    parsed.title ?? "",
+  );
   const trustSignals = detectTrustSignals({
     pageUrl: page.finalUrl,
     anchors: parsed.anchors ?? [],
@@ -72,6 +80,7 @@ async function buildAuditResponse(
   const socialChecks = runSocialMetadataChecks(socialMetadata);
   const entityChecks = runEntityChecks(entityAnalysis);
   const readabilityChecks = runReadabilityChecks(readabilityAnalysis);
+  const accessibilityChecks = runAccessibilityChecks(accessibilityAnalysis);
 
   return {
     url,
@@ -98,6 +107,7 @@ async function buildAuditResponse(
     socialMetadata,
     entityAnalysis,
     readabilityAnalysis,
+    accessibilityAnalysis,
     checks: [
       ...seoChecks,
       ...trustAndAiChecks,
@@ -106,6 +116,7 @@ async function buildAuditResponse(
       ...socialChecks,
       ...entityChecks,
       ...readabilityChecks,
+      ...accessibilityChecks,
     ],
   };
 }
