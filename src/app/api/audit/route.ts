@@ -7,10 +7,18 @@ import { parseHtml } from "@/lib/audit/html-parser";
 import { analyzeRobotsTxt, runRobotsChecks } from "@/lib/audit/robots-check";
 import { analyzeSitemaps, runSitemapChecks } from "@/lib/audit/sitemap-check";
 import {
+  extractEntityAnalysis,
+  runEntityChecks,
+} from "@/lib/audit/entity-extraction";
+import {
   extractSocialMetadata,
   runSocialMetadataChecks,
 } from "@/lib/audit/social-metadata";
 import { detectSchemaTypes } from "@/lib/audit/schema-detector";
+import {
+  analyzeReadability,
+  runReadabilityChecks,
+} from "@/lib/audit/readability-check";
 import { runSeoChecks } from "@/lib/audit/seo-checks";
 import { detectTrustSignals } from "@/lib/audit/trust-signals";
 import type { AuditRequest, AuditResponse } from "@/lib/audit/types";
@@ -23,6 +31,7 @@ async function buildAuditResponse(
 ): Promise<AuditResponse> {
   const parsed = parseHtml(page.html, page.finalUrl);
   const schemaTypes = detectSchemaTypes(page.html) ?? [];
+  const readabilityAnalysis = analyzeReadability(page.html, parsed.headings);
   const trustSignals = detectTrustSignals({
     pageUrl: page.finalUrl,
     anchors: parsed.anchors ?? [],
@@ -30,6 +39,15 @@ async function buildAuditResponse(
   const robotsAnalysis = await analyzeRobotsTxt(page.finalUrl);
   const sitemapAnalysis = await analyzeSitemaps(page.finalUrl, robotsAnalysis);
   const socialMetadata = extractSocialMetadata(page.html);
+  const entityAnalysis = extractEntityAnalysis({
+    title: parsed.title ?? "",
+    metaDescription: parsed.metaDescription ?? "",
+    headings: parsed.headings,
+    schemaTypes,
+    socialMetadata,
+    pageUrl: page.finalUrl,
+    html: page.html,
+  });
   const aiVisibilitySignals = detectAiVisibilitySignals({
     title: parsed.title ?? "",
     metaDescription: parsed.metaDescription ?? "",
@@ -52,6 +70,8 @@ async function buildAuditResponse(
   const robotsChecks = runRobotsChecks(robotsAnalysis);
   const sitemapChecks = runSitemapChecks(sitemapAnalysis);
   const socialChecks = runSocialMetadataChecks(socialMetadata);
+  const entityChecks = runEntityChecks(entityAnalysis);
+  const readabilityChecks = runReadabilityChecks(readabilityAnalysis);
 
   return {
     url,
@@ -76,12 +96,16 @@ async function buildAuditResponse(
     robotsAnalysis,
     sitemapAnalysis,
     socialMetadata,
+    entityAnalysis,
+    readabilityAnalysis,
     checks: [
       ...seoChecks,
       ...trustAndAiChecks,
       ...robotsChecks,
       ...sitemapChecks,
       ...socialChecks,
+      ...entityChecks,
+      ...readabilityChecks,
     ],
   };
 }

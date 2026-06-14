@@ -2,19 +2,24 @@ import { hasTrustPages } from "./trust-signals";
 import { defaultRobotsAnalysis } from "./robots-check";
 import { defaultSitemapAnalysis } from "./sitemap-check";
 import { defaultSocialMetadata } from "./social-metadata";
+import { defaultEntityAnalysis } from "./entity-extraction";
+import { defaultReadabilityAnalysis } from "./readability-check";
 import type {
   AiVisibilitySignals,
   AuditCheck,
   AuditHeadings,
   AuditLinks,
   AuditResponse,
+  EntityAnalysis,
+  EntityType,
+  ReadabilityAnalysis,
   RobotsAnalysis,
   SitemapAnalysis,
   SocialMetadata,
   TrustSignals,
 } from "./types";
 
-export const AUDIT_SCHEMA_VERSION = 5;
+export const AUDIT_SCHEMA_VERSION = 7;
 
 export const defaultTrustSignals: TrustSignals = {
   aboutPage: false,
@@ -228,6 +233,85 @@ function deriveSocialMetadata(
   };
 }
 
+const ENTITY_TYPES: EntityType[] = [
+  "Organization",
+  "Website",
+  "Event",
+  "LocalBusiness",
+  "Article",
+  "Unknown",
+];
+
+function deriveEntityAnalysis(
+  entityAnalysis: EntityAnalysis | undefined,
+): EntityAnalysis {
+  if (!entityAnalysis || typeof entityAnalysis !== "object") {
+    return { ...defaultEntityAnalysis };
+  }
+
+  const entityType = ENTITY_TYPES.includes(entityAnalysis.entityType)
+    ? entityAnalysis.entityType
+    : "Unknown";
+
+  return {
+    primaryEntity:
+      typeof entityAnalysis.primaryEntity === "string"
+        ? entityAnalysis.primaryEntity
+        : null,
+    entityType,
+    confidence:
+      typeof entityAnalysis.confidence === "number"
+        ? Math.max(0, Math.min(100, entityAnalysis.confidence))
+        : 0,
+    sources: Array.isArray(entityAnalysis.sources)
+      ? entityAnalysis.sources.filter((source) => typeof source === "string")
+      : [],
+    relatedEntities: Array.isArray(entityAnalysis.relatedEntities)
+      ? entityAnalysis.relatedEntities.filter((entity) => typeof entity === "string")
+      : [],
+  };
+}
+
+function deriveReadabilityAnalysis(
+  readabilityAnalysis: ReadabilityAnalysis | undefined,
+): ReadabilityAnalysis {
+  if (!readabilityAnalysis || typeof readabilityAnalysis !== "object") {
+    return { ...defaultReadabilityAnalysis };
+  }
+
+  return {
+    wordCount:
+      typeof readabilityAnalysis.wordCount === "number"
+        ? readabilityAnalysis.wordCount
+        : 0,
+    paragraphCount:
+      typeof readabilityAnalysis.paragraphCount === "number"
+        ? readabilityAnalysis.paragraphCount
+        : 0,
+    averageParagraphWords:
+      typeof readabilityAnalysis.averageParagraphWords === "number"
+        ? readabilityAnalysis.averageParagraphWords
+        : 0,
+    listCount:
+      typeof readabilityAnalysis.listCount === "number"
+        ? readabilityAnalysis.listCount
+        : 0,
+    tableCount:
+      typeof readabilityAnalysis.tableCount === "number"
+        ? readabilityAnalysis.tableCount
+        : 0,
+    questionHeadingCount:
+      typeof readabilityAnalysis.questionHeadingCount === "number"
+        ? readabilityAnalysis.questionHeadingCount
+        : 0,
+    hasFAQText: Boolean(readabilityAnalysis.hasFAQText),
+    shortAnswerBlocks:
+      typeof readabilityAnalysis.shortAnswerBlocks === "number"
+        ? readabilityAnalysis.shortAnswerBlocks
+        : 0,
+  };
+}
+
 export function isValidStoredAudit(data: unknown): boolean {
   if (!data || typeof data !== "object" || Array.isArray(data)) {
     return false;
@@ -280,6 +364,8 @@ export function normalizeAuditResponse(data: unknown): AuditResponse | null {
     robotsAnalysis: deriveRobotsAnalysis(audit.robotsAnalysis),
     sitemapAnalysis: deriveSitemapAnalysis(audit.sitemapAnalysis),
     socialMetadata: deriveSocialMetadata(audit.socialMetadata),
+    entityAnalysis: deriveEntityAnalysis(audit.entityAnalysis),
+    readabilityAnalysis: deriveReadabilityAnalysis(audit.readabilityAnalysis),
     checks: normalizeChecks(audit.checks),
   };
 }
@@ -302,4 +388,12 @@ export function getAiVisibilitySignals(audit: AuditResponse): AiVisibilitySignal
 
 export function getSocialMetadata(audit: AuditResponse): SocialMetadata {
   return audit.socialMetadata ?? defaultSocialMetadata;
+}
+
+export function getEntityAnalysis(audit: AuditResponse): EntityAnalysis {
+  return audit.entityAnalysis ?? defaultEntityAnalysis;
+}
+
+export function getReadabilityAnalysis(audit: AuditResponse): ReadabilityAnalysis {
+  return audit.readabilityAnalysis ?? defaultReadabilityAnalysis;
 }

@@ -11,12 +11,23 @@ import type {
 } from "./types";
 import {
   getAiVisibilitySignals,
+  getEntityAnalysis,
+  getReadabilityAnalysis,
   getRobotsAnalysis,
   getSitemapAnalysis,
   getSocialMetadata,
   getTrustSignals,
   normalizeAuditResponse,
 } from "./audit-normalize";
+import {
+  formatEntitySourceMessage,
+} from "./entity-extraction";
+import {
+  hasEnoughBodyContent,
+  hasScannableParagraphs,
+  hasStructuredContentBlocks,
+  isEasyForAiAnswerExtraction,
+} from "./readability-check";
 import {
   hasCompleteOpenGraph,
   hasTwitterCard,
@@ -228,8 +239,12 @@ function scoreSchemaMarkup(audit: AuditResponse): CategoryScore {
 function scoreContentStructure(audit: AuditResponse): CategoryScore {
   const internalCheck = getCheck(audit, "internal-links-found");
   const sitemapAnalysis = getSitemapAnalysis(audit);
+  const readability = getReadabilityAnalysis(audit);
   const hasSitemapUrls =
     sitemapAnalysis.urlCount > 0 || sitemapAnalysis.childSitemapCount > 0;
+  const enoughContent = hasEnoughBodyContent(readability);
+  const scannableParagraphs = hasScannableParagraphs(readability);
+  const structuredBlocks = hasStructuredContentBlocks(readability);
   const signals: { score: number; status: AuditCheckStatus }[] = [
     {
       score: audit.headings.h1.length >= 1 ? 100 : 0,
@@ -250,6 +265,22 @@ function scoreContentStructure(audit: AuditResponse): CategoryScore {
     {
       score: hasSitemapUrls ? 100 : 50,
       status: hasSitemapUrls ? "pass" : "warn",
+    },
+    {
+      score: enoughContent ? 100 : readability.wordCount >= 100 ? 50 : 0,
+      status: enoughContent ? "pass" : readability.wordCount >= 100 ? "warn" : "fail",
+    },
+    {
+      score: scannableParagraphs ? 100 : readability.paragraphCount > 0 ? 50 : 0,
+      status: scannableParagraphs
+        ? "pass"
+        : readability.paragraphCount > 0
+          ? "warn"
+          : "fail",
+    },
+    {
+      score: structuredBlocks ? 100 : 50,
+      status: structuredBlocks ? "pass" : "warn",
     },
   ];
 
@@ -302,9 +333,39 @@ function scoreContentStructure(audit: AuditResponse): CategoryScore {
     problems.push("No sitemap.xml could be fetched for content discovery.");
   }
 
-  const summary = sitemapAnalysis.exists
-    ? `Content uses ${audit.headings.h1.length + audit.headings.h2.length + audit.headings.h3.length} headings, ${audit.links.internal} internal links, and a discoverable sitemap.`
-    : `Content uses ${audit.headings.h1.length + audit.headings.h2.length + audit.headings.h3.length} headings and ${audit.links.internal} internal links.`;
+  if (enoughContent) {
+    positives.push(
+      `${readability.wordCount} words and ${readability.paragraphCount} paragraphs provide usable body depth.`,
+    );
+  } else {
+    problems.push(
+      `Only ${readability.wordCount} words detected; content depth is limited for AI extraction.`,
+    );
+  }
+
+  if (scannableParagraphs) {
+    positives.push(
+      `Paragraphs average ${readability.averageParagraphWords} words, which is scannable for AI parsing.`,
+    );
+  } else if (readability.paragraphCount > 0) {
+    problems.push(
+      `Paragraphs average ${readability.averageParagraphWords} words; shorter blocks improve scannability.`,
+    );
+  } else {
+    problems.push("No scannable paragraph structure was detected.");
+  }
+
+  if (structuredBlocks) {
+    positives.push(
+      `${readability.listCount} list(s) and ${readability.tableCount} table(s) add structured content blocks.`,
+    );
+  } else {
+    problems.push("No lists or tables were found to structure page content.");
+  }
+
+  const summary = enoughContent && scannableParagraphs
+    ? `Content uses ${audit.headings.h1.length + audit.headings.h2.length + audit.headings.h3.length} headings, ${readability.wordCount} words, and scannable paragraph blocks.`
+    : `Content structure is limited with ${readability.wordCount} words and ${readability.paragraphCount} paragraph(s).`;
 
   return finalizeCategory({
     id: "content-structure",
@@ -494,8 +555,11 @@ function scoreAiVisibility(audit: AuditResponse): CategoryScore {
   const signals = getAiVisibilitySignals(audit);
   const sitemapAnalysis = getSitemapAnalysis(audit);
   const socialMetadata = getSocialMetadata(audit);
+  const entityAnalysis = getEntityAnalysis(audit);
   const hasCompleteOg = hasCompleteOpenGraph(socialMetadata);
   const hasTwitter = hasTwitterCard(socialMetadata);
+  const hasPrimaryEntity = Boolean(entityAnalysis.primaryEntity);
+  const hasRelatedEntities = entityAnalysis.relatedEntities.length > 0;
   const hasSitemapUrls =
     sitemapAnalysis.urlCount > 0 || sitemapAnalysis.childSitemapCount > 0;
   const signalEntries: { score: number; status: AuditCheckStatus }[] = [
@@ -538,6 +602,22 @@ function scoreAiVisibility(audit: AuditResponse): CategoryScore {
     {
       score: hasTwitter ? 100 : 50,
       status: hasTwitter ? "pass" : "warn",
+    },
+    {
+      score: hasPrimaryEntity
+        ? entityAnalysis.confidence >= 75
+          ? 100
+          : 75
+        : 40,
+      status: hasPrimaryEntity
+        ? entityAnalysis.confidence >= 75
+          ? "pass"
+          : "warn"
+        : "fail",
+    },
+    {
+      score: hasRelatedEntities ? 100 : 50,
+      status: hasRelatedEntities ? "pass" : "warn",
     },
   ];
 
@@ -620,6 +700,21 @@ function scoreAiVisibility(audit: AuditResponse): CategoryScore {
     recommendations.push("Add twitter:card and related Twitter meta tags.");
   }
 
+  if (hasPrimaryEntity) {
+    positives.push(formatEntitySourceMessage(entityAnalysis));
+  } else {
+    problems.push("No primary entity was detected for LLM visibility.");
+    recommendations.push("Add Organization schema with a clear entity name.");
+  }
+
+  if (hasRelatedEntities) {
+    positives.push(
+      `Related entities extracted for LLM context: ${entityAnalysis.relatedEntities.join(", ")}.`,
+    );
+  } else {
+    problems.push("No related entity terms were extracted from page content.");
+  }
+
   const summary =
     base.score >= 80
       ? "Core AI visibility signals are largely in place."
@@ -636,97 +731,65 @@ function scoreAiVisibility(audit: AuditResponse): CategoryScore {
 }
 
 function scoreEntityClarity(audit: AuditResponse): CategoryScore {
-  const aiSignals = getAiVisibilitySignals(audit);
-  const socialMetadata = getSocialMetadata(audit);
-  const hasOrganization = aiSignals.organizationSchema;
-  const hasTitle = Boolean(audit.title);
-  const hasMeta = Boolean(audit.metaDescription);
-  const hasClearH1 = aiSignals.clearH1;
-  const hasOgSiteName = Boolean(socialMetadata.openGraph.siteName);
-  const hasOgType = Boolean(socialMetadata.openGraph.type);
-  const hasOgEntityHints = hasOgSiteName && hasOgType;
+  const entityAnalysis = getEntityAnalysis(audit);
   const positives: string[] = [];
   const problems: string[] = [];
   const recommendations: string[] = [];
 
-  if (hasOrganization) {
-    positives.push("Organization schema clearly identifies the site entity.");
-  } else {
-    problems.push("Organization schema is missing.");
-    recommendations.push("Add Organization schema.");
-  }
-
-  if (hasTitle && hasMeta) {
-    positives.push("Title and meta description provide partial entity context.");
-  } else if (!hasOrganization) {
-    if (!hasTitle) {
-      problems.push("No title to anchor entity recognition.");
-    }
-    if (!hasMeta) {
-      problems.push("No meta description to support entity context.");
-    }
-  }
-
-  if (hasClearH1) {
-    positives.push("Clear H1 supports entity/topic clarity.");
-  } else if (!hasOrganization) {
-    problems.push("Unclear H1 weakens entity/topic clarity.");
-  }
-
-  if (hasOgEntityHints) {
+  if (entityAnalysis.primaryEntity) {
+    positives.push(formatEntitySourceMessage(entityAnalysis));
     positives.push(
-      `og:site_name (${socialMetadata.openGraph.siteName}) and og:type (${socialMetadata.openGraph.type}) clarify entity identity.`,
+      `Entity classified as ${entityAnalysis.entityType} with ${entityAnalysis.confidence}% confidence.`,
     );
-  } else if (!hasOrganization) {
-    if (!hasOgSiteName) {
-      problems.push("og:site_name is missing for entity identification in previews.");
-    }
-    if (!hasOgType) {
-      problems.push("og:type is missing to classify the page entity context.");
-    }
+  } else {
+    problems.push("No primary entity could be detected.");
+    recommendations.push("Add Organization schema with a clear entity name.");
   }
 
-  let score: number;
+  if (entityAnalysis.relatedEntities.length > 0) {
+    positives.push(
+      `Related entities support topic context: ${entityAnalysis.relatedEntities.join(", ")}.`,
+    );
+  } else {
+    problems.push("No related entity terms were extracted from headings or metadata.");
+  }
+
+  let score = entityAnalysis.confidence;
+
+  if (entityAnalysis.relatedEntities.length >= 2) {
+    score = Math.min(100, score + 5);
+  }
+
+  if (!entityAnalysis.primaryEntity) {
+    score = Math.min(score, 25);
+  }
+
   let status: CategoryScoreStatus;
   let issueCount: number;
 
-  if (hasOrganization) {
-    score = 100;
+  if (score >= 80) {
     status = "pass";
-    issueCount = 0;
-  } else if (hasTitle && hasMeta && hasClearH1 && hasOgEntityHints) {
-    score = 70;
+    issueCount = problems.length > 0 ? 1 : 0;
+  } else if (score >= 50) {
     status = "warning";
-    issueCount = 1;
-  } else if (hasTitle && hasMeta && hasClearH1) {
-    score = 65;
-    status = "warning";
-    issueCount = 1;
-  } else if (hasTitle && hasMeta && hasOgEntityHints) {
-    score = 65;
-    status = "warning";
-    issueCount = 1;
-  } else if (hasTitle && hasMeta) {
-    score = 60;
-    status = "warning";
-    issueCount = 1;
-  } else if (hasTitle || hasMeta) {
-    score = 40;
-    status = "warning";
-    issueCount = 1;
+    issueCount = Math.max(1, problems.length);
   } else {
-    score = 20;
     status = "fail";
-    issueCount = 2;
+    issueCount = Math.max(2, problems.length);
   }
 
-  const summary = hasOrganization
-    ? "Strong entity clarity from Organization schema."
-    : hasOgEntityHints
-      ? "Partial entity clarity from Open Graph site identity hints; Organization schema is missing."
-      : hasTitle && hasMeta
-        ? "Partial entity clarity from title/meta only; Organization schema is missing."
-        : "Weak entity clarity without Organization schema or complete page metadata.";
+  if (entityAnalysis.confidence < 75 && entityAnalysis.primaryEntity) {
+    problems.push(
+      "Entity confidence is moderate; stronger schema or site_name signals would improve LLM clarity.",
+    );
+    recommendations.push("Strengthen entity signals with Organization schema.");
+  }
+
+  const summary = entityAnalysis.primaryEntity
+    ? entityAnalysis.confidence >= 80
+      ? `Strong entity clarity for "${entityAnalysis.primaryEntity}" (${entityAnalysis.entityType}).`
+      : `Partial entity clarity for "${entityAnalysis.primaryEntity}"; confidence is ${entityAnalysis.confidence}%.`
+    : "Weak entity clarity without a detectable primary entity.";
 
   return finalizeCategory({
     id: "entity-clarity",
@@ -743,8 +806,12 @@ function scoreEntityClarity(audit: AuditResponse): CategoryScore {
 
 function scoreFaqReadiness(audit: AuditResponse): CategoryScore {
   const aiSignals = getAiVisibilitySignals(audit);
+  const readability = getReadabilityAnalysis(audit);
   const hasFaq = aiSignals.faqSchema;
-  const visibleFaqHints = aiSignals.visibleFaqHints;
+  const visibleFaqHints =
+    aiSignals.visibleFaqHints ||
+    readability.hasFAQText ||
+    readability.questionHeadingCount > 0;
   const positives: string[] = [];
   const problems: string[] = [];
   const recommendations: string[] = [];
@@ -760,10 +827,36 @@ function scoreFaqReadiness(audit: AuditResponse): CategoryScore {
     }
   }
 
+  if (readability.hasFAQText) {
+    positives.push("Visible FAQ-related text was detected on the page.");
+  }
+
+  if (readability.questionHeadingCount > 0) {
+    positives.push(
+      `${readability.questionHeadingCount} question-style heading(s) support FAQ-style answers.`,
+    );
+  } else if (!hasFaq) {
+    problems.push("No question-style headings were found for FAQ extraction.");
+  }
+
+  let score = hasFaq ? 100 : 30;
+
+  if (!hasFaq && readability.hasFAQText) {
+    score = Math.max(score, 50);
+  }
+
+  if (!hasFaq && readability.questionHeadingCount > 0) {
+    score = Math.max(score, 45);
+  }
+
+  if (!hasFaq && visibleFaqHints) {
+    score = Math.max(score, 45);
+  }
+
   return finalizeCategory({
     id: "faq-readiness",
     label: "FAQ Readiness",
-    score: hasFaq ? 100 : visibleFaqHints ? 45 : 30,
+    score,
     status: hasFaq ? "pass" : "warning",
     issueCount: hasFaq ? 0 : 1,
     summary: hasFaq
@@ -778,16 +871,41 @@ function scoreFaqReadiness(audit: AuditResponse): CategoryScore {
 }
 
 function scoreAiAnswerReadiness(audit: AuditResponse): CategoryScore {
+  const entityAnalysis = getEntityAnalysis(audit);
+  const readability = getReadabilityAnalysis(audit);
+  const easyExtraction = isEasyForAiAnswerExtraction(readability);
   const checks = [
     getCheck(audit, "title-exists"),
     getCheck(audit, "meta-description-exists"),
     getCheck(audit, "one-h1-exists"),
     getCheck(audit, "json-ld-schema-detected"),
     getCheck(audit, "internal-links-found"),
+    getCheck(audit, "enough-body-content"),
+    getCheck(audit, "scannable-paragraphs"),
   ].filter((check): check is AuditCheck => Boolean(check));
 
   const scores = checks.map((check) => checkToPoints(check.status));
   const statuses = checks.map((check) => check.status);
+
+  if (entityAnalysis.primaryEntity) {
+    scores.push(entityAnalysis.confidence >= 75 ? 100 : 75);
+    statuses.push(entityAnalysis.confidence >= 75 ? "pass" : "warn");
+  } else {
+    scores.push(40);
+    statuses.push("warn");
+  }
+
+  if (easyExtraction) {
+    scores.push(100);
+    statuses.push("pass");
+  } else if (readability.wordCount > 0) {
+    scores.push(50);
+    statuses.push("warn");
+  } else {
+    scores.push(0);
+    statuses.push("fail");
+  }
+
   const base = buildCategoryScore("AI Answer Readiness", scores, statuses);
   const positives: string[] = [];
   const problems: string[] = [];
@@ -797,16 +915,32 @@ function scoreAiAnswerReadiness(audit: AuditResponse): CategoryScore {
     audit.metaDescription && "meta description",
     audit.headings.h1.length === 1 && "single H1",
     audit.schemaTypes.length > 0 && "schema markup",
+    entityAnalysis.primaryEntity && "primary entity",
     audit.links.internal > 0 && "internal links",
+    hasEnoughBodyContent(readability) && "body content depth",
+    hasScannableParagraphs(readability) && "scannable paragraphs",
   ].filter(Boolean);
 
-  if (readySignals.length === 5) {
+  if (readySignals.length >= 6) {
     positives.push(
-      "AI can extract a direct answer using title, meta, H1, schema, and internal links.",
+      "AI can extract a direct answer using title, meta, H1, schema, entity, and readable content blocks.",
     );
   } else {
     positives.push(
       `Answer signals present: ${readySignals.join(", ") || "none"}.`,
+    );
+  }
+
+  if (easyExtraction) {
+    positives.push(
+      "Content is easy for AI systems to extract direct answers from.",
+    );
+  } else {
+    problems.push(
+      "Content is difficult for AI systems to extract direct answers from.",
+    );
+    recommendations.push(
+      "Add concise paragraphs, lists/tables, and question-style headings.",
     );
   }
 
@@ -830,15 +964,31 @@ function scoreAiAnswerReadiness(audit: AuditResponse): CategoryScore {
     recommendations.push("Add structured data markup.");
   }
 
+  if (!entityAnalysis.primaryEntity) {
+    problems.push("No primary entity detected to anchor AI answer context.");
+    recommendations.push("Add Organization schema with a clear entity name.");
+  }
+
   if (audit.links.internal === 0) {
     problems.push("No internal links to support follow-up answers.");
     recommendations.push("Add internal links.");
   }
 
-  const summary =
-    base.score >= 80
-      ? "Page has strong signals for AI answer extraction."
-      : "Missing signals reduce the chance AI can surface a direct answer.";
+  if (!hasEnoughBodyContent(readability)) {
+    problems.push(
+      `Only ${readability.wordCount} words of body content limit answer depth.`,
+    );
+  }
+
+  if (!hasScannableParagraphs(readability)) {
+    problems.push("Paragraph structure is not scannable for AI answer extraction.");
+  }
+
+  const summary = easyExtraction && base.score >= 80
+    ? "Page has strong signals for AI answer extraction with readable content blocks."
+    : easyExtraction
+      ? "Readable content exists, but some answer signals are still missing."
+      : "Content is difficult for AI systems to extract direct answers from.";
 
   return finalizeCategory({
     id: "ai-answer-readiness",

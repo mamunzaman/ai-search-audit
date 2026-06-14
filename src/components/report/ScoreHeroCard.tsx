@@ -85,6 +85,45 @@ function ExtractedDataPanel({ summary }: { summary: ExtractedDataSummary }) {
       label: "Twitter card",
       value: summary.twitterCard,
     },
+    {
+      label: "Primary entity",
+      value: summary.primaryEntity,
+    },
+    {
+      label: "Entity type",
+      value: summary.entityType,
+    },
+    {
+      label: "Entity confidence",
+      value: `${summary.entityConfidence}%`,
+    },
+    {
+      label: "Related entities",
+      value:
+        summary.relatedEntities.length > 0
+          ? summary.relatedEntities.join(", ")
+          : "None",
+    },
+    {
+      label: "Word count",
+      value: summary.wordCount,
+    },
+    {
+      label: "Paragraphs",
+      value: summary.paragraphCount,
+    },
+    {
+      label: "Lists / tables",
+      value: `${summary.listCount} / ${summary.tableCount}`,
+    },
+    {
+      label: "Question headings",
+      value: summary.questionHeadingCount,
+    },
+    {
+      label: "FAQ text",
+      value: summary.hasFAQText ? "Found" : "Missing",
+    },
   ];
 
   return (

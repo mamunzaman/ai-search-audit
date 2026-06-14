@@ -17,6 +17,8 @@ import {
   scoreToStatusLabel,
 } from "./audit-score";
 import {
+  getEntityAnalysis,
+  getReadabilityAnalysis,
   getRobotsAnalysis,
   getSitemapAnalysis,
   getSocialMetadata,
@@ -46,6 +48,16 @@ export type ExtractedDataSummary = {
   ogDescriptionFound: boolean;
   ogImageFound: boolean;
   twitterCard: string;
+  primaryEntity: string;
+  entityType: string;
+  entityConfidence: number;
+  relatedEntities: string[];
+  wordCount: number;
+  paragraphCount: number;
+  listCount: number;
+  tableCount: number;
+  questionHeadingCount: number;
+  hasFAQText: boolean;
 };
 
 export type ReportViewData = {
@@ -65,6 +77,9 @@ export type ReportViewData = {
   links: AuditResponse["links"];
   checks: AuditCheck[];
   extractedSummary: ExtractedDataSummary;
+  primaryEntity: string;
+  entityType: string;
+  entityConfidence: number;
   strengths: ReportStrength[];
   criticalIssues: ReportStrength[];
   categories: ReportCategory[];
@@ -134,6 +149,8 @@ function buildExtractedSummary(audit: AuditResponse): ExtractedDataSummary {
   const robotsAnalysis = getRobotsAnalysis(audit);
   const sitemapAnalysis = getSitemapAnalysis(audit);
   const socialMetadata = getSocialMetadata(audit);
+  const entityAnalysis = getEntityAnalysis(audit);
+  const readability = getReadabilityAnalysis(audit);
 
   return {
     h1Count: audit.headings.h1.length,
@@ -152,6 +169,16 @@ function buildExtractedSummary(audit: AuditResponse): ExtractedDataSummary {
     ogDescriptionFound: Boolean(socialMetadata.openGraph.description),
     ogImageFound: Boolean(socialMetadata.openGraph.image),
     twitterCard: socialMetadata.twitter.card ?? "Missing",
+    primaryEntity: entityAnalysis.primaryEntity ?? "Not detected",
+    entityType: entityAnalysis.entityType,
+    entityConfidence: entityAnalysis.confidence,
+    relatedEntities: entityAnalysis.relatedEntities,
+    wordCount: readability.wordCount,
+    paragraphCount: readability.paragraphCount,
+    listCount: readability.listCount,
+    tableCount: readability.tableCount,
+    questionHeadingCount: readability.questionHeadingCount,
+    hasFAQText: readability.hasFAQText,
   };
 }
 
@@ -233,6 +260,7 @@ export function auditToReportView(
 
   const domain = normalizeDomain(normalized.finalUrl) || fallbackDomain;
   const scores = calculateAuditScores(normalized);
+  const entityAnalysis = getEntityAnalysis(normalized);
 
   return {
     domain,
@@ -251,6 +279,9 @@ export function auditToReportView(
     links: normalized.links,
     checks: normalized.checks,
     extractedSummary: buildExtractedSummary(normalized),
+    primaryEntity: entityAnalysis.primaryEntity ?? "Not detected",
+    entityType: entityAnalysis.entityType,
+    entityConfidence: entityAnalysis.confidence,
     strengths: buildHeroStrengths(scores.categories),
     criticalIssues: buildHeroIssues(scores.categories),
     categories: mapCategoryScores(scores.categories),
@@ -276,6 +307,9 @@ export function getPlaceholderReportView(domain: string): ReportViewData {
     schemaTypes: [],
     links: { internal: 0, external: 0 },
     checks: [],
+    primaryEntity: "Not detected",
+    entityType: "Unknown",
+    entityConfidence: 0,
     extractedSummary: {
       h1Count: 0,
       h2Count: 0,
@@ -293,6 +327,16 @@ export function getPlaceholderReportView(domain: string): ReportViewData {
       ogDescriptionFound: false,
       ogImageFound: false,
       twitterCard: "Missing",
+      primaryEntity: "Not detected",
+      entityType: "Unknown",
+      entityConfidence: 0,
+      relatedEntities: [],
+      wordCount: 0,
+      paragraphCount: 0,
+      listCount: 0,
+      tableCount: 0,
+      questionHeadingCount: 0,
+      hasFAQText: false,
     },
     strengths,
     criticalIssues,

@@ -28,6 +28,9 @@ export function ReportPageClient({ domain }: ReportPageClientProps) {
       <ReportHeader
         domain={view.domain}
         pageTitle={view.isRealData ? view.title : undefined}
+        primaryEntity={view.isRealData ? view.primaryEntity : undefined}
+        entityType={view.isRealData ? view.entityType : undefined}
+        entityConfidence={view.isRealData ? view.entityConfidence : undefined}
         finalUrl={view.isRealData ? view.finalUrl : undefined}
         httpStatus={view.statusCode}
         score={view.score}

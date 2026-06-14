@@ -8,5 +8,5 @@
 
 ## Done
 
-- Open Graph + Twitter Card analysis: extraction, checks, trust/AI/entity scoring
-- schemaVersion 5 on saved audits with socialMetadata defaults
+- Readability + AI answer readiness checks: word/paragraph depth, lists/tables, FAQ text
+- schemaVersion 7 on saved audits with readabilityAnalysis defaults

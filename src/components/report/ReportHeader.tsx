@@ -4,6 +4,9 @@ import { reportMeta } from "@/lib/report-data";
 type ReportHeaderProps = {
   domain: string;
   pageTitle?: string;
+  primaryEntity?: string;
+  entityType?: string;
+  entityConfidence?: number;
   finalUrl?: string;
   httpStatus?: number | null;
   score?: number;
@@ -14,6 +17,9 @@ type ReportHeaderProps = {
 export function ReportHeader({
   domain,
   pageTitle,
+  primaryEntity,
+  entityType,
+  entityConfidence,
   finalUrl,
   httpStatus = null,
   score = reportMeta.score,
@@ -28,6 +34,16 @@ export function ReportHeader({
         <h2 className="text-display-lg text-on-surface">{domain}</h2>
         {pageTitle ? (
           <p className="mt-1 text-headline-md text-on-surface">{pageTitle}</p>
+        ) : null}
+        {primaryEntity && primaryEntity !== "Not detected" ? (
+          <p className="mt-1 text-body-md text-on-surface-variant">
+            Primary entity: <span className="font-medium text-on-surface">{primaryEntity}</span>
+            {entityType ? ` (${entityType}` : ""}
+            {typeof entityConfidence === "number" && entityConfidence > 0
+              ? `, ${entityConfidence}% confidence`
+              : ""}
+            {entityType ? ")" : ""}
+          </p>
         ) : null}
         {finalUrl ? (
           <p className="mt-1 flex items-center gap-1.5 text-body-md text-on-surface-variant">

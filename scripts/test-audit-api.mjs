@@ -119,6 +119,33 @@ function isAuditResponse(data) {
     return false;
   }
 
+  if (
+    !data.entityAnalysis ||
+    typeof data.entityAnalysis !== "object" ||
+    (data.entityAnalysis.primaryEntity !== null &&
+      typeof data.entityAnalysis.primaryEntity !== "string") ||
+    typeof data.entityAnalysis.entityType !== "string" ||
+    typeof data.entityAnalysis.confidence !== "number" ||
+    !Array.isArray(data.entityAnalysis.sources) ||
+    !Array.isArray(data.entityAnalysis.relatedEntities)
+  ) {
+    return false;
+  }
+
+  if (
+    !data.readabilityAnalysis ||
+    typeof data.readabilityAnalysis.wordCount !== "number" ||
+    typeof data.readabilityAnalysis.paragraphCount !== "number" ||
+    typeof data.readabilityAnalysis.averageParagraphWords !== "number" ||
+    typeof data.readabilityAnalysis.listCount !== "number" ||
+    typeof data.readabilityAnalysis.tableCount !== "number" ||
+    typeof data.readabilityAnalysis.questionHeadingCount !== "number" ||
+    typeof data.readabilityAnalysis.hasFAQText !== "boolean" ||
+    typeof data.readabilityAnalysis.shortAnswerBlocks !== "number"
+  ) {
+    return false;
+  }
+
   return data.checks.every(
     (check) =>
       check &&
@@ -174,6 +201,12 @@ async function runTest(test) {
   );
   console.log(
     `social: ogTitle=${Boolean(data.socialMetadata.openGraph.title)}, ogDesc=${Boolean(data.socialMetadata.openGraph.description)}, ogImage=${Boolean(data.socialMetadata.openGraph.image)}, twitterCard=${data.socialMetadata.twitter.card ?? "none"}`,
+  );
+  console.log(
+    `entity: primary=${data.entityAnalysis.primaryEntity ?? "none"}, type=${data.entityAnalysis.entityType}, confidence=${data.entityAnalysis.confidence}, related=[${data.entityAnalysis.relatedEntities.join(", ")}]`,
+  );
+  console.log(
+    `readability: words=${data.readabilityAnalysis.wordCount}, paragraphs=${data.readabilityAnalysis.paragraphCount}, lists=${data.readabilityAnalysis.listCount}, tables=${data.readabilityAnalysis.tableCount}, questions=${data.readabilityAnalysis.questionHeadingCount}, faqText=${data.readabilityAnalysis.hasFAQText}`,
   );
   console.log(`checks: ${summarizeChecks(data.checks)}`);
 

@@ -124,6 +124,33 @@ export type SocialMetadata = {
   twitter: TwitterCardMetadata;
 };
 
+export type EntityType =
+  | "Organization"
+  | "Website"
+  | "Event"
+  | "LocalBusiness"
+  | "Article"
+  | "Unknown";
+
+export type EntityAnalysis = {
+  primaryEntity: string | null;
+  entityType: EntityType;
+  confidence: number;
+  sources: string[];
+  relatedEntities: string[];
+};
+
+export type ReadabilityAnalysis = {
+  wordCount: number;
+  paragraphCount: number;
+  averageParagraphWords: number;
+  listCount: number;
+  tableCount: number;
+  questionHeadingCount: number;
+  hasFAQText: boolean;
+  shortAnswerBlocks: number;
+};
+
 export type AuditResponse = {
   url: string;
   finalUrl: string;
@@ -140,6 +167,8 @@ export type AuditResponse = {
   robotsAnalysis: RobotsAnalysis;
   sitemapAnalysis: SitemapAnalysis;
   socialMetadata: SocialMetadata;
+  entityAnalysis: EntityAnalysis;
+  readabilityAnalysis: ReadabilityAnalysis;
   checks: AuditCheck[];
 };
 

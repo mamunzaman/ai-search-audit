@@ -1,6 +1,6 @@
 # Project Status
 
-**Last Update:** 13 June 2026 (Open Graph + Twitter Card analysis)
+**Last Update:** 13 June 2026 (readability + AI answer readiness)
 
 ## Completed Features
 - [x] Backup branch `backup/ui-before-html-rebuild` with pre-rebuild UI
@@ -17,6 +17,8 @@
 - [x] robots.txt analysis — fetch, parse sitemap/disallow rules, trust scoring checks
 - [x] sitemap.xml analysis — fetch up to 3 sitemaps, parse URLs/index, trust/AI scoring
 - [x] Open Graph + Twitter Card analysis — social preview metadata, trust/AI/entity scoring
+- [x] Entity extraction — rule-based primary entity, type, confidence, related terms for LLM visibility
+- [x] Readability analysis — body depth, scannable paragraphs, lists/tables, FAQ text for AI answer readiness
 - [x] Design tokens in `globals.css` (DESIGN_SYSTEM + Stitch HTML)
 - [x] Audit API live-tested + hardened (malformed JSON 400, response shape guards)
 - [x] Component structure: `ui/`, `home/`, `report/`, `processing/`, `icons/`, `lib/`
