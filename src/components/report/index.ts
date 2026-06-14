@@ -24,4 +24,6 @@ export { ReportTopNav } from "./ReportTopNav";
 export { SemanticDistributionCard } from "./SemanticDistributionCard";
 export { SeoHealthPageClient } from "./SeoHealthPageClient";
 export { StrategicOverviewCard } from "./StrategicOverviewCard";
+export { EntityClarityDetailPage } from "./EntityClarityDetailPage";
+export { TrustSignalsDetailPage } from "./TrustSignalsDetailPage";
 export { VisualInsightsCarousel } from "./VisualInsightsCarousel";

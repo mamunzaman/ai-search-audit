@@ -1,17 +1,21 @@
 # Project Status
 
-**Last Update:** 14 June 2026 (AI Visibility hydration fix)
+**Last Update:** 14 June 2026 (Entity Clarity detail page)
 
 ## Completed Features
 - [x] Backup branch `backup/ui-before-html-rebuild` with pre-rebuild UI
 - [x] Clean `src/` rebuild from Stitch HTML references
 - [x] Homepage (`/`) — header, hero, dashboard preview, features, how-it-works, sample metrics, CTA, footer
 - [x] Report page (`/report`) — V2 executive layout: sidebar, top nav, score card, strategic overview, radar, growth, trend, recommendations, footer
+- [x] Entity Clarity detail page (`/report/entity-clarity`) — HTML reference layout: score hero, KPI strip, relationship map SVG, detailed findings, recommendation, benchmark table, schema accordion
+- [x] Entity Clarity data layer — `buildEntityClarityDetailView()` in `src/data/report/entityClarityData.ts`
+- [x] Trust Signals detail page (`/report/trust-signals`) — HTML reference layout: score hero, top recommendation, KPI strip, verification checklist, industry benchmark, severity breakdown, schema accordion
+- [x] Trust Signals data layer — `buildTrustSignalsDetailView()` in `src/data/report/trustSignalsData.ts`
 - [x] AI Visibility detail page (`/report/ai-visibility`) — HTML reference layout: centered app-frame (`max-w-[1440px]`), horizontal hero (score | title | VS Competitors), 4 KPI cards, equilibrium matrix + audit breakdown (1:2), issues row, JSON-LD accordion
 - [x] AI Visibility data layer — `buildAiVisibilityDetailView()` in `src/data/report/aiVisibilityData.ts`
 - [x] SEO Health detail page (`/report/seo-health`) — executive header, KPI metrics, trend chart, issue spotlight, grouped findings, issues/examples split, recommendations
 - [x] Category detail components — reusable layout, header, KPI strip, findings table, issues, recommendations, benchmark, trend, examples
-- [x] Sidebar navigation — Overview, SEO Health, AI Visibility links with domain query param
+- [x] Sidebar navigation — Overview, SEO Health, AI Visibility, Entity Clarity, Trust Signals links with domain query param
 - [x] Processing page (`/processing`) — simulated progress + real `/api/audit` call
 - [x] Processing → Report flow — sessionStorage `ai-search-audit:last-report`, redirect on success
 - [x] Report uses real audit data visibly — dynamic scores, radar, growth potential, strategic overview, recommendations
@@ -36,7 +40,7 @@
 - [x] Homepage typography fidelity: paired `font-*`/`text-*` classes + Icon `data-icon`
 
 ## In Progress
-- [ ] Remaining category detail pages (Entity Clarity, Trust Signals, WCAG 2.2, etc.)
+- [ ] Remaining category detail pages (Content Structure, Schema Markup, WCAG 2.2, etc.)
 
 ## Pending Tasks
 - [ ] AI scoring layer (OpenAI/Gemini)

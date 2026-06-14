@@ -23,6 +23,14 @@ function buildNavHref(slug: string | undefined, domain: string): string {
     return `/report/ai-visibility?domain=${encoded}`;
   }
 
+  if (slug === "trust-signals") {
+    return `/report/trust-signals?domain=${encoded}`;
+  }
+
+  if (slug === "entity-clarity") {
+    return `/report/entity-clarity?domain=${encoded}`;
+  }
+
   return "#";
 }
 

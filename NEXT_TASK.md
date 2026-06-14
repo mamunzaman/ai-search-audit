@@ -1,15 +1,15 @@
 # Next Task
 
-**Goal:** Build remaining category detail pages (Entity Clarity, Trust Signals, WCAG 2.2, etc.) using the AI Visibility / SEO Health pattern.
+**Goal:** Build remaining category detail pages (Content Structure, Schema Markup, WCAG 2.2) using the Entity Clarity / Trust Signals pattern.
 
 **Verify:**
-- AI Visibility page visually matches `docs/ai-visibility-reference.html` at 375/768/1024/1440px
-- Each new category page matches its reference HTML layout
-- Sidebar links route correctly with domain query param
+- Entity Clarity page matches `docs/entity-clarity-reference.html` at 375/768/1024/1440px
+- Sidebar Entity Clarity link routes with domain query param
+- Real audit data loads after hydration without mismatch
 
 ## Done
 
-- AI Visibility detail page — custom HTML layout: matrix hero, KPIs, equilibrium matrix, audit breakdown, critical issue, recommendation, JSON-LD accordion
-- Full Accessibility Audit Report — WCAG 2.2 findings table, carousel card, detailed section
-- SEO Health detail page — reference layout: header+benchmark, KPI strip, trend+spotlight, findings, issues/examples
-- Executive Summary visual density — compact score card, concise audit summary, 3 KPI row
+- Entity Clarity detail page — score hero, KPI strip, relationship map SVG, detailed findings, recommendation, benchmark table, schema accordion
+- Trust Signals detail page — verification checklist, benchmark, severity breakdown, entity mapping SVG
+- AI Visibility detail page — equilibrium matrix, audit breakdown, issues row, JSON-LD accordion
+- SEO Health detail page — header+benchmark, KPI strip, trend+spotlight, findings, issues/examples
