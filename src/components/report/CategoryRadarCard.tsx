@@ -41,15 +41,15 @@ export function CategoryRadarCard({ points }: CategoryRadarCardProps) {
 
   return (
     <div
-      className="animate-fade-in rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow"
+      className="flex h-full flex-col overflow-hidden rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow animate-fade-in"
       style={{ animationDelay: "0.3s" }}
     >
-      <div className="mb-stack-md flex items-center justify-between border-b border-outline-variant pb-stack-sm">
+      <div className="mb-stack-md flex h-12 shrink-0 items-center justify-between border-b border-outline-variant pb-stack-sm">
         <h3 className="text-headline-md">Category Radar</h3>
         <Icon name="hub" className="text-outline" />
       </div>
-      <div className="relative flex h-[300px] items-center justify-center p-4">
-        <svg className="h-full w-full max-w-[240px]" viewBox="0 0 200 200">
+      <div className="flex min-h-0 flex-1 items-center justify-center overflow-hidden p-2">
+        <svg className="h-full w-full max-h-full max-w-[240px]" viewBox="0 0 200 200">
           {[1, 0.75, 0.5, 0.25].map((scale) => (
             <polygon
               key={scale}

@@ -4,8 +4,9 @@
 
 **Verify:**
 - AI summaries augment rule-based trust/visibility signals
-- V2 report layout stays balanced with real + AI narrative data
+- Visual Insights carousel stays balanced with real + AI narrative data
 
 ## Done
 
-- Executive Summary visual density — compact score card, concise audit summary, 3 KPI row
+- Visual Insights carousel — 5 scrollable insight cards with snap + nav buttons
+- Visual Insights equal card height — fixed 360px slides, flex-fill chart areas

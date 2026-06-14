@@ -52,22 +52,26 @@ export function ReadinessTrendCard({ points }: ReadinessTrendCardProps) {
 
   return (
     <div
-      className="animate-fade-in rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow"
+      className="flex h-full flex-col overflow-hidden rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow animate-fade-in"
       style={{ animationDelay: "0.5s" }}
     >
-      <div className="mb-stack-md flex items-center justify-between border-b border-outline-variant pb-stack-sm">
-        <div>
-          <h3 className="text-headline-md">Readiness Trend</h3>
+      <div className="mb-stack-md flex h-12 shrink-0 items-center justify-between border-b border-outline-variant pb-stack-sm">
+        <div className="min-w-0">
+          <h3 className="line-clamp-1 text-headline-md">Readiness Trend</h3>
           <p className="text-[10px] font-bold uppercase tracking-wider text-outline">
             Projected trend
           </p>
         </div>
-        <Icon name="trending_up" className="text-outline" />
+        <Icon name="trending_up" className="shrink-0 text-outline" />
       </div>
-      <div className="relative h-[300px]">
-        <svg className="h-full w-full" viewBox={`0 0 ${width} ${height}`}>
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <svg
+          className="min-h-0 w-full flex-1"
+          preserveAspectRatio="none"
+          viewBox={`0 0 ${width} ${height}`}
+        >
           <defs>
-            <linearGradient id="area-gradient" x1="0" x2="0" y1="0" y2="1">
+            <linearGradient id="area-gradient-trend" x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stopColor="#1536B8" stopOpacity="0.2" />
               <stop offset="100%" stopColor="#1536B8" stopOpacity="0" />
             </linearGradient>
@@ -83,7 +87,7 @@ export function ReadinessTrendCard({ points }: ReadinessTrendCardProps) {
               y2={y}
             />
           ))}
-          <path d={areaPath} fill="url(#area-gradient)" />
+          <path d={areaPath} fill="url(#area-gradient-trend)" />
           <path
             d={linePath}
             fill="none"
@@ -103,7 +107,7 @@ export function ReadinessTrendCard({ points }: ReadinessTrendCardProps) {
             r="5"
           />
         </svg>
-        <div className="mt-2 flex justify-between px-1 text-[10px] font-bold text-outline">
+        <div className="flex shrink-0 justify-between px-1 pt-2 text-[10px] font-bold text-outline">
           <span>Start</span>
           <span>Mid</span>
           <span>Projected</span>

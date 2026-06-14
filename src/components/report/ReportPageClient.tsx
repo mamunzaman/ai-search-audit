@@ -1,13 +1,11 @@
 "use client";
 
 import {
-  CategoryRadarCard,
   ExecutiveScoreCard,
-  GrowthPotentialCard,
   HighImpactRecommendationsTable,
-  ReadinessTrendCard,
   ReportLayout,
   StrategicOverviewCard,
+  VisualInsightsCarousel,
 } from "@/components/report";
 import { buildReportView } from "@/lib/audit/audit-to-report";
 import { buildReportV2View } from "@/lib/audit/report-v2";
@@ -28,11 +26,13 @@ export function ReportPageClient({ domain }: ReportPageClientProps) {
         <StrategicOverviewCard data={data.strategicOverview} />
       </section>
 
-      <section className="grid grid-cols-1 gap-gutter md:grid-cols-2 lg:grid-cols-3">
-        <CategoryRadarCard points={data.radarPoints} />
-        <GrowthPotentialCard areas={data.growthAreas} />
-        <ReadinessTrendCard points={data.trendPoints} />
-      </section>
+      <VisualInsightsCarousel
+        radarPoints={data.radarPoints}
+        growthAreas={data.growthAreas}
+        trendPoints={data.trendPoints}
+        semanticDistribution={data.semanticDistribution}
+        llmIndexStatus={data.llmIndexStatus}
+      />
 
       <HighImpactRecommendationsTable
         rows={data.recommendations}

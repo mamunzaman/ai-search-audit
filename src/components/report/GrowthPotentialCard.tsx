@@ -8,15 +8,15 @@ type GrowthPotentialCardProps = {
 export function GrowthPotentialCard({ areas }: GrowthPotentialCardProps) {
   return (
     <div
-      className="animate-fade-in rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow"
+      className="flex h-full flex-col overflow-hidden rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow animate-fade-in"
       style={{ animationDelay: "0.4s" }}
     >
-      <div className="mb-stack-md flex items-center justify-between border-b border-outline-variant pb-stack-sm">
+      <div className="mb-stack-md flex h-12 shrink-0 items-center justify-between border-b border-outline-variant pb-stack-sm">
         <h3 className="text-headline-md">Growth Potential</h3>
         <Icon name="bar_chart" className="text-outline" />
       </div>
-      <div className="flex h-[300px] flex-col justify-end gap-6 px-4">
-        <div className="space-y-4">
+      <div className="flex min-h-0 flex-1 flex-col justify-center overflow-hidden px-2">
+        <div className="space-y-3">
           {areas.map((area) => {
             const gainWidth = Math.max(0, area.potential - area.current);
             return (
@@ -41,7 +41,7 @@ export function GrowthPotentialCard({ areas }: GrowthPotentialCardProps) {
             );
           })}
         </div>
-        <div className="mt-2 flex gap-4">
+        <div className="mt-stack-md flex shrink-0 gap-4">
           <div className="flex items-center gap-1">
             <div className="h-3 w-3 rounded bg-primary" />
             <span className="text-[10px] font-bold text-on-surface-variant">

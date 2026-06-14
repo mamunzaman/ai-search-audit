@@ -30,6 +30,17 @@ export type ReportV2RadarPoint = {
   score: number;
 };
 
+export type ReportV2SemanticBar = {
+  label: string;
+  shortLabel: string;
+  value: number;
+};
+
+export type ReportV2LlmReadiness = {
+  name: string;
+  value: number;
+};
+
 export type ReportV2RecommendationRow = {
   title: string;
   description: string;
@@ -54,6 +65,8 @@ export type ReportV2ViewData = {
   radarPoints: ReportV2RadarPoint[];
   growthAreas: ReportV2GrowthArea[];
   trendPoints: number[];
+  semanticDistribution: ReportV2SemanticBar[];
+  llmIndexStatus: ReportV2LlmReadiness[];
   recommendations: ReportV2RecommendationRow[];
   criticalCount: number;
   optimizationCount: number;
@@ -149,6 +162,47 @@ function buildRecommendationRows(
   return rows.slice(0, 5);
 }
 
+function buildSemanticDistribution(
+  categories: ReportCategory[],
+): ReportV2SemanticBar[] {
+  return RADAR_CATEGORY_ORDER.map((item) => ({
+    label: item.label,
+    shortLabel: item.shortLabel,
+    value: getCategoryScore(categories, item.label),
+  }));
+}
+
+function buildLlmIndexStatus(categories: ReportCategory[]): ReportV2LlmReadiness[] {
+  const aiVisibility = getCategoryScore(categories, "AI Visibility");
+  const entityClarity = getCategoryScore(categories, "Entity Clarity");
+  const trustSignals = getCategoryScore(categories, "Trust Signals");
+
+  const weighted = (aiWeight: number, entityWeight: number, trustWeight: number) =>
+    Math.min(
+      100,
+      Math.round(
+        aiVisibility * aiWeight +
+          entityClarity * entityWeight +
+          trustSignals * trustWeight,
+      ),
+    );
+
+  return [
+    {
+      name: "GPT-4o Search",
+      value: weighted(0.5, 0.3, 0.2),
+    },
+    {
+      name: "Claude 3.5 Sonnet",
+      value: weighted(0.4, 0.35, 0.25),
+    },
+    {
+      name: "Perplexity AI",
+      value: weighted(0.45, 0.25, 0.3),
+    },
+  ];
+}
+
 function buildAuditSummary(view: ReportViewData, potentialGain: number): string {
   const trustScore = getCategoryScore(view.categories, "Trust Signals");
   const seoScore = getCategoryScore(view.categories, "SEO Health");
@@ -231,6 +285,8 @@ export function buildReportV2View(view: ReportViewData): ReportV2ViewData {
           { label: "Authority/E-E-A-T", current: 88, potential: 98 },
         ],
     trendPoints: buildProjectedTrend(view.score),
+    semanticDistribution: buildSemanticDistribution(categories),
+    llmIndexStatus: buildLlmIndexStatus(categories),
     recommendations: recommendationRows,
     criticalCount: recommendationRows.filter((row) => row.status === "Critical")
       .length,

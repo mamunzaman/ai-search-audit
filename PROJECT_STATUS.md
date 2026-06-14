@@ -21,6 +21,7 @@
 - [x] Readability analysis — body depth, scannable paragraphs, lists/tables, FAQ text for AI answer readiness
 - [x] V2 report data layer — `buildReportV2View()` maps audit to executive dashboard metrics
 - [x] Executive Summary density — compact score ring, 3-sentence audit summary, Indexability/Schema/AI Visibility KPIs
+- [x] Visual Insights carousel — horizontal snap scroll with 5 analytics cards
 - [x] Design tokens in `globals.css` (DESIGN_SYSTEM + Stitch HTML)
 - [x] Audit API live-tested + hardened (malformed JSON 400, response shape guards)
 - [x] Component structure: `ui/`, `home/`, `report/`, `processing/`, `icons/`, `lib/`
