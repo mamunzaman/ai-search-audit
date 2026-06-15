@@ -17,6 +17,7 @@ export { HighImpactRecommendationsTable } from "./HighImpactRecommendationsTable
 export { LLMIndexStatusCard } from "./LLMIndexStatusCard";
 export { ReadinessTrendCard } from "./ReadinessTrendCard";
 export { ReportPageClient } from "./ReportPageClient";
+export { ReportBreadcrumb } from "./ReportBreadcrumb";
 export { ReportFooter } from "./ReportFooter";
 export { ReportLayout } from "./ReportLayout";
 export { ReportSidebar } from "./ReportSidebar";
@@ -28,4 +29,5 @@ export { StrategicOverviewCard } from "./StrategicOverviewCard";
 export { ContentStructureDetailPage } from "./ContentStructureDetailPage";
 export { EntityClarityDetailPage } from "./EntityClarityDetailPage";
 export { TrustSignalsDetailPage } from "./TrustSignalsDetailPage";
+export { Wcag22DetailPage } from "./Wcag22DetailPage";
 export { VisualInsightsCarousel } from "./VisualInsightsCarousel";

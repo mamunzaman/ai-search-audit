@@ -1,8 +1,10 @@
+import Link from "next/link";
 import { Icon } from "@/components/icons/Icon";
 import type { ReportV2AccessibilityCard } from "@/lib/audit/report-v2";
 
 type AccessibilityAuditCardProps = {
   data: ReportV2AccessibilityCard;
+  href?: string;
 };
 
 function StatusRow({ label, value }: { label: string; value: string }) {
@@ -18,8 +20,8 @@ function StatusRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-export function AccessibilityAuditCard({ data }: AccessibilityAuditCardProps) {
-  return (
+export function AccessibilityAuditCard({ data, href }: AccessibilityAuditCardProps) {
+  const content = (
     <div className="flex h-full flex-col overflow-hidden rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow animate-fade-in">
       <div className="mb-stack-md flex h-12 shrink-0 items-center justify-between border-b border-outline-variant pb-stack-sm">
         <div className="min-w-0">
@@ -51,4 +53,14 @@ export function AccessibilityAuditCard({ data }: AccessibilityAuditCardProps) {
       </div>
     </div>
   );
+
+  if (href) {
+    return (
+      <Link href={href} className="block h-full transition-opacity hover:opacity-95">
+        {content}
+      </Link>
+    );
+  }
+
+  return content;
 }

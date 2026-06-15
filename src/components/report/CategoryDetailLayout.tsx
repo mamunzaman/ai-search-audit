@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
-import { Icon } from "@/components/icons/Icon";
+import { ReportBreadcrumb } from "./ReportBreadcrumb";
 import { ReportFooter } from "./ReportFooter";
 import { ReportSidebar } from "./ReportSidebar";
 import { ReportTopNav } from "./ReportTopNav";
@@ -20,34 +19,13 @@ export function CategoryDetailLayout({
   auditDate,
   children,
 }: CategoryDetailLayoutProps) {
-  const reportHref = `/report?domain=${encodeURIComponent(domain)}`;
-
   return (
     <div className="min-h-screen min-w-0 overflow-x-hidden bg-canvas text-[16px] leading-relaxed text-on-surface">
       <ReportSidebar domain={domain} activeNav={activeNav} auditDate={auditDate} />
       <div className="flex min-h-screen min-w-0 flex-col md:ml-64">
         <ReportTopNav domain={domain} />
         <main className="mx-auto w-full min-w-0 max-w-container-max flex-1 overflow-x-hidden p-margin-desktop">
-          <nav className="mb-stack-lg flex items-center gap-2 text-body-sm text-outline">
-            <Link href={reportHref} className="transition-colors hover:text-primary">
-              AI Search Audit
-            </Link>
-            <Icon name="chevron_right" size={16} />
-            <Link href={reportHref} className="transition-colors hover:text-primary">
-              LLM Visibility Report
-            </Link>
-            <Icon name="chevron_right" size={16} />
-            <span className="font-semibold text-on-surface">{categoryLabel}</span>
-          </nav>
-
-          <Link
-            href={reportHref}
-            className="mb-stack-lg inline-flex items-center gap-2 text-body-sm font-semibold text-primary transition-colors hover:text-primary-container"
-          >
-            <Icon name="arrow_back" size={18} />
-            Back to Report
-          </Link>
-
+          <ReportBreadcrumb domain={domain} currentLabel={categoryLabel} />
           <div className="space-y-stack-lg">{children}</div>
         </main>
         <ReportFooter />

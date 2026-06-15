@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WCAG 2.2 Accessibility Detail Report | AI Search Audit</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#bac3ff",
+                        "surface-container": "#eeedf8",
+                        "primary": "#00218d",
+                        "inverse-surface": "#2f3038",
+                        "on-secondary-fixed-variant": "#273d9f",
+                        "on-background": "#1a1b23",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#1536b8",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "primary-fixed": "#dee1ff",
+                        "on-error": "#ffffff",
+                        "surface": "#fbf8ff",
+                        "on-secondary-container": "#0d288e",
+                        "tertiary-fixed-dim": "#ffb5a0",
+                        "tertiary-container": "#872100",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#fbf8ff",
+                        "outline-variant": "#c5c5d6",
+                        "on-primary": "#ffffff",
+                        "surface-container-highest": "#e3e1ec",
+                        "inverse-primary": "#bac3ff",
+                        "tertiary-fixed": "#ffdbd1",
+                        "outline": "#757685",
+                        "on-surface-variant": "#444654",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#dad9e4",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#f1effb",
+                        "surface-container-low": "#f4f2fe",
+                        "on-primary-fixed-variant": "#1536b8",
+                        "tertiary": "#601500",
+                        "on-tertiary-container": "#ff9b7f",
+                        "secondary-fixed": "#dee1ff",
+                        "on-tertiary-fixed": "#3b0900",
+                        "on-primary-container": "#a3b1ff",
+                        "surface-tint": "#3651d0",
+                        "secondary": "#4156b9",
+                        "on-surface": "#1a1b23",
+                        "on-secondary-fixed": "#001158",
+                        "background": "#fbf8ff",
+                        "surface-variant": "#e3e1ec",
+                        "surface-container-high": "#e8e7f2",
+                        "secondary-container": "#8397fe",
+                        "on-primary-fixed": "#001159",
+                        "on-tertiary-fixed-variant": "#872100",
+                        "accent-coral": "#FF5A4F"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "8px",
+                        "lg": "8px",
+                        "xl": "12px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "container-max": "1440px",
+                        "stack-xl": "48px",
+                        "stack-md": "16px",
+                        "stack-xs": "4px",
+                        "stack-lg": "24px",
+                        "margin-desktop": "40px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #F6F8FB;
+            font-family: 'Inter', sans-serif;
+            color: #1a1b23;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .card-shadow {
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .border-base {
+            border: 1px solid #E5E7EB;
+        }
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen overflow-x-hidden">
+<!-- SideNavBar -->
+<aside class="fixed h-screen left-0 w-64 overflow-y-auto bg-surface-container-lowest border-r border-outline-variant z-50 flex flex-col gap-stack-sm p-stack-lg">
+<div class="mb-stack-xl px-2">
+<h1 class="font-headline-sm text-headline-sm font-black text-primary">AI Search Audit</h1>
+<p class="text-label-md font-label-md text-on-surface-variant opacity-70">Scientific Analysis Layer</p>
+</div>
+<nav class="flex-1 space-y-1">
+<p class="px-2 mb-2 text-label-md font-label-md uppercase tracking-wider text-outline">Audit Categories</p>
+<!-- SideNav Items Mapping -->
+<a class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high transition-all font-label-md text-label-md rounded-lg group" href="#">
+<span class="material-symbols-outlined text-primary">dashboard</span>
+                Overview
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high transition-all font-label-md text-label-md rounded-lg group" href="#">
+<span class="material-symbols-outlined text-primary">health_and_safety</span>
+                SEO Health
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high transition-all font-label-md text-label-md rounded-lg group" href="#">
+<span class="material-symbols-outlined text-primary">visibility</span>
+                AI Visibility
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high transition-all font-label-md text-label-md rounded-lg group" href="#">
+<span class="material-symbols-outlined text-primary">hub</span>
+                Entity Clarity
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high transition-all font-label-md text-label-md rounded-lg group" href="#">
+<span class="material-symbols-outlined text-primary">verified_user</span>
+                Trust Signals
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high transition-all font-label-md text-label-md rounded-lg group" href="#">
+<span class="material-symbols-outlined text-primary">account_tree</span>
+                Content Structure
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high transition-all font-label-md text-label-md rounded-lg group" href="#">
+<span class="material-symbols-outlined text-primary">code</span>
+                Schema Markup
+            </a>
+<!-- Active Item: WCAG 2.2 -->
+<a class="flex items-center gap-3 px-3 py-2.5 bg-secondary-container text-on-secondary-container font-bold rounded-lg transition-all font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">accessibility_new</span>
+                WCAG 2.2
+            </a>
+</nav>
+<div class="mt-auto p-4 bg-primary-container rounded-xl text-white">
+<p class="font-label-md text-label-md mb-2 opacity-90">Current Plan: Pro</p>
+<button class="w-full py-2 bg-white text-primary font-bold rounded-lg hover:bg-opacity-90 transition-all text-label-md uppercase tracking-tight">Upgrade Plan</button>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<div class="flex-1 ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface sticky top-0 z-40 border-b border-outline-variant shadow-sm px-margin-desktop py-4 flex justify-between items-center max-w-container-max w-full mx-auto">
+<div class="flex items-center gap-8">
+<span class="font-headline-md text-headline-md font-bold text-primary">AI Search Audit</span>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1" href="#">Reports</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">History</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-4 py-2 border border-primary text-primary font-bold rounded-lg hover:bg-surface-container-low transition-colors text-label-md">Export PDF</button>
+<button class="px-4 py-2 bg-accent-coral text-white font-bold rounded-lg hover:brightness-90 transition-colors text-label-md">New Audit</button>
+</div>
+</header>
+<!-- Content Canvas -->
+<main class="flex-1 px-margin-desktop py-8 max-w-container-max mx-auto w-full space-y-stack-lg">
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 text-label-md font-label-md text-outline">
+<a class="hover:text-primary" href="#">AI Search Audit</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<a class="hover:text-primary" href="#">LLM Visibility Report</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface font-bold">WCAG 2.2 Readiness</span>
+</nav>
+<!-- Hero Section -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<div class="lg:col-span-8 bg-white p-stack-lg rounded-xl border-base card-shadow flex flex-col md:flex-row gap-8 items-center">
+<div class="relative w-48 h-48 flex-shrink-0">
+<svg class="w-full h-full" viewbox="0 0 100 100">
+<circle class="text-gray-200 stroke-current" cx="50" cy="50" fill="transparent" r="42" stroke-width="8"></circle>
+<circle class="text-primary stroke-current progress-ring-circle" cx="50" cy="50" fill="transparent" r="42" stroke-linecap="round" stroke-width="8" style="stroke-dasharray: 264; stroke-dashoffset: 31;"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-headline-lg text-headline-lg text-primary">88</span>
+<span class="text-label-md font-label-md text-outline">/ 100</span>
+</div>
+</div>
+<div class="flex-1 space-y-4">
+<div class="flex items-center gap-3">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">WCAG 2.2 Readiness</h2>
+<span class="px-3 py-1 bg-green-100 text-green-700 rounded-full font-label-md text-label-md border border-green-200 uppercase tracking-tighter">High Readiness</span>
+</div>
+<p class="text-body-lg font-body-lg text-on-surface-variant">Accessibility signals help both users and AI systems understand, navigate, and trust your website.</p>
+<div class="flex gap-4 pt-2">
+<button class="bg-primary px-6 py-2.5 text-white font-bold rounded-lg hover:bg-opacity-90 transition-all text-label-md">Download Audit Log</button>
+<button class="border border-outline px-6 py-2.5 text-on-surface-variant font-bold rounded-lg hover:bg-surface-container-low transition-all text-label-md">Share Report</button>
+</div>
+</div>
+</div>
+<div class="lg:col-span-4 bg-white p-stack-lg rounded-xl border-base card-shadow space-y-4">
+<h3 class="font-headline-md text-headline-md border-b border-outline-variant pb-4 mb-4">Benchmark</h3>
+<div class="space-y-6">
+<div class="space-y-2">
+<div class="flex justify-between text-label-md font-label-md">
+<span class="text-primary font-bold">YOU</span>
+<span class="text-primary">88</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-3">
+<div class="bg-primary h-3 rounded-full" style="width: 88%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-label-md font-label-md">
+<span class="text-outline">INDUSTRY AVG</span>
+<span class="text-outline">72</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-3">
+<div class="bg-outline-variant h-3 rounded-full" style="width: 72%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-label-md font-label-md">
+<span class="text-accent-coral font-bold">TOP COMPETITOR</span>
+<span class="text-accent-coral">91</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-3">
+<div class="bg-accent-coral h-3 rounded-full opacity-60" style="width: 91%"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- KPI Strip -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<div class="bg-white p-stack-lg rounded-xl border-base card-shadow flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<span class="text-label-md font-label-md text-outline uppercase">Perceivable</span>
+<span class="material-symbols-outlined text-green-500" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-headline-lg">92%</span>
+<span class="text-label-md text-green-500">+4% vs prev</span>
+</div>
+</div>
+<div class="bg-white p-stack-lg rounded-xl border-base card-shadow flex flex-col gap-2 border-l-4 border-l-yellow-400">
+<div class="flex justify-between items-center">
+<span class="text-label-md font-label-md text-outline uppercase">Operable</span>
+<span class="material-symbols-outlined text-yellow-500">warning</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-headline-lg">84%</span>
+<span class="text-label-md text-yellow-600">-2% vs prev</span>
+</div>
+</div>
+<div class="bg-white p-stack-lg rounded-xl border-base card-shadow flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<span class="text-label-md font-label-md text-outline uppercase">Understandable</span>
+<span class="material-symbols-outlined text-green-500" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-headline-lg">95%</span>
+<span class="text-label-md text-green-500">+1% vs prev</span>
+</div>
+</div>
+<div class="bg-white p-stack-lg rounded-xl border-base card-shadow flex flex-col gap-2 border-l-4 border-l-accent-coral">
+<div class="flex justify-between items-center">
+<span class="text-label-md font-label-md text-outline uppercase">Robust</span>
+<span class="material-symbols-outlined text-accent-coral">error</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-headline-lg">78%</span>
+<span class="text-label-md text-accent-coral">Needs Attention</span>
+</div>
+</div>
+</section>
+<!-- Accessibility Principles Matrix -->
+<section class="bg-white p-stack-lg rounded-xl border-base card-shadow">
+<div class="flex justify-between items-center border-b border-outline-variant pb-stack-lg mb-stack-lg">
+<h3 class="font-headline-md text-headline-md">Accessibility Principles Matrix</h3>
+<button class="text-primary font-bold text-label-md flex items-center gap-1 hover:underline">
+                        Detailed Methodology <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-xl">
+<div class="space-y-stack-md">
+<div class="space-y-4">
+<div class="flex justify-between font-label-md text-label-md">
+<span class="text-on-surface">Perceivable (Visual/Audio)</span>
+<span class="font-bold">92%</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 92%"></div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between font-label-md text-label-md">
+<span class="text-on-surface">Operable (Navigable)</span>
+<span class="font-bold">84%</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 84%"></div>
+</div>
+</div>
+</div>
+<div class="space-y-stack-md">
+<div class="space-y-4">
+<div class="flex justify-between font-label-md text-label-md">
+<span class="text-on-surface">Understandable (Predictable)</span>
+<span class="font-bold">95%</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 95%"></div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between font-label-md text-label-md">
+<span class="text-on-surface">Robust (Compatible)</span>
+<span class="font-bold">78%</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 78%"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Critical Issues Section -->
+<section class="space-y-stack-md">
+<h3 class="font-headline-md text-headline-md">Critical Issues Found</h3>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Issue 1 -->
+<div class="bg-white p-stack-lg rounded-xl border-base card-shadow border-t-4 border-t-accent-coral flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="px-2 py-0.5 bg-red-100 text-red-700 text-label-md font-bold rounded">Critical</span>
+<span class="text-label-md font-label-md text-outline">8 Instances</span>
+</div>
+<h4 class="font-body-lg font-bold text-on-surface mb-2">Incomplete ARIA landmarks</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-6">Structural roles are missing on key layout elements, hindering assistive technologies and AI scrapers.</p>
+</div>
+<button class="w-full py-2 bg-primary text-white font-bold rounded-lg hover:brightness-110 transition-all text-label-md">Recommended Fix</button>
+</div>
+<!-- Issue 2 -->
+<div class="bg-white p-stack-lg rounded-xl border-base card-shadow border-t-4 border-t-orange-400 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="px-2 py-0.5 bg-orange-100 text-orange-700 text-label-md font-bold rounded">High</span>
+<span class="text-label-md font-label-md text-outline">12 Elements</span>
+</div>
+<h4 class="font-body-lg font-bold text-on-surface mb-2">Missing alt text</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-6">Informative images lack text descriptions, reducing contextual understanding for non-visual agents.</p>
+</div>
+<button class="w-full py-2 bg-primary text-white font-bold rounded-lg hover:brightness-110 transition-all text-label-md">Recommended Fix</button>
+</div>
+<!-- Issue 3 -->
+<div class="bg-white p-stack-lg rounded-xl border-base card-shadow border-t-4 border-t-yellow-400 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-label-md font-bold rounded">Medium</span>
+<span class="text-label-md font-label-md text-outline">4 Pages</span>
+</div>
+<h4 class="font-body-lg font-bold text-on-surface mb-2">Low color contrast</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-6">Text-to-background ratios fall below the 4.5:1 requirement on landing page sections.</p>
+</div>
+<button class="w-full py-2 bg-primary text-white font-bold rounded-lg hover:brightness-110 transition-all text-label-md">Recommended Fix</button>
+</div>
+</div>
+</section>
+<!-- AI Accessibility Readiness -->
+<section class="bg-primary overflow-hidden rounded-xl relative min-h-[320px] flex items-center">
+<div class="absolute inset-0 opacity-20 pointer-events-none">
+
+</div>
+<div class="relative z-10 p-stack-xl flex flex-col lg:flex-row gap-stack-xl items-center w-full">
+<div class="flex-1 text-white space-y-4">
+<h3 class="font-headline-lg text-headline-lg">AI Accessibility Readiness</h3>
+<p class="text-body-lg opacity-90 max-w-xl">LLMs and AI agents rely on the same semantic structure as assistive technology to crawl, interpret, and trust your content's integrity.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-stack-md flex-1">
+<div class="bg-white/10 backdrop-blur-md p-stack-md rounded-xl border border-white/20 text-white">
+<span class="material-symbols-outlined mb-2">account_tree</span>
+<h5 class="font-bold text-label-md uppercase mb-1">Semantic Landmarks</h5>
+<p class="text-body-sm opacity-80">Defines the logical layout for AI parsing.</p>
+</div>
+<div class="bg-white/10 backdrop-blur-md p-stack-md rounded-xl border border-white/20 text-white">
+<span class="material-symbols-outlined mb-2">label</span>
+<h5 class="font-bold text-label-md uppercase mb-1">Readable Labels</h5>
+<p class="text-body-sm opacity-80">Explicit context for interactive elements.</p>
+</div>
+<div class="bg-white/10 backdrop-blur-md p-stack-md rounded-xl border border-white/20 text-white">
+<span class="material-symbols-outlined mb-2">video_library</span>
+<h5 class="font-bold text-label-md uppercase mb-1">Descriptive Media</h5>
+<p class="text-body-sm opacity-80">Alternative signals for multi-modal AI.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Recommendations -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+<div class="bg-white p-stack-lg rounded-xl border-base card-shadow space-y-stack-md">
+<h3 class="font-headline-md text-headline-md">Optimization Recommendations</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg border border-outline-variant hover:border-primary transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<span class="p-2 bg-primary-fixed text-primary rounded-lg">
+<span class="material-symbols-outlined">image</span>
+</span>
+<div>
+<p class="font-body-md font-bold text-on-surface">Add descriptive alt text</p>
+<p class="text-body-sm text-outline">Impacts 12 critical visual assets</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-green-600 font-bold font-label-md">+5 Points</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg border border-outline-variant hover:border-primary transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<span class="p-2 bg-primary-fixed text-primary rounded-lg">
+<span class="material-symbols-outlined">palette</span>
+</span>
+<div>
+<p class="font-body-md font-bold text-on-surface">Improve contrast ratios</p>
+<p class="text-body-sm text-outline">Global typography update needed</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-green-600 font-bold font-label-md">+3 Points</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg border border-outline-variant hover:border-primary transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<span class="p-2 bg-primary-fixed text-primary rounded-lg">
+<span class="material-symbols-outlined">format_list_numbered</span>
+</span>
+<div>
+<p class="font-body-md font-bold text-on-surface">Fix heading hierarchy</p>
+<p class="text-body-sm text-outline">Structural sequencing on 4 templates</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-green-600 font-bold font-label-md">+4 Points</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Implementation Accordions -->
+<div class="bg-white p-stack-lg rounded-xl border-base card-shadow space-y-stack-md">
+<h3 class="font-headline-md text-headline-md">Implementation Examples</h3>
+<div class="space-y-2">
+<details class="group bg-surface-container-low rounded-lg border border-outline-variant" open="">
+<summary class="flex justify-between items-center p-4 cursor-pointer font-bold text-on-surface list-none">
+                                Semantic Landmark Implementation
+                                <span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<div class="px-4 pb-4">
+<div class="bg-inverse-surface p-4 rounded-lg font-data-mono text-data-mono text-white overflow-x-auto">
+<pre><code>&lt;header role="banner"&gt;...&lt;/header&gt;
+&lt;main role="main"&gt;...&lt;/main&gt;
+&lt;footer role="contentinfo"&gt;...&lt;/footer&gt;</code></pre>
+</div>
+</div>
+</details>
+<details class="group bg-surface-container-low rounded-lg border border-outline-variant">
+<summary class="flex justify-between items-center p-4 cursor-pointer font-bold text-on-surface list-none">
+                                ARIA-Live Region Pattern
+                                <span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<div class="px-4 pb-4">
+<div class="bg-inverse-surface p-4 rounded-lg font-data-mono text-data-mono text-white overflow-x-auto">
+<pre><code>&lt;div aria-live="polite"&gt;
+  Updated search results...
+&lt;/div&gt;</code></pre>
+</div>
+</div>
+</details>
+<details class="group bg-surface-container-low rounded-lg border border-outline-variant">
+<summary class="flex justify-between items-center p-4 cursor-pointer font-bold text-on-surface list-none">
+                                Accessible Form Labeling
+                                <span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<div class="px-4 pb-4">
+<div class="bg-inverse-surface p-4 rounded-lg font-data-mono text-data-mono text-white overflow-x-auto">
+<pre><code>&lt;label for="email"&gt;Email Address&lt;/label&gt;
+&lt;input type="email" id="email" /&gt;</code></pre>
+</div>
+</div>
+</details>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="mt-auto border-t border-outline-variant bg-white px-margin-desktop py-8 text-center">
+<p class="font-body-md text-on-surface-variant max-w-2xl mx-auto italic">
+                "Improving WCAG 2.2 compliance improves usability, trust, and AI interpretation quality."
+            </p>
+<div class="mt-6 flex justify-center gap-8 text-label-md font-label-md text-outline">
+<a class="hover:text-primary" href="#">Compliance Standards</a>
+<a class="hover:text-primary" href="#">Privacy Policy</a>
+<a class="hover:text-primary" href="#">Contact Support</a>
+<span class="text-outline-variant">|</span>
+<span>Version 1.4.2-stable</span>
+</div>
+</footer>
+</div>
+</body></html>

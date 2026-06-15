@@ -23,6 +23,7 @@ type VisualInsightsCarouselProps = {
   semanticDistribution: ReportV2SemanticBar[];
   llmIndexStatus: ReportV2LlmReadiness[];
   accessibilityCard: ReportV2AccessibilityCard;
+  domain?: string;
 };
 
 const SLIDE_CLASS =
@@ -35,6 +36,7 @@ export function VisualInsightsCarousel({
   semanticDistribution,
   llmIndexStatus,
   accessibilityCard,
+  domain,
 }: VisualInsightsCarouselProps) {
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -53,13 +55,17 @@ export function VisualInsightsCarousel({
     });
   }, []);
 
+  const wcagHref = domain
+    ? `/report/wcag-22?domain=${encodeURIComponent(domain)}`
+    : undefined;
+
   const slides = [
     <CategoryRadarCard key="radar" points={radarPoints} />,
     <GrowthPotentialCard key="growth" areas={growthAreas} />,
     <ReadinessTrendCard key="trend" points={trendPoints} />,
     <SemanticDistributionCard key="semantic" bars={semanticDistribution} />,
     <LLMIndexStatusCard key="llm" engines={llmIndexStatus} />,
-    <AccessibilityAuditCard key="accessibility" data={accessibilityCard} />,
+    <AccessibilityAuditCard key="accessibility" data={accessibilityCard} href={wcagHref} />,
   ];
 
   return (

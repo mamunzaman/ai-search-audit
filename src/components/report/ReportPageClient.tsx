@@ -46,6 +46,7 @@ export function ReportPageClient({ domain }: ReportPageClientProps) {
         semanticDistribution={data.semanticDistribution}
         llmIndexStatus={data.llmIndexStatus}
         accessibilityCard={data.accessibilityCard}
+        domain={data.domain}
       />
 
       <AccessibilityAuditReport data={data.accessibilityReport} />

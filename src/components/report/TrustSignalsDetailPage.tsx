@@ -1,6 +1,8 @@
 "use client";
 
+import { ReportBreadcrumb } from "@/components/report/ReportBreadcrumb";
 import { ReportSidebar } from "@/components/report/ReportSidebar";
+import { ReportTopNav } from "@/components/report/ReportTopNav";
 import { Icon } from "@/components/icons/Icon";
 import { cn } from "@/lib/cn";
 import {
@@ -10,7 +12,6 @@ import {
   type TrustSignalsDetailView,
   type TrustStatusTone,
 } from "@/data/report/trustSignalsData";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type TrustSignalsDetailPageProps = {
@@ -507,8 +508,6 @@ export function TrustSignalsDetailPage({ domain }: TrustSignalsDetailPageProps) 
     queueMicrotask(() => setData(loadTrustSignalsDetailView(domain)));
   }, [mounted, domain]);
 
-  const reportHref = `/report?domain=${encodeURIComponent(data.domain)}`;
-
   return (
     <div className="min-h-screen min-w-0 overflow-x-hidden bg-canvas text-on-surface">
       <ReportSidebar
@@ -517,24 +516,10 @@ export function TrustSignalsDetailPage({ domain }: TrustSignalsDetailPageProps) 
         auditDate={data.auditDate}
       />
 
-      <main className="min-w-0 p-margin-desktop md:ml-64 md:max-w-[1440px]">
-        <nav className="mb-gutter flex flex-wrap items-center gap-2">
-          <Link
-            href={reportHref}
-            className="font-label-md text-on-surface-variant transition-colors hover:text-primary"
-          >
-            AI Search Audit
-          </Link>
-          <Icon name="chevron_right" size={16} className="opacity-50" />
-          <Link
-            href={reportHref}
-            className="font-label-md text-on-surface-variant transition-colors hover:text-primary"
-          >
-            LLM Visibility Report
-          </Link>
-          <Icon name="chevron_right" size={16} className="opacity-50" />
-          <span className="font-label-md text-primary">Trust Signals</span>
-        </nav>
+      <div className="flex min-h-screen min-w-0 flex-col md:ml-64">
+        <ReportTopNav domain={data.domain} />
+        <main className="min-w-0 flex-1 overflow-x-hidden p-margin-desktop md:max-w-[1440px]">
+          <ReportBreadcrumb domain={data.domain} currentLabel="Trust Signals" />
 
         <HeroSection data={data} />
         <KpiStrip data={data} />
@@ -550,7 +535,8 @@ export function TrustSignalsDetailPage({ domain }: TrustSignalsDetailPageProps) 
             <EntityMappingCard />
           </div>
         </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

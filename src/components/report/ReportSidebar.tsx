@@ -39,6 +39,10 @@ function buildNavHref(slug: string | undefined, domain: string): string {
     return `/report/schema-markup?domain=${encoded}`;
   }
 
+  if (slug === "wcag-2.2") {
+    return `/report/wcag-22?domain=${encoded}`;
+  }
+
   return "#";
 }
 
