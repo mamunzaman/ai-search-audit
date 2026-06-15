@@ -41,9 +41,13 @@ export type ExtractedDataSummary = {
   internalLinks: number;
   externalLinks: number;
   robotsTxtExists: boolean;
+  robotsReachability: string;
   robotsSitemapCount: number;
   robotsDisallowCount: number;
+  robotsRootDisallowed: boolean;
+  blockedAiCrawlers: string[];
   sitemapExists: boolean;
+  sitemapFormat: string;
   sitemapUrlCount: number;
   sitemapChildCount: number;
   ogTitleFound: boolean;
@@ -164,9 +168,13 @@ function buildExtractedSummary(audit: AuditResponse): ExtractedDataSummary {
     internalLinks: audit.links.internal,
     externalLinks: audit.links.external,
     robotsTxtExists: robotsAnalysis.exists,
+    robotsReachability: robotsAnalysis.reachability,
     robotsSitemapCount: robotsAnalysis.sitemapCount,
     robotsDisallowCount: robotsAnalysis.disallowCount,
+    robotsRootDisallowed: robotsAnalysis.rootDisallowed,
+    blockedAiCrawlers: robotsAnalysis.blockedAiCrawlers,
     sitemapExists: sitemapAnalysis.exists,
+    sitemapFormat: sitemapAnalysis.format,
     sitemapUrlCount: sitemapAnalysis.urlCount,
     sitemapChildCount: sitemapAnalysis.childSitemapCount,
     ogTitleFound: Boolean(socialMetadata.openGraph.title),
@@ -323,9 +331,13 @@ export function getPlaceholderReportView(domain: string): ReportViewData {
       internalLinks: 0,
       externalLinks: 0,
       robotsTxtExists: false,
+      robotsReachability: "not_found",
       robotsSitemapCount: 0,
       robotsDisallowCount: 0,
+      robotsRootDisallowed: false,
+      blockedAiCrawlers: [],
       sitemapExists: false,
+      sitemapFormat: "none",
       sitemapUrlCount: 0,
       sitemapChildCount: 0,
       ogTitleFound: false,

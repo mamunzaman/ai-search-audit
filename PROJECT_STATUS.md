@@ -1,25 +1,18 @@
 # Project Status
 
-**Last Update:** 15 June 2026 (WCAG 2.2 detail page)
+**Last Update:** 15 June 2026 (robots.txt + sitemap technical signals)
 
 ## Completed Features
 - [x] Homepage (`/`) — AI Search Audit landing
 - [x] Report page (`/report`) — V2 executive layout with hydration-safe audit loading
-- [x] WCAG 2.2 detail page (`/report/wcag-22`) — Stitch reference layout: hero + benchmark, POUR KPI strip, principles matrix, critical issues, AI readiness banner, recommendations, implementation accordions, footer
-- [x] WCAG 2.2 data layer — `buildWcag22DetailView()` in `src/data/report/wcag22Data.ts`
-- [x] Schema Markup detail page (`/report/schema-markup`)
-- [x] Content Structure detail page (`/report/content-structure`)
-- [x] Entity Clarity detail page (`/report/entity-clarity`)
-- [x] Trust Signals detail page (`/report/trust-signals`)
-- [x] AI Visibility detail page (`/report/ai-visibility`)
-- [x] SEO Health detail page (`/report/seo-health`)
-- [x] Sidebar navigation — all 8 category routes with domain query param
-- [x] Standardized detail page navigation — `ReportTopNav` + shared `ReportBreadcrumb` on all 7 category routes
-- [x] Audit pipeline — WCAG 2.2 signals, accessibility findings, category scoring
-- [x] Design tokens in `globals.css` (DESIGN_SYSTEM + Stitch HTML)
+- [x] WCAG 2.2 detail page (`/report/wcag-22`)
+- [x] Schema Markup, Content Structure, Entity Clarity, Trust Signals, AI Visibility, SEO Health detail pages
+- [x] Standardized detail page navigation — `ReportTopNav` + `ReportBreadcrumb`
+- [x] **Technical discovery signals** — `technicalSignals.ts`: robots.txt reachability, sitemap declarations, user-agent/disallow parsing, AI crawler blocks, sitemap XML validation (urlset/sitemapindex), normalized signal objects fed into SEO Health, AI Visibility, Trust Signals, Schema scoring
+- [x] Audit pipeline — WCAG 2.2, accessibility, category scoring (schema v9)
 
 ## In Progress
-- [ ] Branch `feature/advanced-audit-signals` — category card deep links + deeper signal mapping
+- [ ] Branch `feature/advanced-audit-signals` — carousel deep links + deeper signal mapping
 
 ## Pending Tasks
 - [ ] Link Growth Potential / remaining carousel cards to category detail routes

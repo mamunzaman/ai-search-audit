@@ -1,4 +1,5 @@
 import { hasTrustPages } from "./trust-signals";
+import { buildTechnicalSignals } from "./technicalSignals";
 import { defaultRobotsAnalysis } from "./robots-check";
 import { defaultSitemapAnalysis } from "./sitemap-check";
 import { defaultSocialMetadata } from "./social-metadata";
@@ -18,11 +19,12 @@ import type {
   ReadabilityAnalysis,
   RobotsAnalysis,
   SitemapAnalysis,
+  TechnicalSignal,
   SocialMetadata,
   TrustSignals,
 } from "./types";
 
-export const AUDIT_SCHEMA_VERSION = 8;
+export const AUDIT_SCHEMA_VERSION = 9;
 
 export const defaultTrustSignals: TrustSignals = {
   aboutPage: false,
@@ -145,6 +147,21 @@ function deriveAiVisibilitySignals(
   };
 }
 
+function deriveRobotsReachability(
+  value: unknown,
+  exists: boolean,
+): RobotsAnalysis["reachability"] {
+  if (
+    value === "reachable" ||
+    value === "not_found" ||
+    value === "error"
+  ) {
+    return value;
+  }
+
+  return exists ? "reachable" : "not_found";
+}
+
 function deriveRobotsAnalysis(
   robotsAnalysis: RobotsAnalysis | undefined,
 ): RobotsAnalysis {
@@ -152,16 +169,39 @@ function deriveRobotsAnalysis(
     return { ...defaultRobotsAnalysis };
   }
 
+  const exists = Boolean(robotsAnalysis.exists);
+
   return {
-    exists: Boolean(robotsAnalysis.exists),
+    exists,
+    reachability: deriveRobotsReachability(
+      robotsAnalysis.reachability,
+      exists,
+    ),
+    statusCode:
+      typeof robotsAnalysis.statusCode === "number"
+        ? robotsAnalysis.statusCode
+        : null,
     sitemapCount:
       typeof robotsAnalysis.sitemapCount === "number"
         ? robotsAnalysis.sitemapCount
         : 0,
+    sitemapUrls: Array.isArray(robotsAnalysis.sitemapUrls)
+      ? robotsAnalysis.sitemapUrls.filter((url) => typeof url === "string")
+      : [],
     disallowCount:
       typeof robotsAnalysis.disallowCount === "number"
         ? robotsAnalysis.disallowCount
         : 0,
+    userAgentGroupCount:
+      typeof robotsAnalysis.userAgentGroupCount === "number"
+        ? robotsAnalysis.userAgentGroupCount
+        : 0,
+    rootDisallowed: Boolean(robotsAnalysis.rootDisallowed),
+    blockedAiCrawlers: Array.isArray(robotsAnalysis.blockedAiCrawlers)
+      ? robotsAnalysis.blockedAiCrawlers.filter(
+          (agent) => typeof agent === "string",
+        )
+      : [],
   };
 }
 
@@ -177,6 +217,14 @@ function deriveSitemapAnalysis(
     sitemapAnalysis.source === "default" ||
     sitemapAnalysis.source === "none"
       ? sitemapAnalysis.source
+      : "none";
+
+  const format =
+    sitemapAnalysis.format === "urlset" ||
+    sitemapAnalysis.format === "sitemapindex" ||
+    sitemapAnalysis.format === "invalid" ||
+    sitemapAnalysis.format === "none"
+      ? sitemapAnalysis.format
       : "none";
 
   return {
@@ -195,7 +243,35 @@ function deriveSitemapAnalysis(
     sampleUrls: Array.isArray(sitemapAnalysis.sampleUrls)
       ? sitemapAnalysis.sampleUrls.filter((url) => typeof url === "string")
       : [],
+    format,
+    invalidResponseCount:
+      typeof sitemapAnalysis.invalidResponseCount === "number"
+        ? sitemapAnalysis.invalidResponseCount
+        : 0,
   };
+}
+
+function deriveTechnicalSignals(
+  technicalSignals: TechnicalSignal[] | undefined,
+  robotsAnalysis: RobotsAnalysis,
+  sitemapAnalysis: SitemapAnalysis,
+): TechnicalSignal[] {
+  if (Array.isArray(technicalSignals) && technicalSignals.length > 0) {
+    return technicalSignals.filter(
+      (signal) =>
+        signal &&
+        typeof signal.id === "string" &&
+        typeof signal.label === "string" &&
+        typeof signal.summary === "string" &&
+        typeof signal.recommendation === "string" &&
+        typeof signal.scoreImpact === "number" &&
+        (signal.status === "pass" ||
+          signal.status === "warning" ||
+          signal.status === "fail"),
+    );
+  }
+
+  return buildTechnicalSignals(robotsAnalysis, sitemapAnalysis);
 }
 
 function optionalString(value: unknown): string | undefined {
@@ -458,6 +534,13 @@ export function normalizeAuditResponse(data: unknown): AuditResponse | null {
   const links = normalizeLinks(audit.links);
   const schemaTypes = Array.isArray(audit.schemaTypes) ? audit.schemaTypes : [];
   const trustSignals = deriveTrustSignals(audit.trustSignals);
+  const robotsAnalysis = deriveRobotsAnalysis(audit.robotsAnalysis);
+  const sitemapAnalysis = deriveSitemapAnalysis(audit.sitemapAnalysis);
+  const technicalSignals = deriveTechnicalSignals(
+    audit.technicalSignals,
+    robotsAnalysis,
+    sitemapAnalysis,
+  );
 
   return {
     url: audit.url ?? "",
@@ -483,14 +566,26 @@ export function normalizeAuditResponse(data: unknown): AuditResponse | null {
       },
       audit.aiVisibilitySignals,
     ),
-    robotsAnalysis: deriveRobotsAnalysis(audit.robotsAnalysis),
-    sitemapAnalysis: deriveSitemapAnalysis(audit.sitemapAnalysis),
+    robotsAnalysis,
+    sitemapAnalysis,
+    technicalSignals,
     socialMetadata: deriveSocialMetadata(audit.socialMetadata),
     entityAnalysis: deriveEntityAnalysis(audit.entityAnalysis),
     readabilityAnalysis: deriveReadabilityAnalysis(audit.readabilityAnalysis),
     accessibilityAnalysis: deriveAccessibilityAnalysis(audit.accessibilityAnalysis),
     checks: normalizeChecks(audit.checks),
   };
+}
+
+export function getTechnicalSignals(audit: AuditResponse): TechnicalSignal[] {
+  if (audit.technicalSignals?.length) {
+    return audit.technicalSignals;
+  }
+
+  return buildTechnicalSignals(
+    getRobotsAnalysis(audit),
+    getSitemapAnalysis(audit),
+  );
 }
 
 export function getSitemapAnalysis(audit: AuditResponse): SitemapAnalysis {

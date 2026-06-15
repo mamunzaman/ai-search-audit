@@ -17,6 +17,7 @@ import {
   getRobotsAnalysis,
   getSitemapAnalysis,
   getSocialMetadata,
+  getTechnicalSignals,
   getTrustSignals,
   normalizeAuditResponse,
 } from "./audit-normalize";
@@ -36,6 +37,57 @@ import {
 
 const FAIL_PENALTY = 15;
 const WARN_PENALTY = 7;
+const GENTLE_WARN_SCORE = 75;
+
+function getTechnicalSignalById(
+  audit: AuditResponse,
+  id: string,
+): ReturnType<typeof getTechnicalSignals>[number] | undefined {
+  return getTechnicalSignals(audit).find((signal) => signal.id === id);
+}
+
+function technicalSignalToGentleScore(
+  status: "pass" | "warning" | "fail" | undefined,
+): { score: number; status: AuditCheckStatus } {
+  if (status === "pass") {
+    return { score: 100, status: "pass" };
+  }
+
+  if (status === "fail") {
+    return { score: 50, status: "fail" };
+  }
+
+  return { score: GENTLE_WARN_SCORE, status: "warn" };
+}
+
+function appendTechnicalNarratives(
+  audit: AuditResponse,
+  signalIds: string[],
+  targets: {
+    positives: string[];
+    problems: string[];
+    recommendations: string[];
+  },
+): void {
+  for (const id of signalIds) {
+    const signal = getTechnicalSignalById(audit, id);
+
+    if (!signal) {
+      continue;
+    }
+
+    if (signal.status === "pass") {
+      targets.positives.push(signal.summary);
+      continue;
+    }
+
+    targets.problems.push(signal.summary);
+
+    if (signal.recommendation) {
+      targets.recommendations.push(signal.recommendation);
+    }
+  }
+}
 
 type CategoryDraft = {
   id: string;
@@ -134,6 +186,12 @@ export function calculateOverallScoreFromChecks(checks: AuditCheck[]): number {
 }
 
 function scoreSeoHealth(audit: AuditResponse): CategoryScore {
+  const robotsReachable = technicalSignalToGentleScore(
+    getTechnicalSignalById(audit, "robots-txt-reachable")?.status,
+  );
+  const sitemapDiscovered = technicalSignalToGentleScore(
+    getTechnicalSignalById(audit, "sitemap-discovered")?.status,
+  );
   const checks = [
     getCheck(audit, "title-exists"),
     getCheck(audit, "meta-description-exists"),
@@ -141,8 +199,16 @@ function scoreSeoHealth(audit: AuditResponse): CategoryScore {
     getCheck(audit, "canonical-exists"),
   ].filter((check): check is AuditCheck => Boolean(check));
 
-  const scores = checks.map((check) => checkToPoints(check.status));
-  const statuses = checks.map((check) => check.status);
+  const scores = [
+    ...checks.map((check) => checkToPoints(check.status)),
+    robotsReachable.score,
+    sitemapDiscovered.score,
+  ];
+  const statuses = [
+    ...checks.map((check) => check.status),
+    robotsReachable.status,
+    sitemapDiscovered.status,
+  ];
   const base = buildCategoryScore("SEO Health", scores, statuses);
   const positives: string[] = [];
   const problems: string[] = [];
@@ -177,6 +243,13 @@ function scoreSeoHealth(audit: AuditResponse): CategoryScore {
     problems.push("Canonical link tag is missing.");
     recommendations.push("Add a canonical URL.");
   }
+
+  appendTechnicalNarratives(audit, [
+    "robots-txt-reachable",
+    "robots-sitemap-declared",
+    "sitemap-discovered",
+    "sitemap-valid-xml",
+  ], { positives, problems, recommendations });
 
   const summary =
     problems.length === 0
@@ -216,6 +289,14 @@ function scoreSchemaMarkup(audit: AuditResponse): CategoryScore {
 
   if (!hasSchemaType(audit, "FAQPage")) {
     problems.push("FAQPage schema is not present (tracked under FAQ Readiness).");
+  }
+
+  const sitemapSignal = getTechnicalSignalById(audit, "sitemap-discovered");
+  if (sitemapSignal?.status !== "pass") {
+    recommendations.push(
+      sitemapSignal?.recommendation ??
+        "Publish sitemap.xml and declare it in robots.txt for structured discovery.",
+    );
   }
 
   const summary =
@@ -387,6 +468,9 @@ function scoreTrustSignals(audit: AuditResponse): CategoryScore {
   const hasCompleteOg = hasCompleteOpenGraph(socialMetadata);
   const hasTwitter = hasTwitterCard(socialMetadata);
   const hasSocialPreview = hasCompleteOg && hasTwitter;
+  const rootDisallow = technicalSignalToGentleScore(
+    getTechnicalSignalById(audit, "robots-root-disallow")?.status,
+  );
   const signals: { score: number; status: AuditCheckStatus }[] = [
     {
       score: trustSignals.aboutPage ? 100 : 50,
@@ -434,6 +518,7 @@ function scoreTrustSignals(audit: AuditResponse): CategoryScore {
       score: hasSocialPreview ? 100 : hasCompleteOg || hasTwitter ? 75 : 50,
       status: hasSocialPreview ? "pass" : hasCompleteOg || hasTwitter ? "warn" : "warn",
     },
+    rootDisallow,
   ];
 
   const base = buildCategoryScore(
@@ -503,8 +588,19 @@ function scoreTrustSignals(audit: AuditResponse): CategoryScore {
     } else {
       problems.push("robots.txt exists but no Sitemap directive was found.");
     }
+
+    if (robotsAnalysis.rootDisallowed) {
+      problems.push('robots.txt disallows "/" for all user-agents.');
+      recommendations.push("Review Disallow rules so key pages remain crawlable.");
+    }
   } else {
     problems.push("No robots.txt file was found for this domain.");
+  }
+
+  if (robotsAnalysis.blockedAiCrawlers.length > 0) {
+    problems.push(
+      `AI crawlers blocked: ${robotsAnalysis.blockedAiCrawlers.join(", ")}.`,
+    );
   }
 
   if (sitemapAnalysis.exists) {
@@ -563,6 +659,10 @@ function scoreAiVisibility(audit: AuditResponse): CategoryScore {
   const hasRelatedEntities = entityAnalysis.relatedEntities.length > 0;
   const hasSitemapUrls =
     sitemapAnalysis.urlCount > 0 || sitemapAnalysis.childSitemapCount > 0;
+  const robotsAnalysis = getRobotsAnalysis(audit);
+  const aiCrawlerAccess = technicalSignalToGentleScore(
+    getTechnicalSignalById(audit, "robots-ai-crawler-access")?.status,
+  );
   const signalEntries: { score: number; status: AuditCheckStatus }[] = [
     {
       score: signals.organizationSchema ? 100 : 50,
@@ -620,6 +720,7 @@ function scoreAiVisibility(audit: AuditResponse): CategoryScore {
       score: hasRelatedEntities ? 100 : 50,
       status: hasRelatedEntities ? "pass" : "warn",
     },
+    aiCrawlerAccess,
   ];
 
   const base = buildCategoryScore(
@@ -715,6 +816,23 @@ function scoreAiVisibility(audit: AuditResponse): CategoryScore {
   } else {
     problems.push("No related entity terms were extracted from page content.");
   }
+
+  if (robotsAnalysis.blockedAiCrawlers.length > 0) {
+    problems.push(
+      `AI crawlers blocked in robots.txt: ${robotsAnalysis.blockedAiCrawlers.join(", ")}.`,
+    );
+    recommendations.push(
+      "Review robots.txt if AI visibility matters for your content strategy.",
+    );
+  } else if (robotsAnalysis.reachability === "reachable") {
+    positives.push("No common AI crawler blocks detected in robots.txt.");
+  }
+
+  appendTechnicalNarratives(audit, ["sitemap-url-count"], {
+    positives,
+    problems,
+    recommendations,
+  });
 
   const summary =
     base.score >= 80

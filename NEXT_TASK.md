@@ -1,13 +1,11 @@
 # Next Task
 
-**Goal:** Start `feature/advanced-audit-signals` branch — link Growth Potential / remaining carousel cards to category detail routes.
+**Goal:** Link Growth Potential / remaining carousel cards to category detail routes on `feature/advanced-audit-signals`.
 
 **Verify:**
-- All 7 detail pages show identical header: ReportTopNav + `AI Search Audit > Report > {Page}`
-- Breadcrumb wraps on mobile without horizontal scroll
+- Run audits on `https://example.com`, `https://www.wikipedia.org`, `https://openai.com` — confirm robots/sitemap signals in report categories
+- Technical signals: robots reachable, sitemap discovered, AI crawler access warnings where expected
 
 ## Done
 
-- WCAG 2.2 detail page — hero + benchmark, POUR KPI strip, principles matrix, critical issues, AI readiness banner, recommendations, implementation accordions, footer
-- Schema Markup detail page — score hero, KPI strip, distribution donut, findings, critical recommendation, issues, type coverage, JSON-LD accordion
-- Content Structure detail page — score hero, top opportunity, KPI strip, density chart, readability benchmark, findings table, missing elements, HTML snippet accordion
+- robots.txt + sitemap.xml technical discovery — `analyzeTechnicalDiscovery()`, 7 normalized signals, gentle category scoring, audit schema v9

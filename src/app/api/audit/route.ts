@@ -4,8 +4,7 @@ import {
 } from "@/lib/audit/ai-visibility-checks";
 import { AuditFetchError, fetchPage } from "@/lib/audit/fetch-page";
 import { parseHtml } from "@/lib/audit/html-parser";
-import { analyzeRobotsTxt, runRobotsChecks } from "@/lib/audit/robots-check";
-import { analyzeSitemaps, runSitemapChecks } from "@/lib/audit/sitemap-check";
+import { analyzeTechnicalDiscovery } from "@/lib/audit/technicalSignals";
 import {
   extractEntityAnalysis,
   runEntityChecks,
@@ -44,8 +43,10 @@ async function buildAuditResponse(
     pageUrl: page.finalUrl,
     anchors: parsed.anchors ?? [],
   });
-  const robotsAnalysis = await analyzeRobotsTxt(page.finalUrl);
-  const sitemapAnalysis = await analyzeSitemaps(page.finalUrl, robotsAnalysis);
+  const technicalDiscovery = await analyzeTechnicalDiscovery(page.finalUrl);
+  const robotsAnalysis = technicalDiscovery.robotsAnalysis;
+  const sitemapAnalysis = technicalDiscovery.sitemapAnalysis;
+  const technicalSignals = technicalDiscovery.technicalSignals;
   const socialMetadata = extractSocialMetadata(page.html);
   const entityAnalysis = extractEntityAnalysis({
     title: parsed.title ?? "",
@@ -75,8 +76,7 @@ async function buildAuditResponse(
     aiVisibilitySignals,
     visibleFaqHints: aiVisibilitySignals.visibleFaqHints,
   });
-  const robotsChecks = runRobotsChecks(robotsAnalysis);
-  const sitemapChecks = runSitemapChecks(sitemapAnalysis);
+  const robotsChecks = technicalDiscovery.checks;
   const socialChecks = runSocialMetadataChecks(socialMetadata);
   const entityChecks = runEntityChecks(entityAnalysis);
   const readabilityChecks = runReadabilityChecks(readabilityAnalysis);
@@ -104,6 +104,7 @@ async function buildAuditResponse(
     aiVisibilitySignals,
     robotsAnalysis,
     sitemapAnalysis,
+    technicalSignals,
     socialMetadata,
     entityAnalysis,
     readabilityAnalysis,
@@ -112,7 +113,6 @@ async function buildAuditResponse(
       ...seoChecks,
       ...trustAndAiChecks,
       ...robotsChecks,
-      ...sitemapChecks,
       ...socialChecks,
       ...entityChecks,
       ...readabilityChecks,

@@ -66,13 +66,23 @@ export type ParsedAnchor = {
   text: string;
 };
 
+export type RobotsReachability = "reachable" | "not_found" | "error";
+
 export type RobotsAnalysis = {
   exists: boolean;
+  reachability: RobotsReachability;
+  statusCode: number | null;
   sitemapCount: number;
+  sitemapUrls: string[];
   disallowCount: number;
+  userAgentGroupCount: number;
+  rootDisallowed: boolean;
+  blockedAiCrawlers: string[];
 };
 
 export type SitemapSource = "robots" | "default" | "none";
+
+export type SitemapFormat = "urlset" | "sitemapindex" | "invalid" | "none";
 
 export type SitemapAnalysis = {
   exists: boolean;
@@ -81,6 +91,19 @@ export type SitemapAnalysis = {
   urlCount: number;
   childSitemapCount: number;
   sampleUrls: string[];
+  format: SitemapFormat;
+  invalidResponseCount: number;
+};
+
+export type TechnicalSignalStatus = "pass" | "warning" | "fail";
+
+export type TechnicalSignal = {
+  id: string;
+  label: string;
+  status: TechnicalSignalStatus;
+  scoreImpact: number;
+  summary: string;
+  recommendation: string;
 };
 
 export type TrustSignals = {
@@ -202,6 +225,7 @@ export type AuditResponse = {
   aiVisibilitySignals: AiVisibilitySignals;
   robotsAnalysis: RobotsAnalysis;
   sitemapAnalysis: SitemapAnalysis;
+  technicalSignals: TechnicalSignal[];
   socialMetadata: SocialMetadata;
   entityAnalysis: EntityAnalysis;
   readabilityAnalysis: ReadabilityAnalysis;
