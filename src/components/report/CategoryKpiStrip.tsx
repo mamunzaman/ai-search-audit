@@ -1,6 +1,7 @@
 import { Icon } from "@/components/icons/Icon";
 import { cn } from "@/lib/cn";
 import type { CategoryKpi } from "@/lib/category-detail-data";
+import { reportStyles } from "./reportStyles";
 
 type CategoryKpiStripProps = {
   kpis: CategoryKpi[];
@@ -41,22 +42,24 @@ const trendIcons = {
 
 export function CategoryKpiStrip({ kpis }: CategoryKpiStripProps) {
   return (
-    <div className="grid grid-cols-2 gap-stack-lg md:grid-cols-4">
+    <div className={cn("grid grid-cols-2 md:grid-cols-4", reportStyles.gridGap)}>
       {kpis.map((kpi) => {
         const trend = getTrend(kpi.value);
 
         return (
           <div
             key={kpi.label}
-            className="flex h-full min-h-[120px] flex-col justify-between rounded-[24px] border border-outline-variant bg-white p-5 card-shadow"
+            className={cn(
+              reportStyles.card,
+              reportStyles.cardPadding,
+              "flex h-full min-h-[120px] flex-col justify-between",
+            )}
           >
             <div className="flex items-start justify-between gap-2">
-              <p className="text-label-md font-bold uppercase tracking-wider text-outline">
-                {kpi.label}
-              </p>
+              <p className={reportStyles.subsectionLabel}>{kpi.label}</p>
               <span
                 className={cn(
-                  "inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase",
+                  "inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase",
                   trendStyles[trend.direction],
                 )}
               >
@@ -65,9 +68,7 @@ export function CategoryKpiStrip({ kpis }: CategoryKpiStripProps) {
               </span>
             </div>
             <div>
-              <p className="text-[32px] font-black leading-none tabular-nums text-on-surface">
-                {kpi.value}
-              </p>
+              <p className="text-headline-md tabular-nums text-primary">{kpi.value}</p>
               <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-surface-container-high">
                 <div
                   className={cn(

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { cn } from "@/lib/cn";
 import type { ReportV2RecommendationRow } from "@/lib/audit/report-v2";
 
@@ -83,12 +84,21 @@ export function HighImpactRecommendationsTable({
                   <span className="text-data-mono text-primary">{row.impact}</span>
                 </td>
                 <td className="px-stack-lg py-5 text-right">
-                  <button
-                    type="button"
-                    className="text-label-md font-bold text-primary hover:underline"
-                  >
-                    {row.action}
-                  </button>
+                  {row.href ? (
+                    <Link
+                      href={row.href}
+                      className="text-label-md font-bold text-primary hover:underline"
+                    >
+                      {row.action}
+                    </Link>
+                  ) : (
+                    <button
+                      type="button"
+                      className="text-label-md font-bold text-primary hover:underline"
+                    >
+                      {row.action}
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

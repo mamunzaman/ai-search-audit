@@ -1,11 +1,10 @@
 "use client";
 
-import { ReportBreadcrumb } from "@/components/report/ReportBreadcrumb";
-import { ReportSidebar } from "@/components/report/ReportSidebar";
-import { ReportTopNav } from "@/components/report/ReportTopNav";
+import { CategoryDetailLayout } from "@/components/report/CategoryDetailLayout";
 import { Icon } from "@/components/icons/Icon";
-import { ScoreRing } from "@/components/ui";
+import { ReportScoreRing } from "@/components/report/ScoreRing";
 import { cn } from "@/lib/cn";
+import { reportStyles } from "@/components/report/reportStyles";
 import {
   getAiVisibilityFallbackView,
   loadAiVisibilityDetailView,
@@ -19,35 +18,31 @@ type AIVisibilityDetailPageProps = {
 
 function HeroSection({ data }: { data: AiVisibilityDetailView }) {
   return (
-    <section className="mb-gutter min-w-0 overflow-hidden rounded-3xl border border-outline-variant bg-white p-stack-lg shadow-sm">
+    <section className={cn(reportStyles.heroCard, "lg:items-start")}>
       <div className="flex min-w-0 flex-col items-center gap-10 md:flex-row md:items-center">
-        <div className="relative mx-4 flex h-40 w-40 shrink-0 items-center justify-center md:mx-8">
-          <ScoreRing
+        <div className="relative mx-4 flex shrink-0 items-center justify-center md:mx-8">
+          <ReportScoreRing
             score={data.score}
-            size="md"
-            label="/ 100"
-            trackClassName="text-[#E5E7EB]"
-            indicatorClassName="text-primary-blue"
-            scoreClassName="text-display-lg font-bold text-primary"
-            className="h-40 w-40"
+            categorySlug="ai-visibility"
+            label="Score"
           />
         </div>
 
         <div className="min-w-0 flex-1">
           <div className="mb-3 flex flex-wrap items-center gap-4">
-            <h1 className="break-words text-headline-lg font-semibold leading-tight text-on-surface">
+            <h1 className={reportStyles.pageTitle}>
               {data.title}
             </h1>
             <span
               className={cn(
-                "rounded-full px-3 py-1 font-label-md uppercase",
+                reportStyles.statusBadge,
                 data.statusClassName,
               )}
             >
               {data.statusLabel}
             </span>
           </div>
-          <p className="max-w-3xl break-words text-body-lg leading-tight text-on-surface-variant">
+          <p className={reportStyles.pageSummary}>
             {data.summary}
           </p>
         </div>
@@ -90,13 +85,13 @@ function HeroSection({ data }: { data: AiVisibilityDetailView }) {
 
 function KpiStrip({ data }: { data: AiVisibilityDetailView }) {
   return (
-    <div className="mb-gutter grid min-w-0 grid-cols-1 gap-gutter md:grid-cols-4">
+    <div className={cn("grid min-w-0 grid-cols-1 md:grid-cols-4", reportStyles.gridGap)}>
       {data.kpis.map((kpi) => (
         <div
           key={kpi.label}
-          className="audit-card min-w-0 rounded-3xl border border-outline-variant bg-white p-6 shadow-sm"
+          className={cn(reportStyles.card, reportStyles.cardPadding)}
         >
-          <p className="mb-2 break-words font-label-md leading-tight text-on-surface-variant">
+          <p className={cn("mb-2 break-words", reportStyles.subsectionLabel)}>
             {kpi.label}
           </p>
           <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
@@ -142,8 +137,8 @@ function EquilibriumMatrix({ data }: { data: AiVisibilityDetailView }) {
   const fillOpacity = Math.min(0.35, average / 250 + 0.08);
 
   return (
-    <div className="flex min-w-0 flex-col items-center overflow-hidden rounded-3xl border border-outline-variant bg-white p-stack-lg">
-      <h3 className="mb-8 self-start text-headline-md">Equilibrium Matrix</h3>
+    <div className={cn(reportStyles.card, reportStyles.cardPadding, "flex min-w-0 flex-col items-center overflow-hidden")}>
+      <h3 className={cn(reportStyles.sectionTitle, "mb-8 self-start")}>Equilibrium Matrix</h3>
 
       <div className="relative mx-auto h-[240px] w-[240px] shrink-0 md:h-[280px] md:w-[280px] xl:h-[300px] xl:w-[300px]">
         {MATRIX_AXIS_LAYOUT.map(({ label, position }) => (
@@ -182,9 +177,9 @@ function EquilibriumMatrix({ data }: { data: AiVisibilityDetailView }) {
 
 function AuditBreakdown({ data }: { data: AiVisibilityDetailView }) {
   return (
-    <div className="min-w-0 overflow-hidden rounded-3xl border border-outline-variant bg-white">
-      <div className="border-b border-outline-variant bg-canvas px-stack-lg py-4">
-        <h3 className="text-headline-md">Audit Breakdown</h3>
+    <div className={cn(reportStyles.card, "min-w-0 overflow-hidden")}>
+      <div className={reportStyles.tableSectionHeader}>
+        <h3 className={reportStyles.sectionTitle}>Audit Breakdown</h3>
       </div>
       <div className="divide-y divide-outline-variant">
         {data.breakdown.map((item) => (
@@ -232,11 +227,11 @@ function AuditBreakdown({ data }: { data: AiVisibilityDetailView }) {
 
 function IssuesAndRecommendations({ data }: { data: AiVisibilityDetailView }) {
   return (
-    <div className="mb-gutter grid min-w-0 grid-cols-1 gap-gutter md:grid-cols-2">
-      <div className="min-w-0 rounded-3xl border-2 border-error bg-[#FFF5F5] p-stack-lg">
+    <div className={cn("grid min-w-0 grid-cols-1 md:grid-cols-2", reportStyles.gridGap)}>
+      <div className="min-w-0 rounded-[24px] border-2 border-error bg-[#FFF5F5] p-stack-lg">
         <div className="mb-4 flex min-w-0 items-start gap-3">
           <Icon name="error" size={24} className="shrink-0 text-error" filled />
-          <h3 className="min-w-0 break-words text-lg font-semibold leading-tight text-on-error-container">
+          <h3 className={cn(reportStyles.sectionTitle, "min-w-0 break-words text-on-error-container")}>
             {data.criticalIssue.title}
           </h3>
         </div>
@@ -244,33 +239,33 @@ function IssuesAndRecommendations({ data }: { data: AiVisibilityDetailView }) {
           {data.criticalIssue.description}
         </p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="rounded-2xl border border-error/20 bg-white p-4 shadow-sm">
-            <span className="mb-1 block font-label-md uppercase text-on-surface-variant opacity-70">
+          <div className="rounded-xl border border-error/20 bg-white p-stack-md card-shadow">
+            <span className={cn("mb-1 block opacity-70", reportStyles.subsectionLabel)}>
               Loss Score
             </span>
-            <span className="text-xl font-bold tabular-nums text-error">
+            <span className="text-headline-md tabular-nums text-error">
               -{data.criticalIssue.lossScore} pts
             </span>
           </div>
-          <div className="rounded-2xl border border-error/20 bg-white p-4 shadow-sm">
-            <span className="mb-1 block font-label-md uppercase text-on-surface-variant opacity-70">
+          <div className="rounded-xl border border-error/20 bg-white p-stack-md card-shadow">
+            <span className={cn("mb-1 block opacity-70", reportStyles.subsectionLabel)}>
               Affected URLs
             </span>
-            <span className="text-xl font-bold tabular-nums text-error">
+            <span className="text-headline-md tabular-nums text-error">
               {data.criticalIssue.affectedUrls}
             </span>
           </div>
         </div>
       </div>
 
-      <div className="min-w-0 rounded-3xl bg-primary-container p-stack-lg text-on-primary">
+      <div className="min-w-0 rounded-[24px] bg-primary-container p-stack-lg text-on-primary">
         <div className="mb-4 flex min-w-0 items-start gap-3">
           <Icon name="lightbulb" size={24} className="shrink-0" filled />
-          <h3 className="min-w-0 break-words text-lg font-semibold leading-tight">
+          <h3 className={cn(reportStyles.sectionTitle, "min-w-0 break-words text-on-primary")}>
             Top Recommendation
           </h3>
         </div>
-        <h4 className="mb-2 break-words text-xl font-bold leading-tight">
+        <h4 className="mb-2 break-words text-headline-md font-bold">
           {data.topRecommendation.title}
         </h4>
         <p className="mb-6 break-words text-body-md leading-tight opacity-90">
@@ -281,15 +276,15 @@ function IssuesAndRecommendations({ data }: { data: AiVisibilityDetailView }) {
             <span className="mb-1 block font-label-md uppercase opacity-70">
               Potential Gain
             </span>
-            <span className="text-xl font-bold tabular-nums">
+            <span className="text-headline-md tabular-nums font-bold">
               +{data.topRecommendation.potentialGain} Score
             </span>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
-            <span className="mb-1 block font-label-md uppercase opacity-70">
+          <div className="rounded-xl border border-white/10 bg-white/10 p-stack-md">
+            <span className={cn("mb-1 block opacity-70", reportStyles.subsectionLabel)}>
               Difficulty
             </span>
-            <span className="text-xl font-bold">{data.topRecommendation.difficulty}</span>
+            <span className="text-headline-md font-bold">{data.topRecommendation.difficulty}</span>
           </div>
         </div>
       </div>
@@ -312,13 +307,13 @@ function ImplementationSection({ data }: { data: AiVisibilityDetailView }) {
   }
 
   return (
-    <section className="mb-gutter overflow-hidden rounded-3xl border border-outline-variant bg-white shadow-sm">
+    <section className={cn(reportStyles.card, "overflow-hidden")}>
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="flex w-full min-w-0 items-center justify-between gap-3 px-stack-lg py-5 transition-colors hover:bg-surface-container"
+        className="flex w-full min-w-0 items-center justify-between gap-3 px-stack-lg py-stack-md transition-colors hover:bg-surface-container-low"
       >
-        <span className="flex min-w-0 items-center gap-3 break-words text-left font-semibold leading-tight">
+        <span className={cn("flex min-w-0 items-center gap-3 break-words text-left", reportStyles.sectionTitle)}>
           <Icon name="terminal" />
           Developer Implementation: JSON-LD FAQ Pattern
         </span>
@@ -362,30 +357,20 @@ export function AIVisibilityDetailPage({ domain }: AIVisibilityDetailPageProps) 
   }, [mounted, domain]);
 
   return (
-    <div className="min-h-screen min-w-0 overflow-x-hidden bg-canvas text-on-surface">
-      <ReportSidebar
-        domain={data.domain}
-        activeNav="AI Visibility"
-        auditDate={data.auditDate}
-      />
-
-      <div className="flex min-h-screen min-w-0 flex-col md:ml-64">
-        <ReportTopNav domain={data.domain} />
-        <main className="min-w-0 flex-1 overflow-x-hidden p-margin-desktop md:max-w-[1440px]">
-          <ReportBreadcrumb domain={data.domain} currentLabel="AI Visibility" />
-
-        <HeroSection data={data} />
-        <KpiStrip data={data} />
-
-        <div className="mb-gutter grid min-w-0 grid-cols-1 items-start gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
-          <EquilibriumMatrix data={data} />
-          <AuditBreakdown data={data} />
-        </div>
-
-        <IssuesAndRecommendations data={data} />
-        <ImplementationSection data={data} />
-        </main>
+    <CategoryDetailLayout
+      domain={data.domain}
+      categoryLabel="AI Visibility"
+      activeNav="AI Visibility"
+      auditDate={data.auditDate}
+    >
+      <HeroSection data={data} />
+      <KpiStrip data={data} />
+      <div className="grid min-w-0 grid-cols-1 items-start gap-stack-lg xl:grid-cols-[360px_minmax(0,1fr)]">
+        <EquilibriumMatrix data={data} />
+        <AuditBreakdown data={data} />
       </div>
-    </div>
+      <IssuesAndRecommendations data={data} />
+      <ImplementationSection data={data} />
+    </CategoryDetailLayout>
   );
 }

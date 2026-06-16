@@ -1,8 +1,8 @@
 "use client";
 
-import { ReportBreadcrumb } from "@/components/report/ReportBreadcrumb";
-import { ReportSidebar } from "@/components/report/ReportSidebar";
-import { ReportTopNav } from "@/components/report/ReportTopNav";
+import { CategoryDetailLayout } from "@/components/report/CategoryDetailLayout";
+import { reportStyles } from "@/components/report/reportStyles";
+import { ReportScoreRing } from "@/components/report/ScoreRing";
 import { Icon } from "@/components/icons/Icon";
 import { cn } from "@/lib/cn";
 import {
@@ -20,57 +20,6 @@ import { useEffect, useState } from "react";
 type Wcag22DetailPageProps = {
   domain: string;
 };
-
-const WCAG_RING_RADIUS = 42;
-const WCAG_RING_CIRCUMFERENCE = 2 * Math.PI * WCAG_RING_RADIUS;
-
-function WcagScoreRing({ score }: { score: number }) {
-  const targetOffset =
-    WCAG_RING_CIRCUMFERENCE - (WCAG_RING_CIRCUMFERENCE * score) / 100;
-  const [strokeOffset, setStrokeOffset] = useState(WCAG_RING_CIRCUMFERENCE);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setStrokeOffset(targetOffset), 100);
-    return () => window.clearTimeout(timer);
-  }, [targetOffset]);
-
-  return (
-    <div className="relative h-48 w-48 shrink-0">
-      <svg
-        className="h-full w-full -rotate-90"
-        viewBox="0 0 100 100"
-        aria-hidden="true"
-        focusable="false"
-      >
-        <circle
-          cx="50"
-          cy="50"
-          fill="transparent"
-          r={WCAG_RING_RADIUS}
-          stroke="currentColor"
-          strokeWidth="8"
-          className="text-outline-variant"
-        />
-        <circle
-          cx="50"
-          cy="50"
-          fill="transparent"
-          r={WCAG_RING_RADIUS}
-          stroke="currentColor"
-          strokeDasharray={WCAG_RING_CIRCUMFERENCE}
-          strokeDashoffset={strokeOffset}
-          strokeLinecap="round"
-          strokeWidth="8"
-          className="text-primary"
-        />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-headline-lg text-primary">{score}</span>
-        <span className="font-label-md text-outline">/ 100</span>
-      </div>
-    </div>
-  );
-}
 
 function BenchmarkCard({ rows }: { rows: WcagBenchmarkRow[] }) {
   return (
@@ -106,7 +55,7 @@ function HeroSection({ data }: { data: Wcag22DetailView }) {
   return (
     <section className="grid min-w-0 grid-cols-1 gap-gutter lg:grid-cols-12">
       <div className="flex min-w-0 flex-col items-center gap-8 rounded-xl border border-outline-variant bg-white p-stack-lg card-shadow md:flex-row lg:col-span-8">
-        <WcagScoreRing score={data.score} />
+        <ReportScoreRing score={data.score} categorySlug="wcag-22" label="Score" />
         <div className="min-w-0 flex-1 space-y-4 text-center md:text-left">
           <div className="flex flex-wrap items-center justify-center gap-3 md:justify-start">
             <h1 className="text-headline-lg text-on-surface">WCAG 2.2 Readiness</h1>
@@ -355,8 +304,8 @@ function AccordionItem({
 
 function ImplementationAccordions({ items }: { items: WcagAccordionItem[] }) {
   return (
-    <div className="min-w-0 space-y-stack-md rounded-xl border border-outline-variant bg-white p-stack-lg card-shadow">
-      <h3 className="text-headline-md">Implementation Examples</h3>
+    <div className={cn(reportStyles.card, reportStyles.cardPadding, "min-w-0 space-y-stack-md")}>
+      <h3 className={reportStyles.sectionTitle}>Implementation Examples</h3>
       <div className="space-y-2">
         {items.map((item, index) => (
           <AccordionItem key={item.title} item={item} defaultOpen={index === 0} />
@@ -366,28 +315,6 @@ function ImplementationAccordions({ items }: { items: WcagAccordionItem[] }) {
   );
 }
 
-function PageFooter({ quote }: { quote: string }) {
-  return (
-    <footer className="mt-stack-lg border-t border-outline-variant bg-white px-margin-desktop py-8 text-center">
-      <p className="mx-auto max-w-2xl italic text-body-md text-on-surface-variant">
-        &ldquo;{quote}&rdquo;
-      </p>
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-4 font-label-md text-outline sm:gap-8">
-        <a href="#" className="hover:text-primary">
-          Compliance Standards
-        </a>
-        <a href="#" className="hover:text-primary">
-          Privacy Policy
-        </a>
-        <a href="#" className="hover:text-primary">
-          Contact Support
-        </a>
-        <span className="text-outline-variant">|</span>
-        <span>Version 1.4.2-stable</span>
-      </div>
-    </footer>
-  );
-}
 
 export function Wcag22DetailPage({ domain }: Wcag22DetailPageProps) {
   const [mounted, setMounted] = useState(false);
@@ -403,34 +330,24 @@ export function Wcag22DetailPage({ domain }: Wcag22DetailPageProps) {
   }, [mounted, domain]);
 
   return (
-    <div className="min-h-screen min-w-0 overflow-x-hidden bg-canvas text-on-surface">
-      <ReportSidebar
-        domain={data.domain}
-        activeNav="WCAG 2.2"
-        auditDate={data.auditDate}
-      />
-
-      <div className="flex min-h-screen min-w-0 flex-col md:ml-64">
-        <ReportTopNav domain={data.domain} />
-        <main className="min-w-0 flex-1 overflow-x-hidden p-margin-desktop md:max-w-[1440px]">
-          <ReportBreadcrumb domain={data.domain} currentLabel="WCAG 2.2 Readiness" />
-
-          <div className="space-y-stack-lg">
-        <HeroSection data={data} />
-        <PourKpiStrip kpis={data.pourKpis} />
-        <PrinciplesMatrix data={data} />
-        <CriticalIssuesSection issues={data.criticalIssues} />
-        <AiReadinessBanner cards={data.aiReadinessCards} />
-
-        <section className="grid min-w-0 grid-cols-1 gap-gutter lg:grid-cols-2">
-          <RecommendationsPanel items={data.recommendations} />
-          <ImplementationAccordions items={data.accordionItems} />
-        </section>
-
-        <PageFooter quote={data.footerQuote} />
-          </div>
-        </main>
-      </div>
-    </div>
+    <CategoryDetailLayout
+      domain={data.domain}
+      categoryLabel="WCAG 2.2 Readiness"
+      activeNav="WCAG 2.2"
+      auditDate={data.auditDate}
+    >
+      <HeroSection data={data} />
+      <PourKpiStrip kpis={data.pourKpis} />
+      <PrinciplesMatrix data={data} />
+      <CriticalIssuesSection issues={data.criticalIssues} />
+      <AiReadinessBanner cards={data.aiReadinessCards} />
+      <section className={cn("grid min-w-0 grid-cols-1 lg:grid-cols-2", reportStyles.gridGap)}>
+        <RecommendationsPanel items={data.recommendations} />
+        <ImplementationAccordions items={data.accordionItems} />
+      </section>
+      <blockquote className="rounded-[24px] border border-outline-variant bg-white p-stack-lg text-center text-body-md italic text-on-surface-variant card-shadow">
+        &ldquo;{data.footerQuote}&rdquo;
+      </blockquote>
+    </CategoryDetailLayout>
   );
 }

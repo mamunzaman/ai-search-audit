@@ -1,8 +1,8 @@
 "use client";
 
-import { ReportBreadcrumb } from "@/components/report/ReportBreadcrumb";
-import { ReportSidebar } from "@/components/report/ReportSidebar";
-import { ReportTopNav } from "@/components/report/ReportTopNav";
+import { CategoryDetailLayout } from "@/components/report/CategoryDetailLayout";
+import { reportStyles } from "@/components/report/reportStyles";
+import { ReportScoreRing } from "@/components/report/ScoreRing";
 import { Icon } from "@/components/icons/Icon";
 import { cn } from "@/lib/cn";
 import {
@@ -18,59 +18,6 @@ import { useEffect, useState } from "react";
 type SchemaMarkupDetailPageProps = {
   domain: string;
 };
-
-const SCORE_RING_RADIUS = 40;
-const SCORE_RING_CIRCUMFERENCE = 2 * Math.PI * SCORE_RING_RADIUS;
-
-function SchemaScoreRing({ score }: { score: number }) {
-  const targetOffset =
-    SCORE_RING_CIRCUMFERENCE - (SCORE_RING_CIRCUMFERENCE * score) / 100;
-  const [strokeOffset, setStrokeOffset] = useState(SCORE_RING_CIRCUMFERENCE);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setStrokeOffset(targetOffset), 100);
-    return () => window.clearTimeout(timer);
-  }, [targetOffset]);
-
-  return (
-    <div className="relative flex h-32 w-32 shrink-0 items-center justify-center">
-      <svg
-        className="h-full w-full -rotate-90"
-        viewBox="0 0 100 100"
-        aria-hidden="true"
-        focusable="false"
-      >
-        <circle
-          cx="50"
-          cy="50"
-          fill="transparent"
-          r={SCORE_RING_RADIUS}
-          stroke="currentColor"
-          strokeWidth="8"
-          className="text-outline-variant"
-        />
-        <circle
-          cx="50"
-          cy="50"
-          fill="transparent"
-          r={SCORE_RING_RADIUS}
-          stroke="currentColor"
-          strokeDasharray={SCORE_RING_CIRCUMFERENCE}
-          strokeDashoffset={strokeOffset}
-          strokeLinecap="round"
-          strokeWidth="8"
-          className="text-primary"
-        />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-headline-md text-primary">{score}</span>
-        <span className="text-[10px] font-label-md uppercase tracking-wider text-on-surface-variant">
-          Score
-        </span>
-      </div>
-    </div>
-  );
-}
 
 function SchemaDistributionDonut({
   segments,
@@ -126,24 +73,24 @@ function SchemaDistributionDonut({
 
 function HeaderSection({ data }: { data: SchemaMarkupDetailView }) {
   return (
-    <div className="mb-gutter flex min-w-0 flex-col items-center gap-stack-lg rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow md:flex-row">
-      <SchemaScoreRing score={data.score} />
+    <div className={cn(reportStyles.heroCard, "md:flex-row")}>
+      <ReportScoreRing score={data.score} categorySlug="schema-markup" label="Score" />
       <div className="min-w-0 flex-1 space-y-2 text-center md:text-left">
         <div className="flex flex-wrap items-center justify-center gap-3 md:justify-start">
-          <h1 className="break-words text-headline-lg text-on-surface">
+          <h1 className={reportStyles.pageTitle}>
             Schema Health:{" "}
             <span className="text-primary">{data.healthTier}</span>
           </h1>
           <span
             className={cn(
-              "rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest",
+              reportStyles.statusBadge,
               data.statusBadgeClassName,
             )}
           >
             {data.statusBadge}
           </span>
         </div>
-        <p className="max-w-2xl break-words text-body-md leading-relaxed text-on-surface-variant">
+        <p className={reportStyles.pageSummary}>
           {data.summary}
         </p>
       </div>
@@ -169,11 +116,11 @@ function HeaderSection({ data }: { data: SchemaMarkupDetailView }) {
 
 function KpiStrip({ data }: { data: SchemaMarkupDetailView }) {
   return (
-    <div className="mb-gutter grid min-w-0 grid-cols-1 gap-gutter sm:grid-cols-2 lg:grid-cols-4">
+    <div className={cn("grid min-w-0 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4", reportStyles.gridGap)}>
       {data.kpis.map((kpi) => (
         <div
           key={kpi.label}
-          className="min-w-0 rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow"
+          className={cn(reportStyles.card, reportStyles.cardPadding)}
         >
           <p className="mb-1 font-label-md text-on-surface-variant">{kpi.label}</p>
           <div className="flex items-end justify-between gap-2">
@@ -260,7 +207,7 @@ function CriticalRecommendationCard({
 
 function SchemaTypeCoverage({ data }: { data: SchemaMarkupDetailView }) {
   return (
-    <div className="mb-gutter min-w-0 rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow">
+    <div className="min-w-0 rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow">
       <h3 className="mb-stack-md text-headline-md text-on-surface">Schema Type Coverage</h3>
       <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
         {data.schemaTypeSignals.map((signal) => (
@@ -325,7 +272,7 @@ function LowSeverityIssues({ issues }: { issues: SchemaMarkupDetailView["lowSeve
   }
 
   return (
-    <div className="mb-gutter min-w-0 rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow">
+    <div className="min-w-0 rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow">
       <h3 className="mb-stack-md text-headline-md text-on-surface">Low Severity Issues</h3>
       <div className="space-y-4">
         {issues.map((issue) => (
@@ -440,79 +387,68 @@ export function SchemaMarkupDetailPage({ domain }: SchemaMarkupDetailPageProps) 
   }, [mounted, domain]);
 
   return (
-    <div className="min-h-screen min-w-0 overflow-x-hidden bg-canvas text-on-surface">
-      <ReportSidebar
-        domain={data.domain}
-        activeNav="Schema Markup"
-        auditDate={data.auditDate}
-      />
-
-      <div className="flex min-h-screen min-w-0 flex-col md:ml-64">
-        <ReportTopNav domain={data.domain} />
-        <main className="min-w-0 flex-1 overflow-x-hidden p-margin-desktop md:max-w-[1440px]">
-          <ReportBreadcrumb domain={data.domain} currentLabel="Schema Markup" />
-
-        <HeaderSection data={data} />
-        <KpiStrip data={data} />
-
-        <div className="mb-gutter grid min-w-0 grid-cols-12 gap-gutter">
-          <div className="col-span-12 flex min-w-0 flex-col rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow lg:col-span-7">
-            <div className="mb-stack-lg flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div className="min-w-0">
-                <h3 className="text-headline-md text-on-surface">Schema Distribution</h3>
-                <p className="text-body-sm text-on-surface-variant">
-                  Relative weight of structured data entities across the domain.
-                </p>
-              </div>
-              <select
-                className="shrink-0 rounded-lg border-none bg-surface-container text-body-sm focus:ring-primary"
-                defaultValue="30"
-                aria-label="Distribution time range"
-              >
-                <option value="30">Last 30 Days</option>
-                <option value="90">Last 90 Days</option>
-              </select>
+    <CategoryDetailLayout
+      domain={data.domain}
+      categoryLabel="Schema Markup"
+      activeNav="Schema Markup"
+      auditDate={data.auditDate}
+    >
+      <HeaderSection data={data} />
+      <KpiStrip data={data} />
+      <div className={cn("grid min-w-0 grid-cols-12", reportStyles.gridGap)}>
+        <div className={cn(reportStyles.card, reportStyles.cardPadding, "col-span-12 flex min-w-0 flex-col lg:col-span-7")}>
+          <div className="mb-stack-lg flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0">
+              <h3 className={reportStyles.sectionTitle}>Schema Distribution</h3>
+              <p className="text-body-sm text-on-surface-variant">
+                Relative weight of structured data entities across the domain.
+              </p>
             </div>
-            <div className="flex min-h-[300px] flex-1 flex-col items-center justify-center gap-8 lg:flex-row lg:gap-10">
-              <SchemaDistributionDonut
-                segments={data.distributionSegments}
-                centerLabel={data.distributionCenterLabel}
-                centerSubLabel={data.distributionCenterSubLabel}
-              />
-              <div className="min-w-0 space-y-4">
-                {data.distributionSegments.map((segment) => (
-                  <div key={segment.label} className="flex min-w-0 items-center gap-3">
-                    <div
-                      className={cn(
-                        "h-3 w-3 shrink-0 rounded-full bg-current",
-                        segment.strokeClassName,
-                      )}
-                    />
-                    <div className="min-w-0">
-                      <span className="font-label-md text-on-surface">
-                        {segment.label} ({segment.percent}%)
-                      </span>
-                      <span className="block text-[10px] text-on-surface-variant">
-                        {segment.description}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <select
+              className="shrink-0 rounded-lg border-none bg-surface-container text-body-sm focus:ring-primary"
+              defaultValue="30"
+              aria-label="Distribution time range"
+            >
+              <option value="30">Last 30 Days</option>
+              <option value="90">Last 90 Days</option>
+            </select>
           </div>
-
-          <div className="col-span-12 flex min-w-0 flex-col gap-gutter lg:col-span-5">
-            <DetailedFindingsPanel data={data} />
-            <CriticalRecommendationCard recommendation={data.criticalRecommendation} />
+          <div className="flex min-h-[300px] flex-1 flex-col items-center justify-center gap-8 lg:flex-row lg:gap-10">
+            <SchemaDistributionDonut
+              segments={data.distributionSegments}
+              centerLabel={data.distributionCenterLabel}
+              centerSubLabel={data.distributionCenterSubLabel}
+            />
+            <div className="min-w-0 space-y-4">
+              {data.distributionSegments.map((segment) => (
+                <div key={segment.label} className="flex min-w-0 items-center gap-3">
+                  <div
+                    className={cn(
+                      "h-3 w-3 shrink-0 rounded-full bg-current",
+                      segment.strokeClassName,
+                    )}
+                  />
+                  <div className="min-w-0">
+                    <span className="font-label-md text-on-surface">
+                      {segment.label} ({segment.percent}%)
+                    </span>
+                    <span className="block text-[10px] text-on-surface-variant">
+                      {segment.description}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-
-        <LowSeverityIssues issues={data.lowSeverityIssues} />
-        <SchemaTypeCoverage data={data} />
-        <ImplementationAccordion items={data.accordionItems} />
-        </main>
+        <div className="col-span-12 flex min-w-0 flex-col gap-gutter lg:col-span-5">
+          <DetailedFindingsPanel data={data} />
+          <CriticalRecommendationCard recommendation={data.criticalRecommendation} />
+        </div>
       </div>
-    </div>
+      <LowSeverityIssues issues={data.lowSeverityIssues} />
+      <SchemaTypeCoverage data={data} />
+      <ImplementationAccordion items={data.accordionItems} />
+    </CategoryDetailLayout>
   );
 }

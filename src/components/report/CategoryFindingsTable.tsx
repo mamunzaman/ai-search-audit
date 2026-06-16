@@ -2,6 +2,7 @@ import { Icon } from "@/components/icons/Icon";
 import { cn } from "@/lib/cn";
 import type { CategoryFinding, FindingStatus } from "@/lib/category-detail-data";
 import { Fragment } from "react";
+import { reportStyles } from "./reportStyles";
 
 type CategoryFindingsTableProps = {
   findings: CategoryFinding[];
@@ -69,50 +70,44 @@ export function CategoryFindingsTable({
   const criticalCount = findings.filter((f) => f.status === "critical").length;
 
   return (
-    <section className="overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant px-5 py-3">
-        <h3 className="text-headline-md">{title}</h3>
+    <section className={cn(reportStyles.card, "overflow-hidden")}>
+      <div className={reportStyles.tableSectionHeader}>
+        <h3 className={reportStyles.sectionTitle}>{title}</h3>
         <div className="flex flex-wrap gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-canvas px-2.5 py-0.5 text-[10px] font-bold uppercase text-on-surface-variant">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#2E7D32]" />
+          <span className={reportStyles.countBadge}>
+            <span className="h-2 w-2 rounded-full bg-[#2E7D32]" />
             {passCount} Pass
           </span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-canvas px-2.5 py-0.5 text-[10px] font-bold uppercase text-on-surface-variant">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#FFC107]" />
+          <span className={reportStyles.countBadge}>
+            <span className="h-2 w-2 rounded-full bg-[#FFC107]" />
             {warnCount} Warning
           </span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-canvas px-2.5 py-0.5 text-[10px] font-bold uppercase text-on-surface-variant">
-            <span className="h-1.5 w-1.5 rounded-full bg-error" />
+          <span className={reportStyles.countBadge}>
+            <span className="h-2 w-2 rounded-full bg-error" />
             {criticalCount} Critical
           </span>
         </div>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-left">
-          <thead>
-            <tr className="bg-canvas">
-              <th className="px-5 py-3 text-label-md uppercase text-outline">
-                Parameter
-              </th>
-              <th className="px-5 py-3 text-label-md uppercase text-outline">
-                Status
-              </th>
-              <th className="px-5 py-3 text-right text-label-md uppercase text-outline">
+        <table className="w-full text-left">
+          <thead className={reportStyles.tableHeaderRow}>
+            <tr>
+              <th className={reportStyles.tableHeadCell}>Parameter</th>
+              <th className={reportStyles.tableHeadCell}>Status</th>
+              <th className={cn(reportStyles.tableHeadCell, "text-right")}>
                 Optimization
               </th>
-              <th className="px-5 py-3 text-right text-label-md uppercase text-outline">
-                Action
-              </th>
+              <th className={cn(reportStyles.tableHeadCell, "text-right")}>Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-outline-variant">
             {groups.map((group) => (
               <Fragment key={group.label}>
                 <tr className="bg-surface-container-low/50">
                   <td
                     colSpan={4}
-                    className="px-5 py-2 text-[10px] font-bold uppercase tracking-wider text-primary"
+                    className="px-stack-lg py-3 text-label-md font-bold uppercase text-primary"
                   >
                     {group.label}
                   </td>
@@ -121,40 +116,38 @@ export function CategoryFindingsTable({
                   <tr
                     key={finding.id}
                     className={cn(
-                      "group border-b border-outline-variant/50 border-l-4 border-l-transparent transition-colors hover:bg-[#f0f4ff]",
+                      "group border-l-4 border-l-transparent transition-colors hover:bg-primary-container/5",
                       rowAccent[finding.status],
                     )}
                   >
-                    <td className="px-5 py-3">
+                    <td className={reportStyles.tableBodyCell}>
                       <div className="flex items-center gap-2.5">
                         <Icon name={finding.icon} className="text-outline" size={20} />
                         <div>
-                          <span className="font-medium text-on-surface">
-                            {finding.label}
-                          </span>
-                          <p className="line-clamp-1 text-[11px] text-on-surface-variant">
+                          <span className="font-bold text-primary">{finding.label}</span>
+                          <p className="line-clamp-1 text-body-sm text-on-surface-variant">
                             {finding.detail}
                           </p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-3">
+                    <td className={reportStyles.tableBodyCell}>
                       <span
                         className={cn(
-                          "rounded-full px-2 py-0.5 text-[10px] font-bold uppercase",
+                          reportStyles.tableBadge,
                           statusStyles[finding.status],
                         )}
                       >
                         {statusLabels[finding.status]}
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-right font-mono text-body-sm tabular-nums">
+                    <td className={cn(reportStyles.tableBodyCell, "text-right text-data-mono")}>
                       {finding.optimization}%
                     </td>
-                    <td className="px-5 py-3 text-right">
+                    <td className={cn(reportStyles.tableBodyCell, "text-right")}>
                       <button
                         type="button"
-                        className="text-body-sm font-bold text-primary opacity-0 transition-opacity group-hover:opacity-100"
+                        className="text-label-md font-bold text-primary opacity-0 transition-opacity group-hover:opacity-100 hover:underline"
                       >
                         {finding.status === "optimized" ? "View Details" : "Optimize"}
                       </button>

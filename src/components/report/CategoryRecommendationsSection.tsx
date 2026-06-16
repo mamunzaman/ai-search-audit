@@ -1,6 +1,7 @@
 import { Icon } from "@/components/icons/Icon";
 import { cn } from "@/lib/cn";
 import type { CategoryRecommendation } from "@/lib/category-detail-data";
+import { reportStyles } from "./reportStyles";
 
 type CategoryRecommendationsSectionProps = {
   recommendations: CategoryRecommendation[];
@@ -46,40 +47,32 @@ export function CategoryRecommendationsSection({
   }
 
   return (
-    <section className="space-y-stack-md">
-      <div className="border-b border-outline-variant pb-3">
+    <section className={reportStyles.sectionStack}>
+      <div className="border-b border-outline-variant pb-stack-md">
         <p className="text-label-md font-bold uppercase tracking-wider text-primary">
           Action Plan
         </p>
-        <h3 className="text-headline-md">{title}</h3>
+        <h3 className={reportStyles.sectionTitle}>{title}</h3>
       </div>
 
-      <div className="grid grid-cols-1 gap-stack-lg lg:grid-cols-2">
+      <div className={cn("grid grid-cols-1 lg:grid-cols-2", reportStyles.gridGap)}>
         {recommendations.map((rec, index) => {
           const priority = getPriority(index);
           const difficulty = getDifficulty(rec.estimatedGain);
 
           return (
-            <article
-              key={rec.title}
-              className="overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow"
-            >
-              <div className="flex items-center justify-between border-b border-outline-variant bg-surface-container-low px-5 py-3">
+            <article key={rec.title} className={cn(reportStyles.card, "overflow-hidden")}>
+              <div className="flex items-center justify-between border-b border-outline-variant bg-surface-container-low px-stack-lg py-stack-md">
                 <div className="flex items-center gap-2">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-[11px] font-black text-on-primary">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-label-md font-bold text-on-primary">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <span
-                    className={cn(
-                      "rounded-full px-2 py-0.5 text-[10px] font-bold uppercase",
-                      priorityStyles[priority],
-                    )}
+                    className={cn(reportStyles.tableBadge, priorityStyles[priority])}
                   >
                     {priority}
                   </span>
-                  <span className="text-[10px] font-bold uppercase text-outline">
-                    {difficulty}
-                  </span>
+                  <span className={reportStyles.subsectionLabel}>{difficulty}</span>
                 </div>
                 {rec.estimatedGain ? (
                   <span className="text-body-sm font-bold text-[#2E7D32]">
@@ -88,17 +81,15 @@ export function CategoryRecommendationsSection({
                 ) : null}
               </div>
 
-              <div className="space-y-3 p-5">
+              <div className="space-y-3 p-stack-lg">
                 <h4 className="font-bold text-primary">{rec.title}</h4>
                 <p className="text-body-sm leading-relaxed text-on-surface-variant">
                   {rec.description}
                 </p>
-                <div className="flex items-start gap-2 rounded-lg bg-surface-container-low p-3">
+                <div className="flex items-start gap-2 rounded-lg bg-surface-container-low p-stack-md">
                   <Icon name="build" size={16} className="mt-0.5 text-outline" />
                   <div>
-                    <p className="text-[10px] font-bold uppercase text-outline">
-                      Fix Summary
-                    </p>
+                    <p className={reportStyles.subsectionLabel}>Fix Summary</p>
                     <p className="text-body-sm font-medium text-on-surface">
                       {rec.description}
                     </p>

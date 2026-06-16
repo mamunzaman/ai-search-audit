@@ -3,6 +3,7 @@ import { ReportBreadcrumb } from "./ReportBreadcrumb";
 import { ReportFooter } from "./ReportFooter";
 import { ReportSidebar } from "./ReportSidebar";
 import { ReportTopNav } from "./ReportTopNav";
+import { reportStyles } from "./reportStyles";
 
 type CategoryDetailLayoutProps = {
   domain: string;
@@ -24,9 +25,9 @@ export function CategoryDetailLayout({
       <ReportSidebar domain={domain} activeNav={activeNav} auditDate={auditDate} />
       <div className="flex min-h-screen min-w-0 flex-col md:ml-64">
         <ReportTopNav domain={domain} />
-        <main className="mx-auto w-full min-w-0 max-w-container-max flex-1 overflow-x-hidden p-margin-desktop">
+        <main className={reportStyles.mainShell}>
           <ReportBreadcrumb domain={domain} currentLabel={categoryLabel} />
-          <div className="space-y-stack-lg">{children}</div>
+          <div className={reportStyles.pageStack}>{children}</div>
         </main>
         <ReportFooter />
       </div>

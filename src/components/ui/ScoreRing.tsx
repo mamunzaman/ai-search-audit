@@ -3,6 +3,9 @@
 import { cn } from "@/lib/cn";
 import { useEffect, useState } from "react";
 
+const RING_RADIUS = 40;
+const DEFAULT_STROKE_WIDTH = 8;
+
 type ScoreRingProps = {
   score: number;
   size?: "sm" | "md" | "lg";
@@ -13,6 +16,8 @@ type ScoreRingProps = {
   indicatorClassName?: string;
   scoreClassName?: string;
   className?: string;
+  strokeWidth?: number;
+  animated?: boolean;
 };
 
 const sizeMap = {
@@ -25,6 +30,22 @@ const sizeMap = {
   lg: { box: "w-48 h-48", score: "text-display-lg", label: "text-label-md" },
 };
 
+function usePrefersReducedMotion(): boolean {
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(media.matches);
+
+    update();
+    media.addEventListener("change", update);
+
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  return reducedMotion;
+}
+
 export function ScoreRing({
   score,
   size = "sm",
@@ -35,29 +56,65 @@ export function ScoreRing({
   indicatorClassName = "text-primary",
   scoreClassName = "text-primary-blue",
   className,
+  strokeWidth = DEFAULT_STROKE_WIDTH,
+  animated = true,
 }: ScoreRingProps) {
-  const circumference = 2 * Math.PI * 40;
+  const reducedMotion = usePrefersReducedMotion();
+  const shouldAnimate = animated && !reducedMotion;
+  const circumference = 2 * Math.PI * RING_RADIUS;
   const targetOffset = circumference - (circumference * score) / 100;
   const sizes = sizeMap[size];
-  const [strokeOffset, setStrokeOffset] = useState(circumference);
+  const [animatedOffset, setAnimatedOffset] = useState(circumference);
+  const [animatedScore, setAnimatedScore] = useState(0);
+  const strokeOffset = shouldAnimate ? animatedOffset : targetOffset;
+  const displayScore = shouldAnimate ? animatedScore : score;
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setStrokeOffset(targetOffset);
+    if (!shouldAnimate) {
+      return;
+    }
+
+    const strokeTimer = window.setTimeout(() => {
+      setAnimatedOffset(targetOffset);
     }, 100);
-    return () => window.clearTimeout(timer);
-  }, [targetOffset]);
+
+    const duration = 1000;
+    const start = performance.now();
+    let frame = 0;
+
+    const tick = (now: number) => {
+      const progress = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setAnimatedScore(Math.round(score * eased));
+
+      if (progress < 1) {
+        frame = window.requestAnimationFrame(tick);
+      }
+    };
+
+    frame = window.requestAnimationFrame(tick);
+
+    return () => {
+      window.clearTimeout(strokeTimer);
+      window.cancelAnimationFrame(frame);
+    };
+  }, [score, targetOffset, circumference, shouldAnimate]);
 
   return (
     <div className={cn("relative", sizes.box, className)}>
-      <svg className="score-ring h-full w-full" viewBox="0 0 100 100">
+      <svg
+        className="score-ring h-full w-full"
+        viewBox="0 0 100 100"
+        aria-hidden="true"
+        focusable="false"
+      >
         <circle
           className={cn("stroke-current", trackClassName)}
           cx="50"
           cy="50"
           fill="transparent"
-          r="40"
-          strokeWidth="8"
+          r={RING_RADIUS}
+          strokeWidth={strokeWidth}
         />
         <circle
           className={cn(
@@ -67,25 +124,25 @@ export function ScoreRing({
           cx="50"
           cy="50"
           fill="transparent"
-          r="40"
+          r={RING_RADIUS}
           strokeDasharray={circumference}
           strokeDashoffset={strokeOffset}
           strokeLinecap="round"
-          strokeWidth="8"
+          strokeWidth={strokeWidth}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className={cn(sizes.score, scoreClassName)}>{score}</span>
-        {label && (
+        <span className={cn(sizes.score, scoreClassName)}>{displayScore}</span>
+        {label ? (
           <span className={cn(sizes.label, "text-on-surface-variant")}>
             {label}
           </span>
-        )}
-        {statusLabel && (
+        ) : null}
+        {statusLabel ? (
           <span className={cn(sizes.label, "font-bold", statusClassName)}>
             {statusLabel}
           </span>
-        )}
+        ) : null}
       </div>
     </div>
   );

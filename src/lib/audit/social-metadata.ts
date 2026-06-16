@@ -53,6 +53,14 @@ export function extractSocialMetadata(html: string): SocialMetadata {
         'meta[name="twitter:image"]',
         'meta[property="twitter:image"]',
       ]),
+      site: getMetaContent($, [
+        'meta[name="twitter:site"]',
+        'meta[property="twitter:site"]',
+      ]),
+      creator: getMetaContent($, [
+        'meta[name="twitter:creator"]',
+        'meta[property="twitter:creator"]',
+      ]),
     },
   };
 }

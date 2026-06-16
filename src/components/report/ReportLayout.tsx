@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
+import { cn } from "@/lib/cn";
 import { ReportFooter } from "./ReportFooter";
 import { ReportSidebar } from "./ReportSidebar";
 import { ReportTopNav } from "./ReportTopNav";
+import { reportStyles } from "./reportStyles";
 
 type ReportLayoutProps = {
   children: ReactNode;
@@ -19,7 +21,7 @@ export function ReportLayout({
       <ReportSidebar domain={domain} activeNav="Overview" auditDate={auditDate} />
       <div className="flex min-h-screen min-w-0 flex-col md:ml-64">
         <ReportTopNav domain={domain} />
-        <main className="mx-auto w-full min-w-0 max-w-container-max flex-1 space-y-stack-lg overflow-x-hidden p-margin-desktop">
+        <main className={cn(reportStyles.mainShell, "space-y-stack-lg")}>
           {children}
         </main>
         <ReportFooter />

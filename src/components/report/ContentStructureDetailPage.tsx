@@ -1,8 +1,8 @@
 "use client";
 
-import { ReportBreadcrumb } from "@/components/report/ReportBreadcrumb";
-import { ReportSidebar } from "@/components/report/ReportSidebar";
-import { ReportTopNav } from "@/components/report/ReportTopNav";
+import { CategoryDetailLayout } from "@/components/report/CategoryDetailLayout";
+import { reportStyles } from "@/components/report/reportStyles";
+import { ReportScoreRing } from "@/components/report/ScoreRing";
 import { Icon } from "@/components/icons/Icon";
 import { cn } from "@/lib/cn";
 import {
@@ -17,9 +17,6 @@ import { useEffect, useState } from "react";
 type ContentStructureDetailPageProps = {
   domain: string;
 };
-
-const STRUCTURE_RING_RADIUS = 54;
-const STRUCTURE_RING_CIRCUMFERENCE = 2 * Math.PI * STRUCTURE_RING_RADIUS;
 
 const BAR_HEIGHT_CLASS: Record<number, string> = {
   24: "h-6",
@@ -41,61 +38,15 @@ function barHeightClass(px: number): string {
   return BAR_HEIGHT_CLASS[px] ?? "h-24";
 }
 
-function StructureScoreRing({ score }: { score: number }) {
-  const targetOffset =
-    STRUCTURE_RING_CIRCUMFERENCE - (STRUCTURE_RING_CIRCUMFERENCE * score) / 100;
-  const [strokeOffset, setStrokeOffset] = useState(STRUCTURE_RING_CIRCUMFERENCE);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setStrokeOffset(targetOffset), 100);
-    return () => window.clearTimeout(timer);
-  }, [targetOffset]);
-
-  return (
-    <div className="relative flex h-32 w-32 shrink-0 items-center justify-center">
-      <svg
-        className="h-full w-full -rotate-90"
-        viewBox="0 0 128 128"
-        aria-hidden="true"
-        focusable="false"
-      >
-        <circle
-          cx="64"
-          cy="64"
-          fill="transparent"
-          r={STRUCTURE_RING_RADIUS}
-          stroke="currentColor"
-          strokeWidth="8"
-          className="text-surface-container-highest"
-        />
-        <circle
-          cx="64"
-          cy="64"
-          fill="transparent"
-          r={STRUCTURE_RING_RADIUS}
-          stroke="currentColor"
-          strokeDasharray={STRUCTURE_RING_CIRCUMFERENCE}
-          strokeDashoffset={strokeOffset}
-          strokeLinecap="round"
-          strokeWidth="8"
-          className="text-primary"
-        />
-      </svg>
-      <div className="absolute flex flex-col items-center">
-        <span className="text-headline-md font-bold text-on-surface">{score}</span>
-        <span className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
-          Score
-        </span>
-      </div>
-    </div>
-  );
-}
-
 function HeaderSection({ data }: { data: ContentStructureDetailView }) {
   return (
-    <div className="mb-gutter grid min-w-0 grid-cols-1 items-start gap-stack-lg lg:grid-cols-12">
+    <div className="grid min-w-0 grid-cols-1 items-start gap-stack-lg lg:grid-cols-12">
       <div className="flex min-w-0 flex-col items-start gap-stack-lg rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow sm:flex-row sm:items-center lg:col-span-8">
-        <StructureScoreRing score={data.score} />
+        <ReportScoreRing
+          score={data.score}
+          categorySlug="content-structure"
+          label="Score"
+        />
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex flex-wrap items-center gap-2">
             <span
@@ -145,11 +96,11 @@ function HeaderSection({ data }: { data: ContentStructureDetailView }) {
 
 function KpiStrip({ data }: { data: ContentStructureDetailView }) {
   return (
-    <div className="mb-gutter grid min-w-0 grid-cols-1 gap-stack-lg sm:grid-cols-2 xl:grid-cols-4">
+    <div className={cn("grid min-w-0 grid-cols-1 gap-stack-lg sm:grid-cols-2 xl:grid-cols-4", reportStyles.gridGap)}>
       {data.kpis.map((kpi) => (
         <div
           key={kpi.label}
-          className="min-w-0 rounded-[24px] border border-outline-variant bg-white p-stack-md text-center card-shadow"
+          className={cn(reportStyles.card, reportStyles.cardPadding, "text-center")}
         >
           <span className="mb-1 block font-label-md text-on-surface-variant">
             {kpi.label.toUpperCase()}
@@ -256,7 +207,7 @@ function FindingRow({ finding }: { finding: ContentFinding }) {
 
 function DetailedFindingsTable({ data }: { data: ContentStructureDetailView }) {
   return (
-    <div className="mb-gutter min-w-0 overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow">
+    <div className="min-w-0 overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow">
       <div className="border-b border-outline-variant p-stack-lg">
         <h3 className="text-headline-md">Detailed Findings</h3>
       </div>
@@ -295,7 +246,7 @@ function MissingStructureSection({ items }: { items: string[] }) {
   }
 
   return (
-    <div className="mb-gutter min-w-0 rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow">
+    <div className="min-w-0 rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow">
       <div className="mb-4 flex items-center gap-2">
         <Icon name="warning" size={24} className="shrink-0 text-[#FF5A4F]" />
         <h3 className="text-headline-md">Missing Structure Elements</h3>
@@ -369,51 +320,43 @@ export function ContentStructureDetailPage({ domain }: ContentStructureDetailPag
   }, [mounted, domain]);
 
   return (
-    <div className="min-h-screen min-w-0 overflow-x-hidden bg-canvas text-on-surface">
-      <ReportSidebar
-        domain={data.domain}
-        activeNav="Content Structure"
-        auditDate={data.auditDate}
-      />
-
-      <div className="flex min-h-screen min-w-0 flex-col md:ml-64">
-        <ReportTopNav domain={data.domain} />
-        <main className="min-w-0 flex-1 overflow-x-hidden p-margin-desktop md:max-w-[1440px]">
-          <ReportBreadcrumb domain={data.domain} currentLabel="Content Structure" />
-
-        <HeaderSection data={data} />
-        <KpiStrip data={data} />
-
-        <div className="mb-gutter grid min-w-0 grid-cols-1 gap-stack-lg lg:grid-cols-3">
-          <div className="min-w-0 overflow-hidden rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow lg:col-span-2">
-            <div className="mb-stack-lg flex min-w-0 flex-col gap-3 border-b border-outline-variant pb-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="min-w-0">
-                <h3 className="break-words text-headline-md">Heading vs Content Density</h3>
-                <p className="break-words text-body-sm text-on-surface-variant">
-                  Distribution of semantic information across content blocks
-                </p>
+    <CategoryDetailLayout
+      domain={data.domain}
+      categoryLabel="Content Structure"
+      activeNav="Content Structure"
+      auditDate={data.auditDate}
+    >
+      <HeaderSection data={data} />
+      <KpiStrip data={data} />
+      <div className="grid min-w-0 grid-cols-1 gap-stack-lg lg:grid-cols-3">
+        <div className={cn(reportStyles.card, reportStyles.cardPadding, "min-w-0 overflow-hidden lg:col-span-2")}>
+          <div className="mb-stack-lg flex min-w-0 flex-col gap-3 border-b border-outline-variant pb-stack-md sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <h3 className={cn(reportStyles.sectionTitle, "break-words")}>
+                Heading vs Content Density
+              </h3>
+              <p className="break-words text-body-sm text-on-surface-variant">
+                Distribution of semantic information across content blocks
+              </p>
+            </div>
+            <div className="flex shrink-0 gap-3">
+              <div className="flex items-center gap-1">
+                <span className="h-3 w-3 rounded-full bg-primary" />
+                <span className="text-[10px] font-bold">Content</span>
               </div>
-              <div className="flex shrink-0 gap-3">
-                <div className="flex items-center gap-1">
-                  <span className="h-3 w-3 rounded-full bg-primary" />
-                  <span className="text-[10px] font-bold">Content</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="h-3 w-3 rounded-full bg-[#FF5A4F]" />
-                  <span className="text-[10px] font-bold">Heads</span>
-                </div>
+              <div className="flex items-center gap-1">
+                <span className="h-3 w-3 rounded-full bg-[#FF5A4F]" />
+                <span className="text-[10px] font-bold">Heads</span>
               </div>
             </div>
-            <DensityBarChart bars={data.densityBars} />
           </div>
-          <ReadabilityBenchmark data={data} />
+          <DensityBarChart bars={data.densityBars} />
         </div>
-
-        <DetailedFindingsTable data={data} />
-        <MissingStructureSection items={data.missingStructureElements} />
-        <ImplementationSection data={data} />
-        </main>
+        <ReadabilityBenchmark data={data} />
       </div>
-    </div>
+      <DetailedFindingsTable data={data} />
+      <MissingStructureSection items={data.missingStructureElements} />
+      <ImplementationSection data={data} />
+    </CategoryDetailLayout>
   );
 }

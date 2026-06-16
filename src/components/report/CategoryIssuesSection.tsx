@@ -1,6 +1,7 @@
 import { Icon } from "@/components/icons/Icon";
 import { cn } from "@/lib/cn";
 import type { CategoryIssue } from "@/lib/category-detail-data";
+import { reportStyles } from "./reportStyles";
 
 type CategoryIssuesSectionProps = {
   issues: CategoryIssue[];
@@ -47,7 +48,13 @@ type CategoryIssueSpotlightProps = {
 export function CategoryIssueSpotlight({ issue }: CategoryIssueSpotlightProps) {
   if (!issue) {
     return (
-      <section className="flex h-full flex-col items-center justify-center rounded-[24px] border border-outline-variant bg-white p-stack-lg text-center card-shadow">
+      <section
+        className={cn(
+          reportStyles.card,
+          reportStyles.cardPadding,
+          "flex h-full flex-col items-center justify-center text-center",
+        )}
+      >
         <Icon name="check_circle" size={32} className="mb-2 text-[#2E7D32]" filled />
         <p className="font-semibold text-on-surface">No critical issues</p>
         <p className="mt-1 text-body-sm text-on-surface-variant">
@@ -63,36 +70,30 @@ export function CategoryIssueSpotlight({ issue }: CategoryIssueSpotlightProps) {
   return (
     <section
       className={cn(
-        "rounded-[24px] border border-outline-variant border-l-4 bg-white p-5 card-shadow",
+        reportStyles.card,
+        reportStyles.cardPadding,
+        "border-l-4",
         styles.border,
       )}
     >
       <div className="mb-3 flex items-center justify-between">
         <div className={cn("flex items-center gap-2", styles.text)}>
           <Icon name="warning" size={20} />
-          <span className="text-label-md font-bold uppercase tracking-wider">
-            {issue.impact} Issue
-          </span>
+          <span className={reportStyles.subsectionLabel}>{issue.impact} Issue</span>
         </div>
         <div className="text-right">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-outline">
-            Impact
-          </p>
-          <p className={cn("text-xl font-black tabular-nums", styles.text)}>
-            {score}/10
-          </p>
+          <p className={reportStyles.subsectionLabel}>Impact</p>
+          <p className={cn("text-headline-md tabular-nums", styles.text)}>{score}/10</p>
         </div>
       </div>
 
-      <h4 className="mb-1 text-lg font-bold text-on-surface">{issue.title}</h4>
+      <h4 className="mb-1 text-body-md font-bold text-on-surface">{issue.title}</h4>
       <p className="mb-4 line-clamp-3 text-body-sm text-on-surface-variant">
         {issue.explanation}
       </p>
 
-      <div className="rounded-xl bg-surface-container-low p-4">
-        <p className="mb-1 text-label-md font-bold uppercase text-primary">
-          Recommendation
-        </p>
+      <div className="rounded-xl bg-surface-container-low p-stack-md">
+        <p className="mb-1 text-label-md font-bold uppercase text-primary">Recommendation</p>
         <p className="text-body-sm font-semibold text-on-surface">
           {issue.recommendation ?? issue.title}
         </p>
@@ -118,9 +119,9 @@ export function CategoryIssuesSection({
   }
 
   return (
-    <section className="space-y-stack-md">
-      <h3 className="text-headline-md">{title}</h3>
-      <div className="grid grid-cols-1 gap-stack-lg lg:grid-cols-2">
+    <section className={reportStyles.sectionStack}>
+      <h3 className={reportStyles.sectionTitle}>{title}</h3>
+      <div className={cn("grid grid-cols-1 lg:grid-cols-2", reportStyles.gridGap)}>
         {issues.map((issue) => {
           const styles = impactStyles[issue.impact];
           const score = impactScore(issue.impact);
@@ -129,7 +130,9 @@ export function CategoryIssuesSection({
             <article
               key={issue.title}
               className={cn(
-                "rounded-[24px] border border-outline-variant border-l-4 bg-white p-5 card-shadow",
+                reportStyles.card,
+                reportStyles.cardPadding,
+                "border-l-4",
                 styles.border,
               )}
             >
@@ -144,21 +147,19 @@ export function CategoryIssuesSection({
                   {issue.impact}
                 </span>
                 <div className="text-right">
-                  <p className="text-[10px] font-bold uppercase text-outline">Impact</p>
-                  <p className={cn("text-lg font-black tabular-nums", styles.text)}>
+                  <p className={reportStyles.subsectionLabel}>Impact</p>
+                  <p className={cn("text-headline-md tabular-nums", styles.text)}>
                     {score}/10
                   </p>
                 </div>
               </div>
 
-              <h4 className="mb-1 font-bold text-on-surface">{issue.title}</h4>
-              <p className="mb-3 text-body-sm text-on-surface-variant">
-                {issue.explanation}
-              </p>
+              <h4 className="mb-1 text-body-md font-bold text-on-surface">{issue.title}</h4>
+              <p className="mb-3 text-body-sm text-on-surface-variant">{issue.explanation}</p>
 
               {issue.recommendation ? (
-                <div className="rounded-xl bg-surface-container-low p-3">
-                  <p className="mb-1 text-[10px] font-bold uppercase text-primary">
+                <div className="rounded-xl bg-surface-container-low p-stack-md">
+                  <p className="mb-1 text-label-md font-bold uppercase text-primary">
                     Recommended Fix
                   </p>
                   <p className="text-body-sm font-semibold">{issue.recommendation}</p>

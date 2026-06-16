@@ -1,8 +1,7 @@
 "use client";
 
-import { ReportBreadcrumb } from "@/components/report/ReportBreadcrumb";
-import { ReportSidebar } from "@/components/report/ReportSidebar";
-import { ReportTopNav } from "@/components/report/ReportTopNav";
+import { CategoryDetailLayout } from "@/components/report/CategoryDetailLayout";
+import { ReportScoreRing } from "@/components/report/ScoreRing";
 import { Icon } from "@/components/icons/Icon";
 import { cn } from "@/lib/cn";
 import {
@@ -17,57 +16,6 @@ import { useEffect, useState } from "react";
 type TrustSignalsDetailPageProps = {
   domain: string;
 };
-
-const TRUST_RING_RADIUS = 70;
-const TRUST_RING_CIRCUMFERENCE = 2 * Math.PI * TRUST_RING_RADIUS;
-
-function TrustScoreRing({ score }: { score: number }) {
-  const targetOffset =
-    TRUST_RING_CIRCUMFERENCE - (TRUST_RING_CIRCUMFERENCE * score) / 100;
-  const [strokeOffset, setStrokeOffset] = useState(TRUST_RING_CIRCUMFERENCE);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setStrokeOffset(targetOffset), 100);
-    return () => window.clearTimeout(timer);
-  }, [targetOffset]);
-
-  return (
-    <div className="relative flex h-40 w-40 shrink-0 items-center justify-center">
-      <svg
-        className="h-full w-full -rotate-90"
-        viewBox="0 0 160 160"
-        aria-hidden="true"
-        focusable="false"
-      >
-        <circle
-          className="text-surface-container-high"
-          cx="80"
-          cy="80"
-          fill="transparent"
-          r={TRUST_RING_RADIUS}
-          stroke="currentColor"
-          strokeWidth="12"
-        />
-        <circle
-          className="text-primary"
-          cx="80"
-          cy="80"
-          fill="transparent"
-          r={TRUST_RING_RADIUS}
-          stroke="currentColor"
-          strokeDasharray={TRUST_RING_CIRCUMFERENCE}
-          strokeDashoffset={strokeOffset}
-          strokeLinecap="round"
-          strokeWidth="12"
-        />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-display-lg font-bold text-primary">{score}</span>
-        <span className="font-label-md text-on-surface-variant">/ 100</span>
-      </div>
-    </div>
-  );
-}
 
 function EntityRelationMappingVisual() {
   return (
@@ -195,10 +143,10 @@ function StatusBadge({ item }: { item: TrustChecklistItem }) {
 
 function HeroSection({ data }: { data: TrustSignalsDetailView }) {
   return (
-    <section className="mb-gutter grid min-w-0 grid-cols-1 gap-gutter lg:grid-cols-12">
-      <div className="min-w-0 overflow-hidden rounded-3xl border border-outline-variant bg-white p-stack-lg card-shadow lg:col-span-8">
+    <section className="grid min-w-0 grid-cols-1 gap-gutter lg:grid-cols-12">
+      <div className="min-w-0 overflow-hidden rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow lg:col-span-8">
         <div className="flex min-w-0 flex-col items-center gap-stack-lg md:flex-row md:items-center">
-          <TrustScoreRing score={data.score} />
+          <ReportScoreRing score={data.score} categorySlug="trust-signals" label="Score" />
           <div className="min-w-0 flex-1 text-center md:text-left">
             <div className="mb-stack-sm flex flex-wrap items-center justify-center gap-stack-md md:justify-start">
               <h1 className="break-words text-headline-lg font-semibold leading-tight text-on-surface">
@@ -220,7 +168,7 @@ function HeroSection({ data }: { data: TrustSignalsDetailView }) {
         </div>
       </div>
 
-      <div className="relative flex min-w-0 flex-col justify-between overflow-hidden rounded-3xl bg-primary-container p-stack-lg text-on-primary card-shadow lg:col-span-4">
+      <div className="relative flex min-w-0 flex-col justify-between overflow-hidden rounded-[24px] bg-primary-container p-stack-lg text-on-primary card-shadow lg:col-span-4">
         <div className="relative z-10 min-w-0">
           <p className="mb-stack-sm font-label-md uppercase tracking-widest opacity-80">
             Top Recommendation
@@ -252,7 +200,7 @@ function HeroSection({ data }: { data: TrustSignalsDetailView }) {
 
 function KpiStrip({ data }: { data: TrustSignalsDetailView }) {
   return (
-    <section className="mb-gutter grid min-w-0 grid-cols-2 gap-gutter md:grid-cols-4">
+    <section className="grid min-w-0 grid-cols-2 gap-gutter md:grid-cols-4">
       {data.kpis.map((kpi) => (
         <div
           key={kpi.label}
@@ -275,7 +223,7 @@ function KpiStrip({ data }: { data: TrustSignalsDetailView }) {
 
 function VerificationChecklist({ data }: { data: TrustSignalsDetailView }) {
   return (
-    <div className="min-w-0 overflow-hidden rounded-3xl border border-outline-variant bg-white card-shadow">
+    <div className="min-w-0 overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant bg-surface-container-low/50 p-stack-lg">
         <h2 className="text-headline-md">Verification Checklist</h2>
         <button
@@ -349,7 +297,7 @@ function ImplementationSection({ data }: { data: TrustSignalsDetailView }) {
   }
 
   return (
-    <div className="min-w-0 overflow-hidden rounded-3xl border border-outline-variant bg-white card-shadow">
+    <div className="min-w-0 overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
@@ -390,7 +338,7 @@ function ImplementationSection({ data }: { data: TrustSignalsDetailView }) {
 
 function BenchmarkCard({ data }: { data: TrustSignalsDetailView }) {
   return (
-    <div className="min-w-0 rounded-3xl border border-outline-variant bg-white p-stack-lg card-shadow">
+    <div className="min-w-0 rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow">
       <h3 className="mb-stack-lg text-[20px] font-semibold text-on-surface">
         Industry Benchmarking
       </h3>
@@ -433,7 +381,7 @@ function BenchmarkCard({ data }: { data: TrustSignalsDetailView }) {
 
 function SeverityBreakdown({ data }: { data: TrustSignalsDetailView }) {
   return (
-    <div className="min-w-0 rounded-3xl border border-outline-variant bg-white p-stack-lg card-shadow">
+    <div className="min-w-0 rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow">
       <h3 className="mb-stack-lg text-[20px] font-semibold text-on-surface">
         Severity Breakdown
       </h3>
@@ -483,7 +431,7 @@ function SeverityBreakdown({ data }: { data: TrustSignalsDetailView }) {
 
 function EntityMappingCard() {
   return (
-    <div className="relative flex h-64 min-w-0 items-center justify-center overflow-hidden rounded-3xl border border-outline-variant bg-surface card-shadow">
+    <div className="relative flex h-64 min-w-0 items-center justify-center overflow-hidden rounded-[24px] border border-outline-variant bg-surface card-shadow">
       <EntityRelationMappingVisual />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-surface to-transparent" />
       <div className="absolute bottom-stack-md px-4 text-center">
@@ -509,34 +457,25 @@ export function TrustSignalsDetailPage({ domain }: TrustSignalsDetailPageProps) 
   }, [mounted, domain]);
 
   return (
-    <div className="min-h-screen min-w-0 overflow-x-hidden bg-canvas text-on-surface">
-      <ReportSidebar
-        domain={data.domain}
-        activeNav="Trust Signals"
-        auditDate={data.auditDate}
-      />
-
-      <div className="flex min-h-screen min-w-0 flex-col md:ml-64">
-        <ReportTopNav domain={data.domain} />
-        <main className="min-w-0 flex-1 overflow-x-hidden p-margin-desktop md:max-w-[1440px]">
-          <ReportBreadcrumb domain={data.domain} currentLabel="Trust Signals" />
-
-        <HeroSection data={data} />
-        <KpiStrip data={data} />
-
-        <div className="grid min-w-0 grid-cols-1 gap-gutter lg:grid-cols-12">
-          <div className="min-w-0 space-y-gutter lg:col-span-8">
-            <VerificationChecklist data={data} />
-            <ImplementationSection data={data} />
-          </div>
-          <div className="min-w-0 space-y-gutter lg:col-span-4">
-            <BenchmarkCard data={data} />
-            <SeverityBreakdown data={data} />
-            <EntityMappingCard />
-          </div>
+    <CategoryDetailLayout
+      domain={data.domain}
+      categoryLabel="Trust Signals"
+      activeNav="Trust Signals"
+      auditDate={data.auditDate}
+    >
+      <HeroSection data={data} />
+      <KpiStrip data={data} />
+      <div className="grid min-w-0 grid-cols-1 gap-gutter lg:grid-cols-12">
+        <div className="min-w-0 space-y-gutter lg:col-span-8">
+          <VerificationChecklist data={data} />
+          <ImplementationSection data={data} />
         </div>
-        </main>
+        <div className="min-w-0 space-y-gutter lg:col-span-4">
+          <BenchmarkCard data={data} />
+          <SeverityBreakdown data={data} />
+          <EntityMappingCard />
+        </div>
       </div>
-    </div>
+    </CategoryDetailLayout>
   );
 }

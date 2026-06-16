@@ -6,7 +6,7 @@ import {
 } from "@/lib/audit/audit-normalize";
 import { loadAuditReportSafe } from "@/lib/audit/storage";
 import type { AuditResponse, CategoryScore } from "@/lib/audit/types";
-import { reportMeta } from "@/lib/report-data";
+import { reportMeta, entityClarityAuditMock } from "@/lib/report-data";
 
 export type EntityKpi = {
   label: string;
@@ -204,26 +204,27 @@ function buildEntitySignals(audit: AuditResponse): EntitySignalItem[] {
 }
 
 function buildDemoView(domain: string): EntityClarityDetailView {
-  const entitySignals: EntitySignalItem[] = [
-    { label: "Primary Entity Detection", score: 98, detail: "AuditMetric Corp" },
-    { label: "Organization Recognition", score: 95, detail: "Organization schema detected" },
-    { label: "Person Recognition", score: 78, detail: "Leadership terms found in metadata" },
-    { label: "Location Recognition", score: 72, detail: "Global organization footprint mapped" },
-    { label: "Topic Coverage", score: 92, detail: "4 related topic terms extracted" },
-    { label: "Knowledge Graph Readiness", score: 92, detail: "Organization schema, LinkedIn" },
-    { label: "Entity Relationships", score: 88, detail: "SEO Tools, AI Search, SaaS, Analytics" },
-    { label: "Entity Consistency", score: 95, detail: "95% confidence across extracted sources" },
-  ];
+  const mock = entityClarityAuditMock;
+  const entitySignals: EntitySignalItem[] = mock.findings.map((finding) => ({
+    label: finding.label,
+    score: finding.status === "pass" ? 95 : finding.status === "warning" ? 65 : 35,
+    detail: finding.message,
+  }));
 
   return {
     domain,
     isRealData: false,
-    score: 95,
-    statusLabel: "Exceptional",
-    statusClassName: "bg-green-100 text-green-700",
+    score: mock.score,
+    statusLabel: mock.status === "good" ? "Strong" : mock.status === "warning" ? "Developing" : "At Risk",
+    statusClassName:
+      mock.status === "good"
+        ? "bg-green-100 text-green-800"
+        : mock.status === "warning"
+          ? "bg-[#FFF9C4] text-[#856404]"
+          : "bg-error-container text-on-error-container",
     title: "Entity Clarity",
     summary:
-      "Your primary entity is highly disambiguated across major LLM training sets. High confidence scores indicate strong relational linking between your brand and core industry keywords.",
+      "Entity clarity audit shows strong organization identity signals, but schema and location details can still improve AI understanding.",
     kpis: [
       {
         label: "Entity Confidence",
@@ -275,8 +276,8 @@ function buildDemoView(domain: string): EntityClarityDetailView {
       { entity: "Competitor Beta", kgStrength: 76, consistency: 82 },
     ],
     entitySignals,
-    missingEntities: ["WikiData sameAs reference", "Person schema for leadership team"],
-    implementationCode: buildImplementationCode(domain, "AuditMetric"),
+    missingEntities: mock.issues.map((issue) => issue.explanation),
+    implementationCode: buildImplementationCode(domain, "CoinArchive EU"),
     auditDate: reportMeta.auditDate,
   };
 }
@@ -294,10 +295,19 @@ export function buildEntityClarityDetailView(
   const scores = calculateAuditScores(audit);
   const category = getCategory(scores.categories, "Entity Clarity");
   const entity = getEntityAnalysis(audit);
+  const entityClarity = audit.entityClarityAudit;
   const ai = getAiVisibilitySignals(audit);
-  const entityScore = category?.score ?? entity.confidence;
+  const entityScore = category?.score ?? entityClarity?.score ?? entity.confidence;
   const status = scoreToStatus(entityScore);
-  const entitySignals = buildEntitySignals(audit);
+  const entitySignals =
+    entityClarity?.findings.length > 0
+      ? entityClarity.findings.map((finding) => ({
+          label: finding.label,
+          score:
+            finding.status === "pass" ? 95 : finding.status === "warning" ? 65 : 35,
+          detail: finding.message,
+        }))
+      : buildEntitySignals(audit);
   const consistencyScore = entity.confidence;
   const kgStrength = Math.min(100, entity.confidence + entity.sources.length * 4);
   const relationalDepth = Math.min(
@@ -306,9 +316,11 @@ export function buildEntityClarityDetailView(
   );
 
   const topRec =
+    entityClarity?.recommendations[0] ??
     scores.recommendations.find((rec) =>
       /entity|organization|schema|wikidata|sameas|kg/i.test(rec.title),
-    ) ?? scores.recommendations[0];
+    ) ??
+    scores.recommendations[0];
 
   const kgSignals = [
     ...entity.sources.map((source) => source.replace(/ schema/i, "")),
@@ -320,7 +332,10 @@ export function buildEntityClarityDetailView(
   }
 
   const primaryLabel = entity.primaryEntity ?? view.domain;
-  const missingEntities = category?.problems.slice(0, 4) ?? [];
+  const missingEntities =
+    entityClarity?.issues.map((issue) => issue.explanation).slice(0, 4) ??
+    category?.problems.slice(0, 4) ??
+    [];
 
   if (entity.relatedEntities.length < 2) {
     missingEntities.push("Additional related entity terms for topic coverage");

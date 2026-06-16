@@ -1,3 +1,14 @@
+import type {
+  AnswerExtractionAuditResult,
+  CitationReadinessAuditResult,
+  EntityClarityAuditResult,
+  OpenGraphAuditResult,
+  TrustSignalsAuditResult,
+  TwitterCardAuditResult,
+  AdvancedSchemaAuditResult,
+  SiteCrawlResult,
+} from "@/types/audit";
+
 export type AuditCheckStatus = "pass" | "fail" | "warn";
 
 export type AuditCheck = {
@@ -140,6 +151,8 @@ export type TwitterCardMetadata = {
   title?: string;
   description?: string;
   image?: string;
+  site?: string;
+  creator?: string;
 };
 
 export type SocialMetadata = {
@@ -228,9 +241,17 @@ export type AuditResponse = {
   technicalSignals: TechnicalSignal[];
   socialMetadata: SocialMetadata;
   entityAnalysis: EntityAnalysis;
+  entityClarityAudit: EntityClarityAuditResult;
+  citationReadinessAudit: CitationReadinessAuditResult;
+  answerExtractionAudit: AnswerExtractionAuditResult;
+  trustSignalsAudit: TrustSignalsAuditResult;
+  openGraphAudit: OpenGraphAuditResult;
+  twitterCardAudit: TwitterCardAuditResult;
+  advancedSchemaAudit: AdvancedSchemaAuditResult;
   readabilityAnalysis: ReadabilityAnalysis;
   accessibilityAnalysis: AccessibilityAnalysis;
   checks: AuditCheck[];
+  siteCrawl: SiteCrawlResult;
 };
 
 export type StoredAuditReport = AuditResponse & {

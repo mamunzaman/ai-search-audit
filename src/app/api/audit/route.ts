@@ -5,6 +5,10 @@ import {
 import { AuditFetchError, fetchPage } from "@/lib/audit/fetch-page";
 import { parseHtml } from "@/lib/audit/html-parser";
 import { analyzeTechnicalDiscovery } from "@/lib/audit/technicalSignals";
+import { runAnswerExtractionAudit } from "@/lib/audit/answerExtractionAudit";
+import { runCitationReadinessAudit } from "@/lib/audit/citationReadinessAudit";
+import { runEntityClarityAudit } from "@/lib/audit/entityClarityAudit";
+import type { EntityClaritySitePage } from "@/lib/audit/entityClarityAudit";
 import {
   extractEntityAnalysis,
   runEntityChecks,
@@ -24,13 +28,38 @@ import {
 } from "@/lib/audit/readability-check";
 import { runSeoChecks } from "@/lib/audit/seo-checks";
 import { detectTrustSignals } from "@/lib/audit/trust-signals";
+import { runAdvancedSchemaAudit } from "@/lib/audit/advancedSchemaAudit";
+import { runTwitterCardAudit } from "@/lib/audit/twitterCardAudit";
+import { runOpenGraphAudit } from "@/lib/audit/openGraphAudit";
+import { runTrustSignalsAudit } from "@/lib/audit/trustSignalsAudit";
+import {
+  crawlSite,
+  createFallbackSiteCrawl,
+} from "@/lib/audit/siteCrawler";
+import type { SiteCrawlResult } from "@/types/audit";
 import type { AuditRequest, AuditResponse } from "@/lib/audit/types";
 import { validateAuditUrl } from "@/lib/audit/url-validator";
 import { NextResponse } from "next/server";
 
+function mapEntityClaritySitePages(
+  siteCrawl: SiteCrawlResult,
+): EntityClaritySitePage[] | undefined {
+  if (!siteCrawl.pages.length) {
+    return undefined;
+  }
+
+  return siteCrawl.pages.map((page) => ({
+    url: page.url,
+    html: page.html,
+    text: page.text,
+    links: page.links,
+  }));
+}
+
 async function buildAuditResponse(
   url: string,
   page: { finalUrl: string; statusCode: number; html: string },
+  siteCrawl: SiteCrawlResult,
 ): Promise<AuditResponse> {
   const parsed = parseHtml(page.html, page.finalUrl);
   const schemaTypes = detectSchemaTypes(page.html) ?? [];
@@ -56,6 +85,78 @@ async function buildAuditResponse(
     socialMetadata,
     pageUrl: page.finalUrl,
     html: page.html,
+  });
+  const entityClarityAudit = runEntityClarityAudit(
+    {
+      html: page.html,
+      title: parsed.title ?? "",
+      metaDescription: parsed.metaDescription ?? "",
+      schemaTypes,
+      headings: {
+        h1: parsed.headings?.h1 ?? [],
+        h2: parsed.headings?.h2 ?? [],
+        h3: parsed.headings?.h3 ?? [],
+      },
+      trustSignals,
+      entityAnalysis,
+      socialMetadata,
+    },
+    {
+      sitePages: mapEntityClaritySitePages(siteCrawl),
+      primaryPageUrl: page.finalUrl,
+    },
+  );
+  const citationReadinessAudit = runCitationReadinessAudit(
+    {
+      html: page.html,
+      title: parsed.title ?? "",
+      metaDescription: parsed.metaDescription ?? "",
+      schemaTypes,
+      headings: {
+        h1: parsed.headings?.h1 ?? [],
+        h2: parsed.headings?.h2 ?? [],
+        h3: parsed.headings?.h3 ?? [],
+      },
+      links: {
+        internal: parsed.links?.internal ?? 0,
+        external: parsed.links?.external ?? 0,
+      },
+      trustSignals,
+      anchors: parsed.anchors ?? [],
+      pageUrl: page.finalUrl,
+    },
+    {
+      sitePages: mapEntityClaritySitePages(siteCrawl),
+      primaryPageUrl: page.finalUrl,
+    },
+  );
+  const answerExtractionAudit = runAnswerExtractionAudit({
+    html: page.html,
+    headings: {
+      h1: parsed.headings?.h1 ?? [],
+      h2: parsed.headings?.h2 ?? [],
+      h3: parsed.headings?.h3 ?? [],
+    },
+    schemaTypes,
+    readabilityAnalysis,
+  });
+  const trustSignalsAudit = runTrustSignalsAudit(
+    {
+      html: page.html,
+      pageUrl: page.finalUrl,
+      finalUrl: page.finalUrl,
+      trustSignals,
+      anchors: parsed.anchors ?? [],
+    },
+    {
+      sitePages: mapEntityClaritySitePages(siteCrawl),
+    },
+  );
+  const openGraphAudit = runOpenGraphAudit({ socialMetadata });
+  const twitterCardAudit = runTwitterCardAudit({ socialMetadata });
+  const advancedSchemaAudit = runAdvancedSchemaAudit({
+    html: page.html,
+    schemaTypes,
   });
   const aiVisibilitySignals = detectAiVisibilitySignals({
     title: parsed.title ?? "",
@@ -107,6 +208,13 @@ async function buildAuditResponse(
     technicalSignals,
     socialMetadata,
     entityAnalysis,
+    entityClarityAudit,
+    citationReadinessAudit,
+    answerExtractionAudit,
+    trustSignalsAudit,
+    openGraphAudit,
+    twitterCardAudit,
+    advancedSchemaAudit,
     readabilityAnalysis,
     accessibilityAnalysis,
     checks: [
@@ -118,6 +226,7 @@ async function buildAuditResponse(
       ...readabilityChecks,
       ...accessibilityChecks,
     ],
+    siteCrawl,
   };
 }
 
@@ -139,8 +248,16 @@ export async function POST(request: Request) {
 
     const page = await fetchPage(validation.url);
 
+    let siteCrawl: SiteCrawlResult;
+
+    try {
+      siteCrawl = await crawlSite(page.finalUrl, { maxPages: 5 });
+    } catch {
+      siteCrawl = createFallbackSiteCrawl(validation.url, page, 5);
+    }
+
     return NextResponse.json(
-      await buildAuditResponse(validation.url, page),
+      await buildAuditResponse(validation.url, page, siteCrawl),
     );
   } catch (error) {
     if (error instanceof AuditFetchError) {

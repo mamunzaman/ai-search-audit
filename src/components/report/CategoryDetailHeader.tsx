@@ -1,6 +1,7 @@
+import { ReportScoreRing } from "@/components/report/ScoreRing";
 import { Icon } from "@/components/icons/Icon";
-import { ScoreRing } from "@/components/ui";
 import { cn } from "@/lib/cn";
+import { reportStyles } from "./reportStyles";
 
 type CategoryDetailHeaderProps = {
   score: number;
@@ -8,6 +9,7 @@ type CategoryDetailHeaderProps = {
   statusTone: "excellent" | "good" | "fair" | "poor";
   title: string;
   summary: string;
+  categorySlug: string;
   strengths?: string[];
   opportunities?: string[];
 };
@@ -15,19 +17,15 @@ type CategoryDetailHeaderProps = {
 const toneStyles = {
   excellent: {
     badge: "bg-[#E8F5E9] text-[#2E7D32]",
-    ring: "text-primary",
   },
   good: {
     badge: "bg-secondary-container text-on-secondary-container",
-    ring: "text-primary",
   },
   fair: {
     badge: "bg-[#FFF9C4] text-[#856404]",
-    ring: "text-secondary",
   },
   poor: {
     badge: "bg-error-container text-on-error-container",
-    ring: "text-error",
   },
 };
 
@@ -37,22 +35,19 @@ export function CategoryDetailHeader({
   statusTone,
   title,
   summary,
+  categorySlug,
   strengths = [],
   opportunities = [],
 }: CategoryDetailHeaderProps) {
   const tone = toneStyles[statusTone];
 
   return (
-    <section className="flex h-full flex-col gap-stack-lg rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow lg:flex-row lg:items-center">
+    <section className={cn(reportStyles.heroCard, "lg:flex-row lg:items-center")}>
       <div className="flex shrink-0 flex-col items-center">
-        <ScoreRing
+        <ReportScoreRing
           score={score}
-          size="md"
+          categorySlug={categorySlug}
           label="Score"
-          trackClassName="text-surface-container-high"
-          indicatorClassName={tone.ring}
-          scoreClassName="text-on-surface"
-          className="h-40 w-40"
         />
         <div
           className={cn(
@@ -65,7 +60,7 @@ export function CategoryDetailHeader({
             size={18}
             filled={statusTone !== "poor"}
           />
-          <span className="text-label-md font-bold uppercase tracking-wide">
+          <span className={cn(reportStyles.statusBadge, tone.badge)}>
             {statusLabel}
           </span>
         </div>
@@ -73,12 +68,8 @@ export function CategoryDetailHeader({
 
       <div className="min-w-0 flex-1 space-y-stack-md">
         <div>
-          <h2 className="mb-1 text-headline-lg font-semibold text-on-surface">
-            {title}
-          </h2>
-          <p className="text-body-md leading-relaxed text-on-surface-variant">
-            {summary}
-          </p>
+          <h2 className={reportStyles.pageTitle}>{title}</h2>
+          <p className={reportStyles.pageSummary}>{summary}</p>
         </div>
 
         <div className="grid grid-cols-1 gap-stack-md sm:grid-cols-2">

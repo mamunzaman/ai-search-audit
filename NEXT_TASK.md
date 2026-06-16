@@ -1,11 +1,12 @@
 # Next Task
 
-**Goal:** Link Growth Potential / remaining carousel cards to category detail routes on `feature/advanced-audit-signals`.
+**Goal:** Extend sitewide signal aggregation to Answer Extraction audit (match Trust Signals / Citation Readiness pattern).
 
 **Verify:**
-- Run audits on `https://example.com`, `https://www.wikipedia.org`, `https://openai.com` — confirm robots/sitemap signals in report categories
-- Technical signals: robots reachable, sitemap discovered, AI crawler access warnings where expected
+- Run audit on multi-page site; Answer Extraction uses `siteCrawl.pages` when available
+- `/report/answer-extraction` shows sitewide extraction signals
 
 ## Done
 
-- robots.txt + sitemap.xml technical discovery — `analyzeTechnicalDiscovery()`, 7 normalized signals, gentle category scoring, audit schema v9
+- Report UI standardized across Overview + all category detail pages
+- Shared `reportStyles` tokens and category layout components

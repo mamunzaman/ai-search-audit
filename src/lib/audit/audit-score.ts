@@ -10,6 +10,27 @@ import type {
   PriorityIssue,
 } from "./types";
 import {
+  getAnswerExtractionSummary,
+} from "./answerExtractionAudit";
+import {
+  getAdvancedSchemaAuditSummary,
+} from "./advancedSchemaAudit";
+import {
+  getTwitterCardAuditSummary,
+} from "./twitterCardAudit";
+import {
+  getOpenGraphAuditSummary,
+} from "./openGraphAudit";
+import {
+  getTrustSignalsAuditSummary,
+} from "./trustSignalsAudit";
+import {
+  getCitationReadinessSummary,
+} from "./citationReadinessAudit";
+import {
+  getEntityClaritySummary,
+} from "./entityClarityAudit";
+import {
   getAccessibilityAnalysis,
   getAiVisibilitySignals,
   getEntityAnalysis,
@@ -18,7 +39,6 @@ import {
   getSitemapAnalysis,
   getSocialMetadata,
   getTechnicalSignals,
-  getTrustSignals,
   normalizeAuditResponse,
 } from "./audit-normalize";
 import {
@@ -460,188 +480,167 @@ function scoreContentStructure(audit: AuditResponse): CategoryScore {
 }
 
 function scoreTrustSignals(audit: AuditResponse): CategoryScore {
-  const trustSignals = getTrustSignals(audit);
-  const aiVisibilitySignals = getAiVisibilitySignals(audit);
-  const robotsAnalysis = getRobotsAnalysis(audit);
-  const sitemapAnalysis = getSitemapAnalysis(audit);
-  const socialMetadata = getSocialMetadata(audit);
-  const hasCompleteOg = hasCompleteOpenGraph(socialMetadata);
-  const hasTwitter = hasTwitterCard(socialMetadata);
-  const hasSocialPreview = hasCompleteOg && hasTwitter;
-  const rootDisallow = technicalSignalToGentleScore(
-    getTechnicalSignalById(audit, "robots-root-disallow")?.status,
-  );
-  const signals: { score: number; status: AuditCheckStatus }[] = [
-    {
-      score: trustSignals.aboutPage ? 100 : 50,
-      status: trustSignals.aboutPage ? "pass" : "warn",
-    },
-    {
-      score: trustSignals.contactPage ? 100 : 50,
-      status: trustSignals.contactPage ? "pass" : "warn",
-    },
-    {
-      score:
-        trustSignals.privacyPage || trustSignals.legalPage ? 100 : 50,
-      status:
-        trustSignals.privacyPage || trustSignals.legalPage ? "pass" : "warn",
-    },
-    {
-      score: trustSignals.socialLinks > 0 ? 100 : 50,
-      status: trustSignals.socialLinks > 0 ? "pass" : "warn",
-    },
-    {
-      score: trustSignals.externalAuthorityLinks > 0 ? 100 : 50,
-      status: trustSignals.externalAuthorityLinks > 0 ? "pass" : "warn",
-    },
-    {
-      score: audit.canonical ? 100 : 0,
-      status: audit.canonical ? "pass" : "fail",
-    },
-    {
-      score: audit.robotsMeta ? 100 : 50,
-      status: audit.robotsMeta ? "pass" : "warn",
-    },
-    {
-      score: robotsAnalysis.exists ? 100 : 50,
-      status: robotsAnalysis.exists ? "pass" : "warn",
-    },
-    {
-      score: robotsAnalysis.sitemapCount > 0 ? 100 : 50,
-      status: robotsAnalysis.sitemapCount > 0 ? "pass" : "warn",
-    },
-    {
-      score: sitemapAnalysis.exists ? 100 : 50,
-      status: sitemapAnalysis.exists ? "pass" : "warn",
-    },
-    {
-      score: hasSocialPreview ? 100 : hasCompleteOg || hasTwitter ? 75 : 50,
-      status: hasSocialPreview ? "pass" : hasCompleteOg || hasTwitter ? "warn" : "warn",
-    },
-    rootDisallow,
-  ];
-
-  const base = buildCategoryScore(
-    "Trust Signals",
-    signals.map((signal) => signal.score),
-    signals.map((signal) => signal.status),
-  );
+  const trustAudit = audit.trustSignalsAudit;
   const positives: string[] = [];
   const problems: string[] = [];
   const recommendations: string[] = [];
 
-  if (trustSignals.aboutPage) {
-    positives.push("About page link detected.");
-  } else {
-    problems.push("No About page link detected.");
-  }
-
-  if (trustSignals.contactPage) {
-    positives.push("Contact page link detected.");
-  } else {
-    problems.push("No Contact page link detected.");
-  }
-
-  if (trustSignals.privacyPage || trustSignals.legalPage) {
-    positives.push("Privacy or legal/imprint page link detected.");
-  } else {
-    problems.push("No privacy or legal/imprint page link detected.");
-  }
-
-  if (trustSignals.socialLinks > 0) {
-    positives.push(`${trustSignals.socialLinks} social profile link(s) detected.`);
-  } else {
-    problems.push("No social profile links detected.");
-  }
-
-  if (trustSignals.externalAuthorityLinks > 0) {
-    positives.push(
-      `${trustSignals.externalAuthorityLinks} external authority link(s) detected.`,
-    );
-  } else {
-    problems.push("No external authority references detected.");
-    recommendations.push("Add external references/trust links.");
-  }
-
-  if (audit.canonical) {
-    positives.push("Canonical URL confirms the preferred page version.");
-  } else {
-    problems.push("Canonical URL is missing.");
-    recommendations.push("Add a canonical URL.");
-  }
-
-  if (audit.robotsMeta) {
-    positives.push(`Robots meta directive found: ${audit.robotsMeta}.`);
-  } else {
-    problems.push("Robots meta tag was not detected.");
-  }
-
-  if (robotsAnalysis.exists) {
-    positives.push(
-      `robots.txt found with ${robotsAnalysis.disallowCount} disallow rule(s).`,
-    );
-
-    if (robotsAnalysis.sitemapCount > 0) {
-      positives.push(
-        `${robotsAnalysis.sitemapCount} sitemap declaration(s) found in robots.txt.`,
-      );
-    } else {
-      problems.push("robots.txt exists but no Sitemap directive was found.");
+  for (const finding of trustAudit.findings) {
+    if (finding.status === "pass") {
+      positives.push(finding.message);
+      continue;
     }
 
-    if (robotsAnalysis.rootDisallowed) {
-      problems.push('robots.txt disallows "/" for all user-agents.');
-      recommendations.push("Review Disallow rules so key pages remain crawlable.");
+    problems.push(finding.message);
+
+    if (finding.recommendation) {
+      recommendations.push(finding.recommendation);
     }
+  }
+
+  let status: CategoryScoreStatus;
+
+  if (trustAudit.status === "good") {
+    status = "pass";
+  } else if (trustAudit.status === "warning") {
+    status = "warning";
   } else {
-    problems.push("No robots.txt file was found for this domain.");
+    status = "fail";
   }
-
-  if (robotsAnalysis.blockedAiCrawlers.length > 0) {
-    problems.push(
-      `AI crawlers blocked: ${robotsAnalysis.blockedAiCrawlers.join(", ")}.`,
-    );
-  }
-
-  if (sitemapAnalysis.exists) {
-    positives.push(
-      `Sitemap fetched from ${sitemapAnalysis.source} source with ${sitemapAnalysis.urlCount} URL(s).`,
-    );
-
-    if (sitemapAnalysis.childSitemapCount > 0) {
-      positives.push(
-        `Sitemap index includes ${sitemapAnalysis.childSitemapCount} child sitemap(s).`,
-      );
-    }
-  } else {
-    problems.push("No sitemap.xml file could be fetched for this domain.");
-  }
-
-  if (hasCompleteOg && hasTwitter) {
-    positives.push(
-      "Complete Open Graph and Twitter Card metadata support trusted link previews.",
-    );
-  } else if (hasCompleteOg) {
-    positives.push("Open Graph title, description, and image are present.");
-    problems.push("Twitter Card metadata is incomplete for social previews.");
-  } else if (hasTwitter) {
-    positives.push(`Twitter Card type "${socialMetadata.twitter.card}" detected.`);
-    problems.push("Open Graph metadata is incomplete for rich link previews.");
-  } else {
-    problems.push("Social preview metadata (Open Graph/Twitter) is missing.");
-  }
-
-  const summary =
-    robotsAnalysis.exists && sitemapAnalysis.exists && aiVisibilitySignals.trustPages
-      ? "Trust pages, robots.txt, sitemap, and technical trust signals strengthen credibility."
-      : robotsAnalysis.exists || sitemapAnalysis.exists
-        ? "Some technical trust signals are present; on-page trust can still improve."
-        : "Trust pages, robots.txt, sitemap, or authority references are limited on this site.";
 
   return finalizeCategory({
     id: "trust-signals",
-    ...base,
-    summary,
+    label: "Trust Signals",
+    score: trustAudit.score,
+    status,
+    issueCount: Math.max(trustAudit.issues.length, problems.length > 0 ? 1 : 0),
+    summary: getTrustSignalsAuditSummary(trustAudit),
+    positives,
+    problems,
+    recommendations,
+  });
+}
+
+function scoreOpenGraph(audit: AuditResponse): CategoryScore {
+  const ogAudit = audit.openGraphAudit;
+  const positives: string[] = [];
+  const problems: string[] = [];
+  const recommendations: string[] = [];
+
+  for (const finding of ogAudit.findings) {
+    if (finding.status === "pass") {
+      positives.push(finding.message);
+      continue;
+    }
+
+    problems.push(finding.message);
+
+    if (finding.recommendation) {
+      recommendations.push(finding.recommendation);
+    }
+  }
+
+  let status: CategoryScoreStatus;
+
+  if (ogAudit.status === "good") {
+    status = "pass";
+  } else if (ogAudit.status === "warning") {
+    status = "warning";
+  } else {
+    status = "fail";
+  }
+
+  return finalizeCategory({
+    id: "open-graph",
+    label: "Open Graph",
+    score: ogAudit.score,
+    status,
+    issueCount: Math.max(ogAudit.issues.length, problems.length > 0 ? 1 : 0),
+    summary: getOpenGraphAuditSummary(ogAudit),
+    positives,
+    problems,
+    recommendations,
+  });
+}
+
+function scoreTwitterCard(audit: AuditResponse): CategoryScore {
+  const twitterAudit = audit.twitterCardAudit;
+  const positives: string[] = [];
+  const problems: string[] = [];
+  const recommendations: string[] = [];
+
+  for (const finding of twitterAudit.findings) {
+    if (finding.status === "pass") {
+      positives.push(finding.message);
+      continue;
+    }
+
+    problems.push(finding.message);
+
+    if (finding.recommendation) {
+      recommendations.push(finding.recommendation);
+    }
+  }
+
+  let status: CategoryScoreStatus;
+
+  if (twitterAudit.status === "good") {
+    status = "pass";
+  } else if (twitterAudit.status === "warning") {
+    status = "warning";
+  } else {
+    status = "fail";
+  }
+
+  return finalizeCategory({
+    id: "twitter-card",
+    label: "Twitter Card",
+    score: twitterAudit.score,
+    status,
+    issueCount: Math.max(twitterAudit.issues.length, problems.length > 0 ? 1 : 0),
+    summary: getTwitterCardAuditSummary(twitterAudit),
+    positives,
+    problems,
+    recommendations,
+  });
+}
+
+function scoreAdvancedSchema(audit: AuditResponse): CategoryScore {
+  const schemaAudit = audit.advancedSchemaAudit;
+  const positives: string[] = [];
+  const problems: string[] = [];
+  const recommendations: string[] = [];
+
+  for (const finding of schemaAudit.findings) {
+    if (finding.status === "pass") {
+      positives.push(finding.message);
+      continue;
+    }
+
+    problems.push(finding.message);
+
+    if (finding.recommendation) {
+      recommendations.push(finding.recommendation);
+    }
+  }
+
+  let status: CategoryScoreStatus;
+
+  if (schemaAudit.status === "good") {
+    status = "pass";
+  } else if (schemaAudit.status === "warning") {
+    status = "warning";
+  } else {
+    status = "fail";
+  }
+
+  return finalizeCategory({
+    id: "advanced-schema",
+    label: "Advanced Schema",
+    score: schemaAudit.score,
+    status,
+    issueCount: Math.max(schemaAudit.issues.length, problems.length > 0 ? 1 : 0),
+    summary: getAdvancedSchemaAuditSummary(schemaAudit),
     positives,
     problems,
     recommendations,
@@ -851,72 +850,135 @@ function scoreAiVisibility(audit: AuditResponse): CategoryScore {
 
 function scoreEntityClarity(audit: AuditResponse): CategoryScore {
   const entityAnalysis = getEntityAnalysis(audit);
+  const entityClarity = audit.entityClarityAudit;
   const positives: string[] = [];
   const problems: string[] = [];
   const recommendations: string[] = [];
 
-  if (entityAnalysis.primaryEntity) {
-    positives.push(formatEntitySourceMessage(entityAnalysis));
-    positives.push(
-      `Entity classified as ${entityAnalysis.entityType} with ${entityAnalysis.confidence}% confidence.`,
-    );
-  } else {
-    problems.push("No primary entity could be detected.");
-    recommendations.push("Add Organization schema with a clear entity name.");
+  for (const finding of entityClarity.findings) {
+    if (finding.status === "pass") {
+      positives.push(finding.message);
+      continue;
+    }
+
+    problems.push(finding.message);
+
+    if (finding.recommendation) {
+      recommendations.push(finding.recommendation);
+    }
   }
 
-  if (entityAnalysis.relatedEntities.length > 0) {
-    positives.push(
-      `Related entities support topic context: ${entityAnalysis.relatedEntities.join(", ")}.`,
-    );
-  } else {
-    problems.push("No related entity terms were extracted from headings or metadata.");
-  }
-
-  let score = entityAnalysis.confidence;
-
-  if (entityAnalysis.relatedEntities.length >= 2) {
-    score = Math.min(100, score + 5);
-  }
-
-  if (!entityAnalysis.primaryEntity) {
-    score = Math.min(score, 25);
-  }
-
+  const score = entityClarity.score;
   let status: CategoryScoreStatus;
-  let issueCount: number;
 
-  if (score >= 80) {
+  if (entityClarity.status === "good") {
     status = "pass";
-    issueCount = problems.length > 0 ? 1 : 0;
-  } else if (score >= 50) {
+  } else if (entityClarity.status === "warning") {
     status = "warning";
-    issueCount = Math.max(1, problems.length);
   } else {
     status = "fail";
-    issueCount = Math.max(2, problems.length);
   }
 
-  if (entityAnalysis.confidence < 75 && entityAnalysis.primaryEntity) {
-    problems.push(
-      "Entity confidence is moderate; stronger schema or site_name signals would improve LLM clarity.",
+  const issueCount = entityClarity.issues.length;
+  const summary = getEntityClaritySummary(entityClarity);
+
+  if (entityAnalysis.primaryEntity && score >= 80) {
+    positives.push(
+      `Primary entity "${entityAnalysis.primaryEntity}" aligns with entity clarity signals.`,
     );
-    recommendations.push("Strengthen entity signals with Organization schema.");
   }
-
-  const summary = entityAnalysis.primaryEntity
-    ? entityAnalysis.confidence >= 80
-      ? `Strong entity clarity for "${entityAnalysis.primaryEntity}" (${entityAnalysis.entityType}).`
-      : `Partial entity clarity for "${entityAnalysis.primaryEntity}"; confidence is ${entityAnalysis.confidence}%.`
-    : "Weak entity clarity without a detectable primary entity.";
 
   return finalizeCategory({
     id: "entity-clarity",
     label: "Entity Clarity",
     score,
     status,
-    issueCount,
+    issueCount: Math.max(issueCount, problems.length > 0 ? 1 : 0),
     summary,
+    positives,
+    problems,
+    recommendations,
+  });
+}
+
+function scoreCitationReadiness(audit: AuditResponse): CategoryScore {
+  const citationAudit = audit.citationReadinessAudit;
+  const positives: string[] = [];
+  const problems: string[] = [];
+  const recommendations: string[] = [];
+
+  for (const finding of citationAudit.findings) {
+    if (finding.status === "pass") {
+      positives.push(finding.message);
+      continue;
+    }
+
+    problems.push(finding.message);
+
+    if (finding.recommendation) {
+      recommendations.push(finding.recommendation);
+    }
+  }
+
+  let status: CategoryScoreStatus;
+
+  if (citationAudit.status === "good") {
+    status = "pass";
+  } else if (citationAudit.status === "warning") {
+    status = "warning";
+  } else {
+    status = "fail";
+  }
+
+  return finalizeCategory({
+    id: "citation-readiness",
+    label: "Citation Readiness",
+    score: citationAudit.score,
+    status,
+    issueCount: Math.max(citationAudit.issues.length, problems.length > 0 ? 1 : 0),
+    summary: getCitationReadinessSummary(citationAudit),
+    positives,
+    problems,
+    recommendations,
+  });
+}
+
+function scoreAnswerExtraction(audit: AuditResponse): CategoryScore {
+  const extractionAudit = audit.answerExtractionAudit;
+  const positives: string[] = [];
+  const problems: string[] = [];
+  const recommendations: string[] = [];
+
+  for (const finding of extractionAudit.findings) {
+    if (finding.status === "pass") {
+      positives.push(finding.message);
+      continue;
+    }
+
+    problems.push(finding.message);
+
+    if (finding.recommendation) {
+      recommendations.push(finding.recommendation);
+    }
+  }
+
+  let status: CategoryScoreStatus;
+
+  if (extractionAudit.status === "good") {
+    status = "pass";
+  } else if (extractionAudit.status === "warning") {
+    status = "warning";
+  } else {
+    status = "fail";
+  }
+
+  return finalizeCategory({
+    id: "answer-extraction",
+    label: "Answer Extraction",
+    score: extractionAudit.score,
+    status,
+    issueCount: Math.max(extractionAudit.issues.length, problems.length > 0 ? 1 : 0),
+    summary: getAnswerExtractionSummary(extractionAudit),
     positives,
     problems,
     recommendations,
@@ -1663,9 +1725,14 @@ export function calculateAuditScores(audit: AuditResponse): AuditScoreResult {
     scoreSeoHealth(normalized),
     scoreAiVisibility(normalized),
     scoreEntityClarity(normalized),
+    scoreCitationReadiness(normalized),
+    scoreAnswerExtraction(normalized),
     scoreTrustSignals(normalized),
+    scoreOpenGraph(normalized),
+    scoreTwitterCard(normalized),
     scoreContentStructure(normalized),
     scoreSchemaMarkup(normalized),
+    scoreAdvancedSchema(normalized),
     scoreFaqReadiness(normalized),
     scoreAiAnswerReadiness(normalized),
     scoreWcag22(normalized),

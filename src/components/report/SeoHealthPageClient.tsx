@@ -78,6 +78,7 @@ export function SeoHealthPageClient({ domain }: SeoHealthPageClientProps) {
             statusTone={data.statusTone}
             title="Technical Audit Summary"
             summary={data.summary}
+            categorySlug="seo-health"
             strengths={strengths}
             opportunities={opportunities}
           />

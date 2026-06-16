@@ -13,6 +13,8 @@ const CONTACT_PATTERNS = [/contact/i, /kontakt/i, /get-in-touch/i];
 const PRIVACY_PATTERNS = [
   /privacy/i,
   /datenschutz/i,
+  /datenschutzerklärung/i,
+  /datenschutzerklaerung/i,
   /data-protection/i,
 ];
 
@@ -22,6 +24,7 @@ const LEGAL_PATTERNS = [
   /impressum/i,
   /legal/i,
   /agb/i,
+  /rechtliches/i,
   /nutzungsbedingungen/i,
   /disclaimer/i,
 ];

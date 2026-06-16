@@ -164,6 +164,18 @@
   padding-right: 16px;
 }
 
+@utility p-margin-desktop {
+  padding: var(--spacing-margin-desktop);
+}
+
+@utility p-margin-mobile {
+  padding: var(--spacing-margin-mobile);
+}
+
+@utility mb-gutter {
+  margin-bottom: var(--spacing-gutter);
+}
+
 @utility py-stack-xl {
   padding-top: 48px;
   padding-bottom: 48px;
@@ -289,6 +301,12 @@
 
 .score-ring-circle {
   transition: stroke-dashoffset 1s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .score-ring-circle {
+    transition: none;
+  }
 }
 
 body {

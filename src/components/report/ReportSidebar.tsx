@@ -27,8 +27,24 @@ function buildNavHref(slug: string | undefined, domain: string): string {
     return `/report/trust-signals?domain=${encoded}`;
   }
 
+  if (slug === "open-graph") {
+    return `/report/open-graph?domain=${encoded}`;
+  }
+
+  if (slug === "twitter-card") {
+    return `/report/twitter-card?domain=${encoded}`;
+  }
+
   if (slug === "entity-clarity") {
     return `/report/entity-clarity?domain=${encoded}`;
+  }
+
+  if (slug === "citation-readiness") {
+    return `/report/citation-readiness?domain=${encoded}`;
+  }
+
+  if (slug === "answer-extraction") {
+    return `/report/answer-extraction?domain=${encoded}`;
   }
 
   if (slug === "content-structure") {
@@ -37,6 +53,10 @@ function buildNavHref(slug: string | undefined, domain: string): string {
 
   if (slug === "schema-markup") {
     return `/report/schema-markup?domain=${encoded}`;
+  }
+
+  if (slug === "advanced-schema") {
+    return `/report/advanced-schema?domain=${encoded}`;
   }
 
   if (slug === "wcag-2.2") {

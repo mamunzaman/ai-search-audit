@@ -192,3 +192,45 @@ For "Audit Scores," use circular SVG rings.
 
 ### Input Fields
 Background `#FFFFFF`, Border 1px `#E5E7EB`, 16px roundedness. On focus, the border shifts to `#1536B8` with a 3px soft blue glow.
+
+## Report UI (Overview + Detail Pages)
+
+Source of truth: `/report` Overview. Shared tokens live in `src/components/report/reportStyles.ts`.
+
+### Layout
+- **Shell:** `CategoryDetailLayout` / `ReportLayout` — sidebar + top nav + `mainShell` (`max-w-container-max`, `p-margin-mobile md:p-margin-desktop`)
+- **Page stack:** `space-y-stack-lg` between major sections
+- **Grid gap:** `gap-gutter` (24px)
+- **Breadcrumb:** `mb-gutter` below breadcrumb only
+
+### Typography
+| Role | Token / class |
+|------|----------------|
+| Page title | `text-headline-lg font-semibold` (`pageTitle`) |
+| Section title | `text-headline-md` (`sectionTitle`) |
+| Card title | `text-headline-lg text-primary` (`cardTitle`) |
+| Body | `text-body-md` |
+| Labels / table headers | `text-label-md uppercase` (`subsectionLabel`, `tableHeadCell`) |
+| Score numbers | `text-headline-md tabular-nums` |
+| Badges | `text-label-md` status pills; `text-[10px] font-bold uppercase` table badges |
+
+### Cards
+- **Standard:** `rounded-[24px] border border-outline-variant bg-white card-shadow`
+- **Padding:** `p-stack-lg` (default), `p-stack-xl` (hero/summary)
+- **Hero:** score ring + title + status badge + summary (`CategoryHeroCard`, `CategoryDetailHeader`)
+
+### Tables
+- **Section header bar:** `bg-surface-container-low px-stack-lg py-stack-md border-b`
+- **Head cells:** `px-stack-lg py-4 text-label-md uppercase text-on-surface-variant`
+- **Body cells:** `px-stack-lg py-5`
+- **Row hover:** `hover:bg-primary-container/5`
+
+### Shared category components
+- `CategoryKpiStrip` / `CategorySimpleKpiStrip` — KPI cards
+- `CategoryFindingsTable` — grouped SEO findings
+- `CategorySignalFindingsTable` — signal/status/detail rows
+- `CategoryIssuesSection` / `CategoryGapsListSection` — issue cards or lists
+- `CategoryRecommendationsSection` / `CategoryTopRecommendationCard`
+- `CategoryBenchmarkCard`, `CategoryImplementationExamples`
+
+Do not use `rounded-3xl`, `shadow-sm`, or `text-[18px]` on report cards — use tokens above.

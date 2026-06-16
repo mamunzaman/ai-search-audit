@@ -4,6 +4,7 @@ import { Icon } from "@/components/icons/Icon";
 import { cn } from "@/lib/cn";
 import type { ImplementationExample } from "@/lib/category-detail-data";
 import { useState } from "react";
+import { reportStyles } from "./reportStyles";
 
 type CategoryImplementationExamplesProps = {
   examples: ImplementationExample[];
@@ -33,13 +34,13 @@ export function CategoryImplementationExamples({
   }
 
   return (
-    <section className="overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow">
+    <section className={cn(reportStyles.card, "overflow-hidden")}>
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="flex w-full items-center justify-between px-5 py-4 transition-colors hover:bg-surface-container-low"
+        className="flex w-full items-center justify-between px-stack-lg py-stack-md transition-colors hover:bg-surface-container-low"
       >
-        <h3 className="flex items-center gap-2 text-headline-md">
+        <h3 className={cn(reportStyles.sectionTitle, "flex items-center gap-2")}>
           <Icon name="terminal" className="text-primary" />
           Implementation Examples
         </h3>
@@ -50,8 +51,8 @@ export function CategoryImplementationExamples({
       </button>
 
       {open ? (
-        <div className="border-t border-outline-variant px-5 pb-5">
-          <div className="mb-3 flex flex-wrap gap-2 pt-4">
+        <div className="border-t border-outline-variant px-stack-lg pb-stack-lg">
+          <div className="mb-3 flex flex-wrap gap-2 pt-stack-md">
             {examples.map((example, index) => (
               <button
                 key={example.label}
@@ -70,10 +71,8 @@ export function CategoryImplementationExamples({
           </div>
 
           <div className="overflow-hidden rounded-lg border border-outline-variant">
-            <div className="flex items-center justify-between bg-inverse-surface px-3 py-2">
-              <span className="text-[10px] font-bold uppercase text-inverse-on-surface">
-                HTML Snippet
-              </span>
+            <div className="flex items-center justify-between bg-inverse-surface px-stack-md py-2">
+              <span className={reportStyles.subsectionLabel}>HTML Snippet</span>
               <button
                 type="button"
                 onClick={handleCopy}
@@ -83,8 +82,8 @@ export function CategoryImplementationExamples({
                 {copied ? "Copied" : "Copy"}
               </button>
             </div>
-            <pre className="overflow-x-auto bg-[#1a1b23] p-4">
-              <code className="font-mono text-[12px] leading-relaxed text-inverse-on-surface/90">
+            <pre className="overflow-x-auto bg-[#1a1b23] p-stack-md">
+              <code className="font-mono text-body-sm leading-relaxed text-inverse-on-surface/90">
                 {activeExample.code}
               </code>
             </pre>

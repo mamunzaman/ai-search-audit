@@ -1,16 +1,15 @@
 import { buildReportView } from "@/lib/audit/audit-to-report";
 import { calculateAuditScores } from "@/lib/audit/audit-score";
 import {
-  getAiVisibilitySignals,
-  getEntityAnalysis,
-  getRobotsAnalysis,
   getSocialMetadata,
   getTrustSignals,
+  getTrustSignalsAudit,
 } from "@/lib/audit/audit-normalize";
 import { hasCompleteOpenGraph, hasTwitterCard } from "@/lib/audit/social-metadata";
 import { loadAuditReportSafe } from "@/lib/audit/storage";
 import type { AuditResponse, CategoryScore } from "@/lib/audit/types";
-import { reportMeta } from "@/lib/report-data";
+import { reportMeta, trustSignalsAuditMock } from "@/lib/report-data";
+import type { AuditFindingStatus } from "@/types/audit";
 
 export type TrustStatusTone = "pass" | "warn" | "fail";
 
@@ -81,18 +80,6 @@ function scoreToStatus(score: number): { label: string; className: string } {
   return { label: "At Risk", className: "bg-error-container text-on-error-container" };
 }
 
-function toneFromScore(score: number): TrustStatusTone {
-  if (score >= 80) {
-    return "pass";
-  }
-
-  if (score >= 65) {
-    return "warn";
-  }
-
-  return "fail";
-}
-
 function statusLabelFromTone(tone: TrustStatusTone, passLabel: string, warnLabel: string): string {
   if (tone === "pass") {
     return passLabel;
@@ -120,226 +107,132 @@ function buildImplementationCode(domain: string): string {
 }`;
 }
 
-function buildDemoView(domain: string): TrustSignalsDetailView {
-  return {
-    domain,
-    isRealData: false,
-    score: 84,
-    statusLabel: "Strong",
-    statusClassName: "bg-green-100 text-green-800",
-    title: "Trust Signals & E-E-A-T",
-    summary:
-      "Your organization demonstrates high authority in technical auditing categories. LLM visibility is boosted by well-structured organization metadata and clear attribution across key institutional pages. Improvement in social consolidation would finalize the \"Trust Anchor\" status.",
-    topRecommendation: {
-      title: "Standardize Social Footprint",
-      description:
-        "Synchronizing your social handles across LinkedIn, X, and Crunchbase will improve LLM entity reconciliation scores by approx. 3.2%.",
-      impactGain: "+3.2 Impact Gain",
-    },
-    kpis: [
-      {
-        label: "Org Schema",
-        value: "100%",
-        icon: "check_circle",
-        iconClassName: "text-[#2E7D32]",
-      },
-      {
-        label: "Contact Info",
-        value: "100%",
-        icon: "check_circle",
-        iconClassName: "text-[#2E7D32]",
-      },
-      {
-        label: "Legal Coverage",
-        value: "75%",
-        icon: "warning",
-        iconClassName: "text-[#856404]",
-      },
-      {
-        label: "Authority Signals",
-        value: "82%",
-        icon: "bolt",
-        iconClassName: "text-primary",
-      },
-    ],
-    checklist: [
-      {
-        icon: "account_tree",
-        title: "Organization Schema",
-        statusLabel: "Valid",
-        statusTone: "pass",
-        confidence: 98,
-      },
-      {
-        icon: "contact_mail",
-        title: "Contact Transparency",
-        statusLabel: "Verified",
-        statusTone: "pass",
-        confidence: 100,
-      },
-      {
-        icon: "info",
-        title: "About Page Signals",
-        statusLabel: "Excellent",
-        statusTone: "pass",
-        confidence: 92,
-      },
-      {
-        icon: "person",
-        title: "Author Credibility",
-        statusLabel: "Valid",
-        statusTone: "pass",
-        confidence: 88,
-      },
-      {
-        icon: "policy",
-        title: "Privacy & Legal Signals",
-        statusLabel: "Update Advised",
-        statusTone: "warn",
-        confidence: 75,
-      },
-      {
-        icon: "share",
-        title: "Reviews / Social Proof",
-        statusLabel: "Discrepancies",
-        statusTone: "warn",
-        confidence: 68,
-      },
-      {
-        icon: "verified_user",
-        title: "External Citations",
-        statusLabel: "Valid",
-        statusTone: "pass",
-        confidence: 82,
-      },
-      {
-        icon: "lock",
-        title: "HTTPS / Security",
-        statusLabel: "Verified",
-        statusTone: "pass",
-        confidence: 100,
-      },
-      {
-        icon: "verified",
-        title: "Brand Consistency",
-        statusLabel: "Valid",
-        statusTone: "pass",
-        confidence: 86,
-      },
-    ],
-    implementationCode: buildImplementationCode(domain),
-    benchmark: {
-      yourScore: 84,
-      medianScore: INDUSTRY_MEDIAN,
-      insight:
-        "You are performing in the top 15% of tech companies for structured trust signals.",
-    },
-    severityIssues: [
-      {
-        title: "Social Profile Consolidation",
-        detail: "Low Severity • 2 missing links",
-      },
-      {
-        title: "Privacy Policy Schema",
-        detail: "Low Severity • Missing @id reference",
-      },
-    ],
-    missingTrustElements: [
-      "Unified social profile schema references",
-      "Privacy policy structured data @id",
-    ],
-    auditDate: reportMeta.auditDate,
-  };
+function findingIcon(id: string): string {
+  switch (id) {
+    case "about-page":
+      return "info";
+    case "contact-page":
+      return "contact_mail";
+    case "privacy-policy":
+    case "terms-legal":
+      return "policy";
+    case "business-address":
+      return "location_on";
+    case "email-phone":
+      return "contact_phone";
+    case "author-team":
+      return "person";
+    case "external-trust-links":
+      return "verified_user";
+    case "secure-https":
+      return "lock";
+    default:
+      return "verified";
+  }
 }
 
-function buildChecklist(audit: AuditResponse): TrustChecklistItem[] {
-  const trust = getTrustSignals(audit);
-  const ai = getAiVisibilitySignals(audit);
-  const entity = getEntityAnalysis(audit);
-  const robots = getRobotsAnalysis(audit);
-  const isHttps = audit.finalUrl.startsWith("https://");
-
-  const orgScore = ai.organizationSchema ? 98 : 45;
-  const contactScore = trust.contactPage ? 100 : 50;
-  const aboutScore = trust.aboutPage ? 92 : 50;
-  const authorScore = entity.primaryEntity
-    ? Math.max(60, entity.confidence)
-    : 40;
-  const legalScore =
-    trust.privacyPage && trust.legalPage ? 100 : trust.privacyPage || trust.legalPage ? 75 : 45;
-  const socialScore = trust.socialLinks >= 3 ? 90 : trust.socialLinks > 0 ? 68 : 40;
-  const citationScore = trust.externalAuthorityLinks >= 2 ? 90 : trust.externalAuthorityLinks > 0 ? 82 : 45;
-  const httpsScore =
-    isHttps && audit.canonical && audit.robotsMeta ? 100 : isHttps ? 80 : 30;
-  const brandScore =
-    ai.organizationSchema && trust.socialLinks > 0 ? 86 : ai.organizationSchema ? 70 : 45;
-
-  const items: Array<Omit<TrustChecklistItem, "statusLabel" | "statusTone"> & { confidence: number; passLabel: string; warnLabel: string }> = [
-    { icon: "account_tree", title: "Organization Schema", confidence: orgScore, passLabel: "Valid", warnLabel: "Incomplete" },
-    { icon: "contact_mail", title: "Contact Transparency", confidence: contactScore, passLabel: "Verified", warnLabel: "Limited" },
-    { icon: "info", title: "About Page Signals", confidence: aboutScore, passLabel: "Excellent", warnLabel: "Weak" },
-    { icon: "person", title: "Author Credibility", confidence: authorScore, passLabel: "Valid", warnLabel: "Unclear" },
-    { icon: "policy", title: "Privacy & Legal Signals", confidence: legalScore, passLabel: "Complete", warnLabel: "Update Advised" },
-    { icon: "share", title: "Reviews / Social Proof", confidence: socialScore, passLabel: "Verified", warnLabel: "Discrepancies" },
-    { icon: "verified_user", title: "External Citations", confidence: citationScore, passLabel: "Valid", warnLabel: "Limited" },
-    { icon: "lock", title: "HTTPS / Security", confidence: httpsScore, passLabel: "Verified", warnLabel: "Review" },
-    { icon: "verified", title: "Brand Consistency", confidence: brandScore, passLabel: "Valid", warnLabel: "Inconsistent" },
-  ];
-
-  if (!robots.exists) {
-    items.push({
-      icon: "smart_toy",
-      title: "Crawl Transparency",
-      confidence: 50,
-      passLabel: "Available",
-      warnLabel: "Missing",
-    });
+function findingConfidence(status: AuditFindingStatus): number {
+  if (status === "pass") {
+    return 95;
   }
 
-  return items.map((item) => {
-    const tone = toneFromScore(item.confidence);
+  if (status === "warning") {
+    return 68;
+  }
+
+  return 40;
+}
+
+function buildChecklistFromAudit(
+  audit: AuditResponse | null,
+): TrustChecklistItem[] {
+  const findings = audit
+    ? getTrustSignalsAudit(audit).findings
+    : trustSignalsAuditMock.findings;
+
+  return findings.map((finding) => {
+    const tone: TrustStatusTone =
+      finding.status === "pass"
+        ? "pass"
+        : finding.status === "warning"
+          ? "warn"
+          : "fail";
+
     return {
-      icon: item.icon,
-      title: item.title,
-      confidence: item.confidence,
+      icon: findingIcon(finding.id),
+      title: finding.label,
       statusTone: tone,
-      statusLabel: statusLabelFromTone(tone, item.passLabel, item.warnLabel),
+      statusLabel: statusLabelFromTone(
+        tone,
+        "Verified",
+        finding.status === "warning" ? "Partial" : "Missing",
+      ),
+      confidence: findingConfidence(finding.status),
     };
   });
 }
 
-function buildKpis(audit: AuditResponse): TrustKpi[] {
-  const trust = getTrustSignals(audit);
-  const ai = getAiVisibilitySignals(audit);
-  const orgValue = ai.organizationSchema ? 100 : 50;
-  const contactValue = trust.contactPage ? 100 : 50;
-  const legalValue =
-    trust.privacyPage && trust.legalPage ? 100 : trust.privacyPage || trust.legalPage ? 75 : 50;
-  const authorityValue = trust.externalAuthorityLinks > 0 ? 82 : 50;
+function buildDemoView(domain: string): TrustSignalsDetailView {
+  const mock = trustSignalsAuditMock;
+  const status = scoreToStatus(mock.score);
+  const topRec = mock.recommendations[0];
 
-  function kpiIcon(value: number): { icon: string; iconClassName: string } {
-    if (value >= 90) {
-      return { icon: "check_circle", iconClassName: "text-[#2E7D32]" };
-    }
-
-    if (value >= 70) {
-      return { icon: "warning", iconClassName: "text-[#856404]" };
-    }
-
-    return { icon: "bolt", iconClassName: "text-primary" };
-  }
-
-  const orgIcon = kpiIcon(orgValue);
-  const contactIcon = kpiIcon(contactValue);
-  const legalIcon = kpiIcon(legalValue);
-  const authorityIcon = kpiIcon(authorityValue);
-
-  return [
-    { label: "Org Schema", value: `${orgValue}%`, ...orgIcon },
-    { label: "Contact Info", value: `${contactValue}%`, ...contactIcon },
-    { label: "Legal Coverage", value: `${legalValue}%`, ...legalIcon },
-    { label: "Authority Signals", value: `${authorityValue}%`, ...authorityIcon },
-  ];
+  return {
+    domain,
+    isRealData: false,
+    score: mock.score,
+    statusLabel: status.label,
+    statusClassName: status.className,
+    title: "Trust Signals & E-E-A-T",
+    summary:
+      "Core trust markers are strong with About, Contact, Privacy, HTTPS, and contact details present. Terms/legal and external authority links can still improve AI trust confidence.",
+    topRecommendation: {
+      title: topRec?.title ?? "Strengthen external trust links",
+      description:
+        topRec?.howToFix ??
+        "Link to authoritative external profiles, references, or citations.",
+      impactGain: `+${topRec?.estimatedGain ?? 6} Impact Gain`,
+    },
+    kpis: [
+      {
+        label: "Passed Signals",
+        value: String(mock.findings.filter((f) => f.status === "pass").length),
+        icon: "check_circle",
+        iconClassName: "text-[#2E7D32]",
+      },
+      {
+        label: "Partial Signals",
+        value: String(mock.findings.filter((f) => f.status === "warning").length),
+        icon: "warning",
+        iconClassName: "text-[#856404]",
+      },
+      {
+        label: "Failed Signals",
+        value: String(mock.findings.filter((f) => f.status === "fail").length),
+        icon: "error_outline",
+        iconClassName: "text-error",
+      },
+      {
+        label: "Open Issues",
+        value: String(mock.issues.length),
+        icon: "bolt",
+        iconClassName: "text-primary",
+      },
+    ],
+    checklist: buildChecklistFromAudit(null),
+    implementationCode: buildImplementationCode(domain),
+    benchmark: {
+      yourScore: mock.score,
+      medianScore: INDUSTRY_MEDIAN,
+      insight: buildBenchmarkInsight(mock.score),
+    },
+    severityIssues: mock.issues.map((issue) => ({
+      title: issue.title,
+      detail: `${issue.impact} • ${issue.explanation}`,
+    })),
+    missingTrustElements: mock.issues.map((issue) => issue.explanation),
+    auditDate: reportMeta.auditDate,
+  };
 }
 
 function buildBenchmarkInsight(score: number): string {
@@ -369,13 +262,16 @@ export function buildTrustSignalsDetailView(
   const trustScore = category?.score ?? 0;
   const status = scoreToStatus(trustScore);
   const trust = getTrustSignals(audit);
+  const trustAudit = getTrustSignalsAudit(audit);
   const social = getSocialMetadata(audit);
   const hasSocialPreview = hasCompleteOpenGraph(social) && hasTwitterCard(social);
 
   const topRec =
+    trustAudit.recommendations[0] ??
     scores.recommendations.find((rec) =>
       /trust|social|privacy|legal|contact|about|schema|organization/i.test(rec.title),
-    ) ?? scores.recommendations[0];
+    ) ??
+    scores.recommendations[0];
 
   const severityIssues = scores.priorityIssues
     .filter((issue) =>
@@ -398,7 +294,10 @@ export function buildTrustSignalsDetailView(
     });
   }
 
-  const missingTrustElements = category?.problems.slice(0, 4) ?? [];
+  const missingTrustElements =
+    trustAudit.issues.length > 0
+      ? trustAudit.issues.map((issue) => issue.explanation)
+      : category?.problems.slice(0, 4) ?? [];
 
   if (!trust.socialLinks && hasSocialPreview) {
     missingTrustElements.push("Consolidated social profile references");
@@ -421,8 +320,33 @@ export function buildTrustSignalsDetailView(
         "Align social profile links and organization schema to improve entity reconciliation.",
       impactGain: `+${topRec?.estimatedGain ?? 3} Impact Gain`,
     },
-    kpis: buildKpis(audit),
-    checklist: buildChecklist(audit),
+    kpis: [
+      {
+        label: "Passed Signals",
+        value: String(trustAudit.findings.filter((f) => f.status === "pass").length),
+        icon: "check_circle",
+        iconClassName: "text-[#2E7D32]",
+      },
+      {
+        label: "Partial Signals",
+        value: String(trustAudit.findings.filter((f) => f.status === "warning").length),
+        icon: "warning",
+        iconClassName: "text-[#856404]",
+      },
+      {
+        label: "Failed Signals",
+        value: String(trustAudit.findings.filter((f) => f.status === "fail").length),
+        icon: "error_outline",
+        iconClassName: "text-error",
+      },
+      {
+        label: "Open Issues",
+        value: String(trustAudit.issues.length),
+        icon: "bolt",
+        iconClassName: "text-primary",
+      },
+    ],
+    checklist: buildChecklistFromAudit(audit),
     implementationCode: buildImplementationCode(view.domain),
     benchmark: {
       yourScore: trustScore,

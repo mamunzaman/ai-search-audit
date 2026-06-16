@@ -1,5 +1,7 @@
-import type { ReportRecommendation, ReportCategory, ReportIssue } from "@/lib/report-data";
+import type { ReportCategory, ReportRecommendation } from "@/lib/report-data";
 import { categories as demoCategories } from "@/lib/report-data";
+import { defaultExecutiveSummary } from "@/lib/report/executiveSummary";
+import type { RankedPriorityIssue } from "@/types/audit";
 import type { ReportViewData } from "./audit-to-report";
 import {
   getFormLabelCoverage,
@@ -74,6 +76,7 @@ export type ReportV2RecommendationRow = {
   status: "Critical" | "Optimization";
   impact: string;
   action: string;
+  href?: string;
 };
 
 export type ReportV2ViewData = {
@@ -108,11 +111,6 @@ function getCategoryScore(
   return categories.find((category) => category.title === title)?.score ?? 0;
 }
 
-function buildPotentialGain(recommendations: ReportRecommendation[]): number {
-  return recommendations
-    .slice(0, 3)
-    .reduce((sum, recommendation) => sum + recommendation.estimatedGain, 0);
-}
 
 function buildGrowthAreas(
   categories: ReportCategory[],
@@ -150,45 +148,22 @@ function buildProjectedTrend(currentScore: number): number[] {
   });
 }
 
-function mapIssueStatus(impact: ReportIssue["impact"]): "Critical" | "Optimization" {
-  return impact === "Critical" ? "Critical" : "Optimization";
+function mapIssueStatus(severity: RankedPriorityIssue["severity"]): "Critical" | "Optimization" {
+  return severity === "Critical" ? "Critical" : "Optimization";
 }
 
 function buildRecommendationRows(
-  priorityIssues: ReportIssue[],
-  recommendations: ReportRecommendation[],
+  priorityIssues: RankedPriorityIssue[],
+  domain: string,
 ): ReportV2RecommendationRow[] {
-  const rows: ReportV2RecommendationRow[] = [];
-
-  for (const issue of priorityIssues) {
-    rows.push({
-      title: issue.title,
-      description: issue.explanation ?? "",
-      status: mapIssueStatus(issue.impact),
-      impact: `+${issue.gain} pts`,
-      action: "View Spec",
-    });
-  }
-
-  for (const recommendation of recommendations) {
-    if (rows.length >= 5) {
-      break;
-    }
-
-    if (rows.some((row) => row.title === recommendation.title)) {
-      continue;
-    }
-
-    rows.push({
-      title: recommendation.title,
-      description: recommendation.howToFix,
-      status: "Optimization",
-      impact: `+${recommendation.estimatedGain} pts`,
-      action: "View Spec",
-    });
-  }
-
-  return rows.slice(0, 5);
+  return priorityIssues.slice(0, 6).map((issue) => ({
+    title: issue.title,
+    description: issue.impact,
+    status: mapIssueStatus(issue.severity),
+    impact: `+${issue.estimatedGain} pts`,
+    action: "View Spec",
+    href: `${issue.detailHref}?domain=${encodeURIComponent(domain)}`,
+  }));
 }
 
 function buildSemanticDistribution(
@@ -234,9 +209,10 @@ function buildLlmIndexStatus(categories: ReportCategory[]): ReportV2LlmReadiness
 
 function buildTopAccessibilityIssue(
   analysis: AccessibilityAnalysis,
-  priorityIssues: ReportIssue[],
+  priorityIssues: RankedPriorityIssue[],
 ): string {
   const accessibilityIssue = priorityIssues.find((issue) =>
+    issue.category === "WCAG 2.2 Readiness" ||
     /alt text|landmark|heading order|lang attribute|form input|skip link|accessible/i.test(
       issue.title,
     ),
@@ -383,39 +359,20 @@ function buildDemoAccessibilityReport(): ReportV2AccessibilityReport {
   };
 }
 
-function buildAuditSummary(view: ReportViewData, potentialGain: number): string {
-  const trustScore = getCategoryScore(view.categories, "Trust Signals");
-  const seoScore = getCategoryScore(view.categories, "SEO Health");
-  const weakCategories = [...view.categories]
-    .sort((left, right) => left.score - right.score)
-    .slice(0, 2)
-    .map((category) => category.title);
-
-  const foundations =
-    trustScore >= 70 || seoScore >= 70
-      ? "This website demonstrates strong trust and technical foundations."
-      : "This website has a workable baseline but trust and technical signals need strengthening.";
-
-  const opportunities = `The largest visibility opportunities are ${weakCategories.join(" and ")}.`;
-  const uplift = `Addressing these gaps could improve AI visibility by approximately ${potentialGain} points.`;
-
-  return `${foundations} ${opportunities} ${uplift}`;
-}
-
 function buildDemoAuditSummary(): string {
-  return "This website demonstrates strong institutional authority and technical SEO depth. The largest visibility opportunities are Schema Markup and semantic content structure. Addressing these gaps could improve AI visibility by approximately 10 points.";
+  return defaultExecutiveSummary.overallSummary;
 }
 
 export function buildReportV2View(view: ReportViewData): ReportV2ViewData {
   const categories = view.isRealData ? view.categories : demoCategories;
   const potentialGain = view.isRealData
-    ? buildPotentialGain(view.recommendations)
-    : 10;
+    ? view.executiveSummary.potentialGain
+    : defaultExecutiveSummary.potentialGain;
   const potentialScore = Math.min(100, view.score + potentialGain);
   const topOpportunity =
     view.recommendations[0]?.title ?? "Improve core SEO and schema signals";
   const recommendationRows = view.isRealData
-    ? buildRecommendationRows(view.priorityIssues, view.recommendations)
+    ? buildRecommendationRows(view.priorityIssues, view.domain)
     : [
         {
           title: "Microdata Entity Mapping",
@@ -450,7 +407,7 @@ export function buildReportV2View(view: ReportViewData): ReportV2ViewData {
     topOpportunity,
     strategicOverview: {
       summary: view.isRealData
-        ? buildAuditSummary(view, potentialGain)
+        ? view.executiveSummary.overallSummary
         : buildDemoAuditSummary(),
       indexability: getCategoryScore(categories, "SEO Health"),
       schemaHealth: getCategoryScore(categories, "Schema Markup"),

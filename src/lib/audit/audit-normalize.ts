@@ -1,11 +1,50 @@
 import { hasTrustPages } from "./trust-signals";
 import { buildTechnicalSignals } from "./technicalSignals";
+import { defaultSiteCrawl } from "./siteCrawler";
+import {
+  defaultAdvancedSchemaAudit,
+  runAdvancedSchemaAudit,
+} from "./advancedSchemaAudit";
+import {
+  defaultTwitterCardAudit,
+  runTwitterCardAudit,
+} from "./twitterCardAudit";
+import {
+  defaultOpenGraphAudit,
+  runOpenGraphAudit,
+} from "./openGraphAudit";
+import {
+  defaultTrustSignalsAudit,
+  runTrustSignalsAudit,
+} from "./trustSignalsAudit";
+import {
+  defaultAnswerExtractionAudit,
+  runAnswerExtractionAudit,
+} from "./answerExtractionAudit";
+import {
+  defaultCitationReadinessAudit,
+  runCitationReadinessAudit,
+} from "./citationReadinessAudit";
+import {
+  defaultEntityClarityAudit,
+  runEntityClarityAudit,
+} from "./entityClarityAudit";
 import { defaultRobotsAnalysis } from "./robots-check";
 import { defaultSitemapAnalysis } from "./sitemap-check";
 import { defaultSocialMetadata } from "./social-metadata";
 import { defaultEntityAnalysis } from "./entity-extraction";
 import { defaultReadabilityAnalysis } from "./readability-check";
 import { defaultAccessibilityAnalysis } from "./accessibility-check";
+import type {
+  AnswerExtractionAuditResult,
+  CitationReadinessAuditResult,
+  EntityClarityAuditResult,
+  OpenGraphAuditResult,
+  TrustSignalsAuditResult,
+  TwitterCardAuditResult,
+  AdvancedSchemaAuditResult,
+  SiteCrawlResult,
+} from "@/types/audit";
 import type {
   AccessibilityAnalysis,
   AccessibilityFinding,
@@ -16,6 +55,7 @@ import type {
   AuditResponse,
   EntityAnalysis,
   EntityType,
+  ParsedAnchor,
   ReadabilityAnalysis,
   RobotsAnalysis,
   SitemapAnalysis,
@@ -24,7 +64,7 @@ import type {
   TrustSignals,
 } from "./types";
 
-export const AUDIT_SCHEMA_VERSION = 9;
+export const AUDIT_SCHEMA_VERSION = 17;
 
 export const defaultTrustSignals: TrustSignals = {
   aboutPage: false,
@@ -308,6 +348,8 @@ function deriveSocialMetadata(
       title: optionalString(twitter.title),
       description: optionalString(twitter.description),
       image: optionalString(twitter.image),
+      site: optionalString(twitter.site),
+      creator: optionalString(twitter.creator),
     },
   };
 }
@@ -388,6 +430,499 @@ function deriveReadabilityAnalysis(
       typeof readabilityAnalysis.shortAnswerBlocks === "number"
         ? readabilityAnalysis.shortAnswerBlocks
         : 0,
+  };
+}
+
+function deriveEntityClarityAudit(
+  entityClarityAudit: EntityClarityAuditResult | undefined,
+  audit: {
+    title?: string;
+    metaDescription?: string;
+    schemaTypes: string[];
+    headings: AuditHeadings;
+    trustSignals: TrustSignals;
+    entityAnalysis: EntityAnalysis;
+    socialMetadata: SocialMetadata;
+    finalUrl?: string;
+  },
+  siteCrawl?: SiteCrawlResult,
+): EntityClarityAuditResult {
+  if (
+    entityClarityAudit &&
+    typeof entityClarityAudit === "object" &&
+    typeof entityClarityAudit.score === "number" &&
+    Array.isArray(entityClarityAudit.findings) &&
+    entityClarityAudit.findings.length > 0
+  ) {
+    return {
+      score: Math.max(0, Math.min(100, entityClarityAudit.score)),
+      status:
+        entityClarityAudit.status === "good" ||
+        entityClarityAudit.status === "warning" ||
+        entityClarityAudit.status === "poor"
+          ? entityClarityAudit.status
+          : "poor",
+      findings: entityClarityAudit.findings.filter(
+        (finding) =>
+          finding &&
+          typeof finding.id === "string" &&
+          typeof finding.label === "string" &&
+          typeof finding.message === "string",
+      ),
+      issues: Array.isArray(entityClarityAudit.issues)
+        ? entityClarityAudit.issues.filter(
+            (issue) =>
+              issue &&
+              typeof issue.title === "string" &&
+              typeof issue.explanation === "string",
+          )
+        : [],
+      recommendations: Array.isArray(entityClarityAudit.recommendations)
+        ? entityClarityAudit.recommendations.filter(
+            (recommendation) =>
+              recommendation &&
+              typeof recommendation.title === "string" &&
+              typeof recommendation.howToFix === "string",
+          )
+        : [],
+    };
+  }
+
+  return runEntityClarityAudit(
+    {
+      html: "",
+      title: audit.title ?? "",
+      metaDescription: audit.metaDescription ?? "",
+      schemaTypes: audit.schemaTypes,
+      headings: audit.headings,
+      trustSignals: audit.trustSignals,
+      entityAnalysis: audit.entityAnalysis,
+      socialMetadata: audit.socialMetadata,
+    },
+    {
+      sitePages: siteCrawl?.pages.length
+        ? siteCrawl.pages.map((page) => ({
+            url: page.url,
+            html: page.html,
+            text: page.text,
+            links: page.links,
+          }))
+        : undefined,
+      primaryPageUrl: audit.finalUrl,
+    },
+  );
+}
+
+function deriveCitationReadinessAudit(
+  citationReadinessAudit: CitationReadinessAuditResult | undefined,
+  audit: {
+    title?: string;
+    metaDescription?: string;
+    schemaTypes: string[];
+    headings: AuditHeadings;
+    links: AuditLinks;
+    trustSignals: TrustSignals;
+    finalUrl?: string;
+  },
+  siteCrawl?: SiteCrawlResult,
+): CitationReadinessAuditResult {
+  if (
+    citationReadinessAudit &&
+    typeof citationReadinessAudit === "object" &&
+    typeof citationReadinessAudit.score === "number" &&
+    Array.isArray(citationReadinessAudit.findings) &&
+    citationReadinessAudit.findings.length > 0
+  ) {
+    return {
+      score: Math.max(0, Math.min(100, citationReadinessAudit.score)),
+      status:
+        citationReadinessAudit.status === "good" ||
+        citationReadinessAudit.status === "warning" ||
+        citationReadinessAudit.status === "poor"
+          ? citationReadinessAudit.status
+          : "poor",
+      findings: citationReadinessAudit.findings.filter(
+        (finding) =>
+          finding &&
+          typeof finding.id === "string" &&
+          typeof finding.label === "string" &&
+          typeof finding.message === "string",
+      ),
+      issues: Array.isArray(citationReadinessAudit.issues)
+        ? citationReadinessAudit.issues.filter(
+            (issue) =>
+              issue &&
+              typeof issue.title === "string" &&
+              typeof issue.explanation === "string",
+          )
+        : [],
+      recommendations: Array.isArray(citationReadinessAudit.recommendations)
+        ? citationReadinessAudit.recommendations.filter(
+            (recommendation) =>
+              recommendation &&
+              typeof recommendation.title === "string" &&
+              typeof recommendation.howToFix === "string",
+          )
+        : [],
+    };
+  }
+
+  return runCitationReadinessAudit(
+    {
+      html: "",
+      title: audit.title ?? "",
+      metaDescription: audit.metaDescription ?? "",
+      schemaTypes: audit.schemaTypes,
+      headings: audit.headings,
+      links: audit.links,
+      trustSignals: audit.trustSignals,
+      anchors: [],
+      pageUrl: audit.finalUrl ?? "",
+    },
+    {
+      sitePages: siteCrawl?.pages.length
+        ? siteCrawl.pages.map((page) => ({
+            url: page.url,
+            html: page.html,
+            text: page.text,
+            links: page.links,
+          }))
+        : undefined,
+      primaryPageUrl: audit.finalUrl,
+    },
+  );
+}
+
+function deriveAnswerExtractionAudit(
+  answerExtractionAudit: AnswerExtractionAuditResult | undefined,
+  audit: {
+    schemaTypes: string[];
+    headings: AuditHeadings;
+    readabilityAnalysis: ReadabilityAnalysis;
+  },
+): AnswerExtractionAuditResult {
+  if (
+    answerExtractionAudit &&
+    typeof answerExtractionAudit === "object" &&
+    typeof answerExtractionAudit.score === "number" &&
+    Array.isArray(answerExtractionAudit.findings) &&
+    answerExtractionAudit.findings.length > 0
+  ) {
+    return {
+      score: Math.max(0, Math.min(100, answerExtractionAudit.score)),
+      status:
+        answerExtractionAudit.status === "good" ||
+        answerExtractionAudit.status === "warning" ||
+        answerExtractionAudit.status === "poor"
+          ? answerExtractionAudit.status
+          : "poor",
+      findings: answerExtractionAudit.findings.filter(
+        (finding) =>
+          finding &&
+          typeof finding.id === "string" &&
+          typeof finding.label === "string" &&
+          typeof finding.message === "string",
+      ),
+      issues: Array.isArray(answerExtractionAudit.issues)
+        ? answerExtractionAudit.issues.filter(
+            (issue) =>
+              issue &&
+              typeof issue.title === "string" &&
+              typeof issue.explanation === "string",
+          )
+        : [],
+      recommendations: Array.isArray(answerExtractionAudit.recommendations)
+        ? answerExtractionAudit.recommendations.filter(
+            (recommendation) =>
+              recommendation &&
+              typeof recommendation.title === "string" &&
+              typeof recommendation.howToFix === "string",
+          )
+        : [],
+    };
+  }
+
+  return runAnswerExtractionAudit({
+    html: "",
+    headings: audit.headings,
+    schemaTypes: audit.schemaTypes,
+    readabilityAnalysis: audit.readabilityAnalysis,
+  });
+}
+
+function deriveTrustSignalsAudit(
+  trustSignalsAudit: TrustSignalsAuditResult | undefined,
+  audit: {
+    finalUrl?: string;
+    trustSignals: TrustSignals;
+    html?: string;
+    anchors?: ParsedAnchor[];
+  },
+  siteCrawl?: SiteCrawlResult,
+): TrustSignalsAuditResult {
+  if (
+    trustSignalsAudit &&
+    typeof trustSignalsAudit === "object" &&
+    typeof trustSignalsAudit.score === "number" &&
+    Array.isArray(trustSignalsAudit.findings) &&
+    trustSignalsAudit.findings.length > 0
+  ) {
+    return {
+      score: Math.max(0, Math.min(100, trustSignalsAudit.score)),
+      status:
+        trustSignalsAudit.status === "good" ||
+        trustSignalsAudit.status === "warning" ||
+        trustSignalsAudit.status === "poor"
+          ? trustSignalsAudit.status
+          : "poor",
+      findings: trustSignalsAudit.findings.filter(
+        (finding) =>
+          finding &&
+          typeof finding.id === "string" &&
+          typeof finding.label === "string" &&
+          typeof finding.message === "string",
+      ),
+      issues: Array.isArray(trustSignalsAudit.issues)
+        ? trustSignalsAudit.issues.filter(
+            (issue) =>
+              issue &&
+              typeof issue.title === "string" &&
+              typeof issue.explanation === "string",
+          )
+        : [],
+      recommendations: Array.isArray(trustSignalsAudit.recommendations)
+        ? trustSignalsAudit.recommendations.filter(
+            (recommendation) =>
+              recommendation &&
+              typeof recommendation.title === "string" &&
+              typeof recommendation.howToFix === "string",
+          )
+        : [],
+    };
+  }
+
+  return runTrustSignalsAudit(
+    {
+      html: audit.html ?? "",
+      pageUrl: audit.finalUrl ?? "",
+      finalUrl: audit.finalUrl ?? "",
+      trustSignals: audit.trustSignals,
+      anchors: audit.anchors ?? [],
+    },
+    {
+      sitePages: siteCrawl?.pages.length
+        ? siteCrawl.pages.map((page) => ({
+            url: page.url,
+            html: page.html,
+            text: page.text,
+            links: page.links,
+          }))
+        : undefined,
+    },
+  );
+}
+
+function deriveOpenGraphAudit(
+  openGraphAudit: OpenGraphAuditResult | undefined,
+  audit: {
+    socialMetadata: SocialMetadata;
+  },
+): OpenGraphAuditResult {
+  if (
+    openGraphAudit &&
+    typeof openGraphAudit === "object" &&
+    typeof openGraphAudit.score === "number" &&
+    Array.isArray(openGraphAudit.findings) &&
+    openGraphAudit.findings.length > 0
+  ) {
+    return {
+      score: Math.max(0, Math.min(100, openGraphAudit.score)),
+      status:
+        openGraphAudit.status === "good" ||
+        openGraphAudit.status === "warning" ||
+        openGraphAudit.status === "poor"
+          ? openGraphAudit.status
+          : "poor",
+      findings: openGraphAudit.findings.filter(
+        (finding) =>
+          finding &&
+          typeof finding.id === "string" &&
+          typeof finding.label === "string" &&
+          typeof finding.message === "string",
+      ),
+      issues: Array.isArray(openGraphAudit.issues)
+        ? openGraphAudit.issues.filter(
+            (issue) =>
+              issue &&
+              typeof issue.title === "string" &&
+              typeof issue.explanation === "string",
+          )
+        : [],
+      recommendations: Array.isArray(openGraphAudit.recommendations)
+        ? openGraphAudit.recommendations.filter(
+            (recommendation) =>
+              recommendation &&
+              typeof recommendation.title === "string" &&
+              typeof recommendation.howToFix === "string",
+          )
+        : [],
+    };
+  }
+
+  return runOpenGraphAudit({
+    socialMetadata: audit.socialMetadata,
+  });
+}
+
+function deriveTwitterCardAudit(
+  twitterCardAudit: TwitterCardAuditResult | undefined,
+  audit: {
+    socialMetadata: SocialMetadata;
+  },
+): TwitterCardAuditResult {
+  if (
+    twitterCardAudit &&
+    typeof twitterCardAudit === "object" &&
+    typeof twitterCardAudit.score === "number" &&
+    Array.isArray(twitterCardAudit.findings) &&
+    twitterCardAudit.findings.length > 0
+  ) {
+    return {
+      score: Math.max(0, Math.min(100, twitterCardAudit.score)),
+      status:
+        twitterCardAudit.status === "good" ||
+        twitterCardAudit.status === "warning" ||
+        twitterCardAudit.status === "poor"
+          ? twitterCardAudit.status
+          : "poor",
+      findings: twitterCardAudit.findings.filter(
+        (finding) =>
+          finding &&
+          typeof finding.id === "string" &&
+          typeof finding.label === "string" &&
+          typeof finding.message === "string",
+      ),
+      issues: Array.isArray(twitterCardAudit.issues)
+        ? twitterCardAudit.issues.filter(
+            (issue) =>
+              issue &&
+              typeof issue.title === "string" &&
+              typeof issue.explanation === "string",
+          )
+        : [],
+      recommendations: Array.isArray(twitterCardAudit.recommendations)
+        ? twitterCardAudit.recommendations.filter(
+            (recommendation) =>
+              recommendation &&
+              typeof recommendation.title === "string" &&
+              typeof recommendation.howToFix === "string",
+          )
+        : [],
+    };
+  }
+
+  return runTwitterCardAudit({
+    socialMetadata: audit.socialMetadata,
+  });
+}
+
+function deriveAdvancedSchemaAudit(
+  advancedSchemaAudit: AdvancedSchemaAuditResult | undefined,
+  audit: {
+    schemaTypes: string[];
+  },
+  html: string,
+): AdvancedSchemaAuditResult {
+  if (
+    advancedSchemaAudit &&
+    typeof advancedSchemaAudit === "object" &&
+    typeof advancedSchemaAudit.score === "number" &&
+    Array.isArray(advancedSchemaAudit.findings) &&
+    advancedSchemaAudit.findings.length > 0
+  ) {
+    return {
+      score: Math.max(0, Math.min(100, advancedSchemaAudit.score)),
+      status:
+        advancedSchemaAudit.status === "good" ||
+        advancedSchemaAudit.status === "warning" ||
+        advancedSchemaAudit.status === "poor"
+          ? advancedSchemaAudit.status
+          : "poor",
+      findings: advancedSchemaAudit.findings.filter(
+        (finding) =>
+          finding &&
+          typeof finding.id === "string" &&
+          typeof finding.label === "string" &&
+          typeof finding.message === "string",
+      ),
+      issues: Array.isArray(advancedSchemaAudit.issues)
+        ? advancedSchemaAudit.issues.filter(
+            (issue) =>
+              issue &&
+              typeof issue.title === "string" &&
+              typeof issue.explanation === "string",
+          )
+        : [],
+      recommendations: Array.isArray(advancedSchemaAudit.recommendations)
+        ? advancedSchemaAudit.recommendations.filter(
+            (recommendation) =>
+              recommendation &&
+              typeof recommendation.title === "string" &&
+              typeof recommendation.howToFix === "string",
+          )
+        : [],
+    };
+  }
+
+  return runAdvancedSchemaAudit({
+    html,
+    schemaTypes: audit.schemaTypes,
+  });
+}
+
+function deriveSiteCrawl(siteCrawl: SiteCrawlResult | undefined): SiteCrawlResult {
+  if (!siteCrawl || typeof siteCrawl !== "object") {
+    return { ...defaultSiteCrawl };
+  }
+
+  const maxPages =
+    typeof siteCrawl.maxPages === "number"
+      ? Math.max(1, Math.min(5, siteCrawl.maxPages))
+      : defaultSiteCrawl.maxPages;
+
+  const pages = Array.isArray(siteCrawl.pages)
+    ? siteCrawl.pages
+        .filter(
+          (page) =>
+            page &&
+            typeof page === "object" &&
+            typeof page.url === "string" &&
+            typeof page.html === "string" &&
+            typeof page.text === "string" &&
+            Array.isArray(page.links),
+        )
+        .slice(0, maxPages)
+        .map((page) => ({
+          url: page.url,
+          title: typeof page.title === "string" ? page.title : undefined,
+          statusCode:
+            typeof page.statusCode === "number" ? page.statusCode : undefined,
+          html: page.html,
+          text: page.text,
+          links: page.links.filter((link) => typeof link === "string"),
+        }))
+    : [];
+
+  return {
+    startUrl: typeof siteCrawl.startUrl === "string" ? siteCrawl.startUrl : "",
+    pages,
+    discoveredUrls: Array.isArray(siteCrawl.discoveredUrls)
+      ? siteCrawl.discoveredUrls.filter((url) => typeof url === "string")
+      : [],
+    failedUrls: Array.isArray(siteCrawl.failedUrls)
+      ? siteCrawl.failedUrls.filter((url) => typeof url === "string")
+      : [],
+    maxPages,
   };
 }
 
@@ -541,6 +1076,9 @@ export function normalizeAuditResponse(data: unknown): AuditResponse | null {
     robotsAnalysis,
     sitemapAnalysis,
   );
+  const socialMetadata = deriveSocialMetadata(audit.socialMetadata);
+  const entityAnalysis = deriveEntityAnalysis(audit.entityAnalysis);
+  const readabilityAnalysis = deriveReadabilityAnalysis(audit.readabilityAnalysis);
 
   return {
     url: audit.url ?? "",
@@ -570,11 +1108,100 @@ export function normalizeAuditResponse(data: unknown): AuditResponse | null {
     sitemapAnalysis,
     technicalSignals,
     socialMetadata: deriveSocialMetadata(audit.socialMetadata),
-    entityAnalysis: deriveEntityAnalysis(audit.entityAnalysis),
-    readabilityAnalysis: deriveReadabilityAnalysis(audit.readabilityAnalysis),
+    entityAnalysis,
+    entityClarityAudit: deriveEntityClarityAudit(audit.entityClarityAudit, {
+      title: audit.title,
+      metaDescription: audit.metaDescription,
+      schemaTypes,
+      headings,
+      trustSignals,
+      entityAnalysis,
+      socialMetadata,
+      finalUrl: audit.finalUrl,
+    }, audit.siteCrawl),
+    citationReadinessAudit: deriveCitationReadinessAudit(
+      audit.citationReadinessAudit,
+      {
+        title: audit.title,
+        metaDescription: audit.metaDescription,
+        schemaTypes,
+        headings,
+        links,
+        trustSignals,
+        finalUrl: audit.finalUrl,
+      },
+      audit.siteCrawl,
+    ),
+    answerExtractionAudit: deriveAnswerExtractionAudit(
+      audit.answerExtractionAudit,
+      {
+        schemaTypes,
+        headings,
+        readabilityAnalysis,
+      },
+    ),
+    trustSignalsAudit: deriveTrustSignalsAudit(audit.trustSignalsAudit, {
+      finalUrl: audit.finalUrl,
+      trustSignals,
+    }, audit.siteCrawl),
+    openGraphAudit: deriveOpenGraphAudit(audit.openGraphAudit, {
+      socialMetadata,
+    }),
+    twitterCardAudit: deriveTwitterCardAudit(audit.twitterCardAudit, {
+      socialMetadata,
+    }),
+    advancedSchemaAudit: deriveAdvancedSchemaAudit(
+      audit.advancedSchemaAudit,
+      { schemaTypes },
+      "",
+    ),
+    readabilityAnalysis,
     accessibilityAnalysis: deriveAccessibilityAnalysis(audit.accessibilityAnalysis),
     checks: normalizeChecks(audit.checks),
+    siteCrawl: deriveSiteCrawl(audit.siteCrawl),
   };
+}
+
+export function getTrustSignalsAudit(
+  audit: AuditResponse,
+): TrustSignalsAuditResult {
+  return audit.trustSignalsAudit ?? defaultTrustSignalsAudit;
+}
+
+export function getOpenGraphAudit(audit: AuditResponse): OpenGraphAuditResult {
+  return audit.openGraphAudit ?? defaultOpenGraphAudit;
+}
+
+export function getTwitterCardAudit(audit: AuditResponse): TwitterCardAuditResult {
+  return audit.twitterCardAudit ?? defaultTwitterCardAudit;
+}
+
+export function getAdvancedSchemaAudit(
+  audit: AuditResponse,
+): AdvancedSchemaAuditResult {
+  return audit.advancedSchemaAudit ?? defaultAdvancedSchemaAudit;
+}
+
+export function getSiteCrawl(audit: AuditResponse): SiteCrawlResult {
+  return audit.siteCrawl ?? defaultSiteCrawl;
+}
+
+export function getAnswerExtractionAudit(
+  audit: AuditResponse,
+): AnswerExtractionAuditResult {
+  return audit.answerExtractionAudit ?? defaultAnswerExtractionAudit;
+}
+
+export function getCitationReadinessAudit(
+  audit: AuditResponse,
+): CitationReadinessAuditResult {
+  return audit.citationReadinessAudit ?? defaultCitationReadinessAudit;
+}
+
+export function getEntityClarityAudit(
+  audit: AuditResponse,
+): EntityClarityAuditResult {
+  return audit.entityClarityAudit ?? defaultEntityClarityAudit;
 }
 
 export function getTechnicalSignals(audit: AuditResponse): TechnicalSignal[] {

@@ -1,8 +1,8 @@
 "use client";
 
-import { ReportBreadcrumb } from "@/components/report/ReportBreadcrumb";
-import { ReportSidebar } from "@/components/report/ReportSidebar";
-import { ReportTopNav } from "@/components/report/ReportTopNav";
+import { CategoryDetailLayout } from "@/components/report/CategoryDetailLayout";
+import { reportStyles } from "@/components/report/reportStyles";
+import { ReportScoreRing } from "@/components/report/ScoreRing";
 import { Icon } from "@/components/icons/Icon";
 import { cn } from "@/lib/cn";
 import {
@@ -16,57 +16,6 @@ import { useEffect, useState } from "react";
 type EntityClarityDetailPageProps = {
   domain: string;
 };
-
-const ENTITY_RING_RADIUS = 58;
-const ENTITY_RING_CIRCUMFERENCE = 2 * Math.PI * ENTITY_RING_RADIUS;
-
-function EntityScoreRing({ score }: { score: number }) {
-  const targetOffset =
-    ENTITY_RING_CIRCUMFERENCE - (ENTITY_RING_CIRCUMFERENCE * score) / 100;
-  const [strokeOffset, setStrokeOffset] = useState(ENTITY_RING_CIRCUMFERENCE);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setStrokeOffset(targetOffset), 100);
-    return () => window.clearTimeout(timer);
-  }, [targetOffset]);
-
-  return (
-    <div className="relative h-32 w-32 shrink-0">
-      <svg
-        className="h-full w-full -rotate-90"
-        viewBox="0 0 128 128"
-        aria-hidden="true"
-        focusable="false"
-      >
-        <circle
-          cx="64"
-          cy="64"
-          fill="transparent"
-          r={ENTITY_RING_RADIUS}
-          stroke="currentColor"
-          strokeWidth="8"
-          className="text-outline-variant"
-        />
-        <circle
-          cx="64"
-          cy="64"
-          fill="transparent"
-          r={ENTITY_RING_RADIUS}
-          stroke="currentColor"
-          strokeDasharray={ENTITY_RING_CIRCUMFERENCE}
-          strokeDashoffset={strokeOffset}
-          strokeLinecap="round"
-          strokeWidth="8"
-          className="text-primary-container"
-        />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-headline-md font-bold text-primary">{score}</span>
-        <span className="font-label-md text-on-surface-variant">/ 100</span>
-      </div>
-    </div>
-  );
-}
 
 function EntityRelationshipMap({
   primaryLabel,
@@ -153,18 +102,18 @@ function EntityRelationshipMap({
 
 function HeaderSection({ data }: { data: EntityClarityDetailView }) {
   return (
-    <header className="mb-gutter flex min-w-0 flex-col items-center gap-stack-lg rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow md:flex-row md:items-center">
-      <EntityScoreRing score={data.score} />
+    <header className={reportStyles.heroCard}>
+      <ReportScoreRing score={data.score} categorySlug="entity-clarity" label="Score" />
       <div className="min-w-0 flex-1 text-center md:text-left">
         <div className="mb-stack-xs flex flex-wrap items-center justify-center gap-stack-sm md:justify-start">
-          <h2 className="break-words text-headline-lg font-semibold leading-tight text-on-surface">
+          <h2 className={reportStyles.pageTitle}>
             {data.title}
           </h2>
           <span className={cn("rounded-full px-3 py-1 font-label-md", data.statusClassName)}>
             {data.statusLabel}
           </span>
         </div>
-        <p className="max-w-2xl break-words text-body-md leading-relaxed text-on-surface-variant">
+        <p className={reportStyles.pageSummary}>
           {data.summary}
         </p>
       </div>
@@ -190,7 +139,7 @@ function HeaderSection({ data }: { data: EntityClarityDetailView }) {
 
 function KpiStrip({ data }: { data: EntityClarityDetailView }) {
   return (
-    <div className="mb-gutter grid min-w-0 grid-cols-1 gap-gutter sm:grid-cols-2 xl:grid-cols-4">
+    <div className={cn("grid min-w-0 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4", reportStyles.gridGap)}>
       {data.kpis.map((kpi) => (
         <div
           key={kpi.label}
@@ -223,7 +172,7 @@ function DetailedFindings({ data }: { data: EntityClarityDetailView }) {
   return (
     <div className="flex min-w-0 flex-col overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow">
       <div className="border-b border-outline-variant px-stack-lg py-4">
-        <h3 className="break-words text-[18px] font-semibold leading-tight text-on-surface">
+        <h3 className="break-words text-headline-md leading-tight text-on-surface">
           Detailed Findings
         </h3>
       </div>
@@ -305,7 +254,7 @@ function RecommendationCard({ data }: { data: EntityClarityDetailView }) {
   return (
     <div className="min-w-0 rounded-[24px] border border-outline-variant bg-white card-shadow">
       <div className="border-b border-outline-variant px-stack-lg py-4">
-        <h3 className="text-[18px] font-semibold text-on-surface">Optimization Recommendations</h3>
+        <h3 className="text-headline-md text-on-surface">Optimization Recommendations</h3>
       </div>
       <div className="p-stack-lg">
         <div className="flex min-w-0 flex-col items-start gap-4 rounded-r-lg border-l-4 border-primary bg-primary/5 p-4 sm:flex-row sm:items-start">
@@ -343,7 +292,7 @@ function BenchmarkCard({ data }: { data: EntityClarityDetailView }) {
   return (
     <div className="min-w-0 overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow">
       <div className="border-b border-outline-variant px-stack-lg py-4">
-        <h3 className="text-[18px] font-semibold text-on-surface">Industry Benchmarking</h3>
+        <h3 className="text-headline-md text-on-surface">Industry Benchmarking</h3>
       </div>
       <div className="min-w-0 overflow-x-auto p-stack-lg">
         <table className="w-full min-w-[280px] text-left">
@@ -404,7 +353,7 @@ function ImplementationSection({ data }: { data: EntityClarityDetailView }) {
       >
         <div className="flex min-w-0 items-start text-left sm:items-center">
           <Icon name="terminal" size={24} className="mr-3 shrink-0 text-primary" />
-          <h3 className="min-w-0 break-words text-[18px] font-semibold leading-tight text-on-surface">
+          <h3 className="min-w-0 break-words text-headline-md leading-tight text-on-surface">
             Developer Implementation: Organization Schema
           </h3>
         </div>
@@ -453,51 +402,40 @@ export function EntityClarityDetailPage({ domain }: EntityClarityDetailPageProps
   }, [mounted, domain]);
 
   return (
-    <div className="min-h-screen min-w-0 overflow-x-hidden bg-canvas text-on-surface">
-      <ReportSidebar
-        domain={data.domain}
-        activeNav="Entity Clarity"
-        auditDate={data.auditDate}
-      />
-
-      <div className="flex min-h-screen min-w-0 flex-col md:ml-64">
-        <ReportTopNav domain={data.domain} />
-        <main className="min-w-0 flex-1 overflow-x-hidden p-margin-desktop md:max-w-[1440px]">
-          <ReportBreadcrumb domain={data.domain} currentLabel="Entity Clarity" />
-
-        <HeaderSection data={data} />
-        <KpiStrip data={data} />
-
-        <div className="mb-gutter grid min-w-0 grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
-          <div className="min-w-0 overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow">
-            <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 border-b border-outline-variant px-stack-lg py-4">
-              <h3 className="break-words text-[18px] font-semibold leading-tight text-on-surface">
-                Entity Relationship Map
-              </h3>
-              <button
-                type="button"
-                className="flex shrink-0 items-center font-label-md text-primary"
-              >
-                <Icon name="fullscreen" size={20} className="mr-1 shrink-0" />
-                Expand View
-              </button>
-            </div>
-            <EntityRelationshipMap
-              primaryLabel={data.relationshipPrimaryLabel}
-              nodes={data.relationshipNodes}
-            />
+    <CategoryDetailLayout
+      domain={data.domain}
+      categoryLabel="Entity Clarity"
+      activeNav="Entity Clarity"
+      auditDate={data.auditDate}
+    >
+      <HeaderSection data={data} />
+      <KpiStrip data={data} />
+      <div className="grid min-w-0 grid-cols-1 items-start gap-stack-lg xl:grid-cols-[minmax(0,1fr)_380px]">
+        <div className={cn(reportStyles.card, "min-w-0 overflow-hidden")}>
+          <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 border-b border-outline-variant px-stack-lg py-stack-md">
+            <h3 className={cn(reportStyles.sectionTitle, "break-words")}>
+              Entity Relationship Map
+            </h3>
+            <button
+              type="button"
+              className="flex shrink-0 items-center text-label-md text-primary"
+            >
+              <Icon name="fullscreen" size={20} className="mr-1 shrink-0" />
+              Expand View
+            </button>
           </div>
-          <DetailedFindings data={data} />
+          <EntityRelationshipMap
+            primaryLabel={data.relationshipPrimaryLabel}
+            nodes={data.relationshipNodes}
+          />
         </div>
-
-        <div className="mb-gutter grid min-w-0 grid-cols-1 items-start gap-6 xl:grid-cols-2">
-          <RecommendationCard data={data} />
-          <BenchmarkCard data={data} />
-        </div>
-
-        <ImplementationSection data={data} />
-        </main>
+        <DetailedFindings data={data} />
       </div>
-    </div>
+      <div className="grid min-w-0 grid-cols-1 items-start gap-stack-lg xl:grid-cols-2">
+        <RecommendationCard data={data} />
+        <BenchmarkCard data={data} />
+      </div>
+      <ImplementationSection data={data} />
+    </CategoryDetailLayout>
   );
 }

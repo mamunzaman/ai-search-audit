@@ -4,11 +4,9 @@ import type { ActivityLogEntry, ProcessingMetric } from "@/lib/processing-data";
 import {
   categories as placeholderCategories,
   criticalIssues,
-  priorityIssues,
   reportMeta,
   strengths,
   type ReportCategory,
-  type ReportIssue,
   type ReportRecommendation,
 } from "@/lib/report-data";
 import {
@@ -18,10 +16,20 @@ import {
   scoreToStatusLabel,
 } from "./audit-score";
 import {
+  defaultExecutiveSummary,
+  generateExecutiveSummary,
+} from "@/lib/report/executiveSummary";
+import {
+  demoRankedPriorityIssues,
+  generatePriorityIssues,
+} from "@/lib/report/priorityIssues";
+import type { ExecutiveSummary, RankedPriorityIssue } from "@/types/audit";
+import {
   getAccessibilityAnalysis,
   getEntityAnalysis,
   getReadabilityAnalysis,
   getRobotsAnalysis,
+  getSiteCrawl,
   getSitemapAnalysis,
   getSocialMetadata,
   normalizeAuditResponse,
@@ -89,18 +97,24 @@ export type ReportViewData = {
   strengths: ReportStrength[];
   criticalIssues: ReportStrength[];
   categories: ReportCategory[];
-  priorityIssues: ReportIssue[];
+  priorityIssues: RankedPriorityIssue[];
   recommendations: ReportRecommendation[];
   accessibilityAnalysis: AccessibilityAnalysis;
+  executiveSummary: ExecutiveSummary;
 };
 
 const CATEGORY_ORDER = [
   "SEO Health",
   "AI Visibility",
   "Entity Clarity",
+  "Citation Readiness",
+  "Answer Extraction",
   "Trust Signals",
+  "Open Graph",
+  "Twitter Card",
   "Content Structure",
   "Schema Markup",
+  "Advanced Schema",
   "FAQ Readiness",
   "AI Answer Readiness",
   "WCAG 2.2 Readiness",
@@ -133,17 +147,6 @@ function mapCategoryScores(categoryScores: CategoryScore[]): ReportCategory[] {
   });
 }
 
-function mapPriorityIssues(
-  issues: ReturnType<typeof calculateAuditScores>["priorityIssues"],
-): ReportIssue[] {
-  return issues.map((issue) => ({
-    title: issue.title,
-    impact: issue.impact,
-    difficulty: issue.difficulty,
-    gain: issue.estimatedGain,
-    explanation: issue.explanation,
-  }));
-}
 
 function countHeadings(audit: AuditResponse): number {
   return (
@@ -197,8 +200,10 @@ function buildExtractedSummary(audit: AuditResponse): ExtractedDataSummary {
 export function auditToProcessingMetrics(
   audit: AuditResponse,
 ): ProcessingMetric[] {
+  const crawledPages = getSiteCrawl(audit).pages.length;
+
   return [
-    { label: "Page Audited", value: 1 },
+    { label: "Page Audited", value: Math.max(1, crawledPages) },
     { label: "Headings Found", value: countHeadings(audit) },
     { label: "Schema Types", value: audit.schemaTypes.length },
     {
@@ -297,9 +302,10 @@ export function auditToReportView(
     strengths: buildHeroStrengths(scores.categories),
     criticalIssues: buildHeroIssues(scores.categories),
     categories: mapCategoryScores(scores.categories),
-    priorityIssues: mapPriorityIssues(scores.priorityIssues),
+    priorityIssues: generatePriorityIssues(normalized),
     recommendations: scores.recommendations,
     accessibilityAnalysis: getAccessibilityAnalysis(normalized),
+    executiveSummary: generateExecutiveSummary(normalized),
   };
 }
 
@@ -358,9 +364,10 @@ export function getPlaceholderReportView(domain: string): ReportViewData {
     strengths,
     criticalIssues,
     categories: placeholderCategories,
-    priorityIssues,
+    priorityIssues: demoRankedPriorityIssues,
     recommendations: [],
     accessibilityAnalysis: { ...defaultAccessibilityAnalysis },
+    executiveSummary: defaultExecutiveSummary,
   };
 }
 
