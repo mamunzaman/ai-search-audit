@@ -97,6 +97,9 @@ function normalizeHeadings(headings: AuditHeadings | undefined): AuditHeadings {
     h1: Array.isArray(headings?.h1) ? headings.h1 : [],
     h2: Array.isArray(headings?.h2) ? headings.h2 : [],
     h3: Array.isArray(headings?.h3) ? headings.h3 : [],
+    h4: Array.isArray(headings?.h4) ? headings.h4 : [],
+    h5: Array.isArray(headings?.h5) ? headings.h5 : [],
+    h6: Array.isArray(headings?.h6) ? headings.h6 : [],
   };
 }
 

@@ -21,6 +21,7 @@ export { CategoryIssueSpotlight, CategoryIssuesSection } from "./CategoryIssuesS
 export { CategoryKpiStrip } from "./CategoryKpiStrip";
 export { CategoryRecommendationsSection } from "./CategoryRecommendationsSection";
 export { CategoryRadarCard } from "./CategoryRadarCard";
+export { ExportReportButton } from "./ExportReportButton";
 export { ExecutiveScoreCard } from "./ExecutiveScoreCard";
 export { FixPlanCard } from "./FixPlanCard";
 export { GrowthPotentialCard } from "./GrowthPotentialCard";
@@ -43,3 +44,8 @@ export { EntityClarityDetailPage } from "./EntityClarityDetailPage";
 export { TrustSignalsDetailPage } from "./TrustSignalsDetailPage";
 export { Wcag22DetailPage } from "./Wcag22DetailPage";
 export { VisualInsightsCarousel } from "./VisualInsightsCarousel";
+export { VisualInsightsSection } from "./VisualInsightsSection";
+export { HeadingStructureCard } from "./HeadingStructureCard";
+export { AIVisibilityBreakdownCard } from "./AIVisibilityBreakdownCard";
+export { SchemaCoverageCard } from "./SchemaCoverageCard";
+export { SocialMetadataCoverageCard } from "./SocialMetadataCoverageCard";

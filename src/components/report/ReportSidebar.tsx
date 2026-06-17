@@ -75,7 +75,10 @@ export function ReportSidebar({
   const lastAudit = auditDate ?? reportMeta.lastAudit;
 
   return (
-    <aside className="fixed left-0 top-0 z-30 hidden h-screen w-64 flex-col border-r border-outline-variant bg-surface p-stack-md md:flex">
+    <aside
+      data-report-print-hide
+      className="fixed left-0 top-0 z-30 hidden h-screen w-64 flex-col border-r border-outline-variant bg-surface p-stack-md md:flex"
+    >
       <div className="mb-stack-xl px-2">
         <span className="text-headline-md font-bold text-primary">
           AuditMetric

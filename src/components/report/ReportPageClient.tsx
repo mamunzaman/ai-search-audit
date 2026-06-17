@@ -3,12 +3,14 @@
 import {
   AccessibilityAuditReport,
   ExecutiveScoreCard,
+  ExportReportButton,
   FixPlanCard,
   HighImpactRecommendationsTable,
   ReportLayout,
   ScoreExplanationCard,
   StrategicOverviewCard,
   VisualInsightsCarousel,
+  VisualInsightsSection,
 } from "@/components/report";
 import { buildReportView } from "@/lib/audit/audit-to-report";
 import { buildReportV2View } from "@/lib/audit/report-v2";
@@ -36,6 +38,15 @@ export function ReportPageClient({ domain }: ReportPageClientProps) {
 
   return (
     <ReportLayout domain={data.domain} auditDate={view.auditDate}>
+      <div className="report-print-title hidden">
+        <h1 className="text-headline-lg font-semibold text-primary">
+          {data.domain} — AI Search Audit Report
+        </h1>
+        <p className="text-body-sm text-on-surface-variant">
+          Generated {view.auditDate}
+        </p>
+      </div>
+
       <section className="grid grid-cols-1 items-stretch gap-gutter lg:grid-cols-12">
         <ExecutiveScoreCard data={data} />
         <StrategicOverviewCard data={data.strategicOverview} domain={data.domain} />
@@ -55,7 +66,19 @@ export function ReportPageClient({ domain }: ReportPageClientProps) {
 
       <AccessibilityAuditReport data={data.accessibilityReport} />
 
+      <div className="flex flex-wrap items-center justify-between gap-stack-md">
+        <div className="min-w-0">
+          <p className="text-label-md font-bold uppercase tracking-wider text-primary">
+            Action Plan
+          </p>
+          <h2 className="text-headline-md text-on-surface">Fix Plan &amp; Recommendations</h2>
+        </div>
+        <ExportReportButton domain={data.domain} compact />
+      </div>
+
       <FixPlanCard data={data.fixPlan} />
+
+      <VisualInsightsSection data={data.visualInsights} />
 
       <HighImpactRecommendationsTable
         rows={data.recommendations}

@@ -28,6 +28,10 @@ import {
   generateFixPlan,
 } from "@/lib/report/fixPlan";
 import {
+  buildPlaceholderVisualInsights,
+  generateVisualInsights,
+} from "@/lib/report/visualInsights";
+import {
   demoRankedPriorityIssues,
   generatePriorityIssues,
 } from "@/lib/report/priorityIssues";
@@ -37,6 +41,7 @@ import type {
   FixPlan,
   RankedPriorityIssue,
   ScoreExplanation,
+  VisualInsights,
 } from "@/types/audit";
 import {
   getAccessibilityAnalysis,
@@ -117,6 +122,7 @@ export type ReportViewData = {
   executiveSummary: ExecutiveSummary;
   scoreExplanation: ScoreExplanation;
   fixPlan: FixPlan;
+  visualInsights: VisualInsights;
 };
 
 const CATEGORY_ORDER = [
@@ -324,6 +330,7 @@ export function auditToReportView(
     executiveSummary: generateExecutiveSummary(normalized),
     scoreExplanation: generateScoreExplanation(normalized),
     fixPlan: generateFixPlan(normalized),
+    visualInsights: generateVisualInsights(normalized),
   };
 }
 
@@ -388,6 +395,7 @@ export function getPlaceholderReportView(domain: string): ReportViewData {
     executiveSummary: defaultExecutiveSummary,
     scoreExplanation: buildPlaceholderScoreExplanation(reportMeta.score),
     fixPlan: buildPlaceholderFixPlan(),
+    visualInsights: buildPlaceholderVisualInsights(),
   };
 }
 

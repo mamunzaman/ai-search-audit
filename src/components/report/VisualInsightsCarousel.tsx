@@ -77,7 +77,7 @@ export function VisualInsightsCarousel({
             Category performance, growth signals, and estimated LLM readiness
           </p>
         </div>
-        <div className="hidden gap-2 sm:flex">
+        <div className="hidden gap-2 sm:flex" data-report-print-hide>
           <button
             type="button"
             aria-label="Scroll insights left"
@@ -101,6 +101,7 @@ export function VisualInsightsCarousel({
         <div
           ref={trackRef}
           className="flex h-[360px] snap-x snap-mandatory gap-gutter overflow-x-auto scroll-smooth px-1 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          data-report-print-carousel
         >
           {slides.map((slide) => (
             <div key={slide.key} className={SLIDE_CLASS} data-insight-slide>

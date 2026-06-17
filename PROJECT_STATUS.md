@@ -1,22 +1,20 @@
 # Project Status
 
-**Last Update:** 14 June 2026 (Implementation-ready recommendations)
+**Last Update:** 14 June 2026 (Social Metadata Coverage card)
 
 ## Completed Features
-- [x] Fix Plan card — top 3 prioritized actions with total potential gain on Overview
-- [x] Score explanation card — `generateScoreExplanation()` + `ScoreExplanationCard` on Overview
-- [x] Priority issue enrichment — `generatePriorityIssues()` adds `whyItMatters`, `howToFix`, `copyableExample`
-- [x] High-Impact Recommendations table — shows issue title, why it matters, how to fix
-- [x] Report UI standardization — all `/report/*` detail pages use shared layout and tokens
-- [x] Priority Issues — ranked top 6 from all audit categories
-- [x] Executive Summary — rule-based from category scores
-- [x] Sitewide audits — Trust Signals, Citation Readiness, Entity Clarity
+- [x] Social Metadata Coverage — Open Graph + Twitter Card scores in Visual Insights
+- [x] Schema Coverage card in Visual Insights
+- [x] AI Visibility Breakdown + Heading Structure cards
+- [x] Export Report — browser print-to-PDF
+- [x] Fix Plan + Score explanation on Overview
+- [x] Report UI standardization across `/report/*` detail pages
 
 ## In Progress
 - [ ] Extend sitewide signal aggregation to Answer Extraction
 
 ## Pending Tasks
-- [ ] Show copyableExample on detail pages
+- [ ] Visual Insights — Trust Signal Coverage card
 - [ ] Carousel / Growth Potential card deep links
 - [ ] Sitemap-based crawl expansion
 - [ ] Mobile sidebar navigation drawer

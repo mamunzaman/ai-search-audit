@@ -92,11 +92,7 @@ async function buildAuditResponse(
       title: parsed.title ?? "",
       metaDescription: parsed.metaDescription ?? "",
       schemaTypes,
-      headings: {
-        h1: parsed.headings?.h1 ?? [],
-        h2: parsed.headings?.h2 ?? [],
-        h3: parsed.headings?.h3 ?? [],
-      },
+      headings: parsed.headings,
       trustSignals,
       entityAnalysis,
       socialMetadata,
@@ -112,11 +108,7 @@ async function buildAuditResponse(
       title: parsed.title ?? "",
       metaDescription: parsed.metaDescription ?? "",
       schemaTypes,
-      headings: {
-        h1: parsed.headings?.h1 ?? [],
-        h2: parsed.headings?.h2 ?? [],
-        h3: parsed.headings?.h3 ?? [],
-      },
+      headings: parsed.headings,
       links: {
         internal: parsed.links?.internal ?? 0,
         external: parsed.links?.external ?? 0,
@@ -132,11 +124,7 @@ async function buildAuditResponse(
   );
   const answerExtractionAudit = runAnswerExtractionAudit({
     html: page.html,
-    headings: {
-      h1: parsed.headings?.h1 ?? [],
-      h2: parsed.headings?.h2 ?? [],
-      h3: parsed.headings?.h3 ?? [],
-    },
+    headings: parsed.headings,
     schemaTypes,
     readabilityAnalysis,
   });
@@ -189,11 +177,7 @@ async function buildAuditResponse(
     statusCode: page.statusCode,
     title: parsed.title ?? "",
     metaDescription: parsed.metaDescription ?? "",
-    headings: {
-      h1: parsed.headings?.h1 ?? [],
-      h2: parsed.headings?.h2 ?? [],
-      h3: parsed.headings?.h3 ?? [],
-    },
+    headings: parsed.headings,
     canonical: parsed.canonical ?? "",
     robotsMeta: parsed.robotsMeta ?? "",
     schemaTypes,

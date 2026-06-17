@@ -49,7 +49,10 @@ export function HighImpactRecommendationsTable({
               <th className="px-stack-lg py-4 text-label-md uppercase text-on-surface-variant">
                 Potential Impact
               </th>
-              <th className="px-stack-lg py-4 text-right text-label-md uppercase text-on-surface-variant">
+              <th
+                data-report-print-hide
+                className="px-stack-lg py-4 text-right text-label-md uppercase text-on-surface-variant"
+              >
                 Action
               </th>
             </tr>
@@ -84,7 +87,7 @@ export function HighImpactRecommendationsTable({
                 <td className="px-stack-lg py-5">
                   <span className="text-data-mono text-primary">{row.impact}</span>
                 </td>
-                <td className="px-stack-lg py-5 text-right">
+                <td data-report-print-hide className="px-stack-lg py-5 text-right">
                   {row.href ? (
                     <Link
                       href={row.href}

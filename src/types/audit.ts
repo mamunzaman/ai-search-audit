@@ -140,6 +140,43 @@ export type FixPlan = {
   totalPotentialGain: number;
 };
 
+export type HeadingStructureInsight = {
+  h1: number;
+  h2: number;
+  h3: number;
+  h4: number;
+  h5: number;
+  h6: number;
+};
+
+export type AIVisibilityBreakdownItem = {
+  label: string;
+  score: number;
+};
+
+export type SchemaCoverageItem = {
+  label: string;
+  present: boolean;
+};
+
+export type SocialMetadataCoverageBlock = {
+  score: number;
+  present: number;
+  total: number;
+};
+
+export type SocialMetadataCoverage = {
+  openGraph: SocialMetadataCoverageBlock;
+  twitterCard: SocialMetadataCoverageBlock;
+};
+
+export type VisualInsights = {
+  headingStructure: HeadingStructureInsight;
+  aiVisibilityBreakdown: AIVisibilityBreakdownItem[];
+  schemaCoverage: SchemaCoverageItem[];
+  socialMetadataCoverage: SocialMetadataCoverage;
+};
+
 export type PriorityIssueSeverity = "Critical" | "High" | "Medium" | "Low";
 
 export type RankedPriorityIssue = {

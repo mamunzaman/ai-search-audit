@@ -5,7 +5,9 @@ function cleanText(value: string | undefined | null): string {
   return (value ?? "").replace(/\s+/g, " ").trim();
 }
 
-function extractHeadings($: cheerio.CheerioAPI, tag: "h1" | "h2" | "h3"): string[] {
+type HeadingTag = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+
+function extractHeadings($: cheerio.CheerioAPI, tag: HeadingTag): string[] {
   const headings: string[] = [];
 
   $(tag).each((_, element) => {
@@ -87,6 +89,9 @@ export function parseHtml(html: string, pageUrl: string): ParsedPageData {
       h1: extractHeadings($, "h1"),
       h2: extractHeadings($, "h2"),
       h3: extractHeadings($, "h3"),
+      h4: extractHeadings($, "h4"),
+      h5: extractHeadings($, "h5"),
+      h6: extractHeadings($, "h6"),
     },
     canonical,
     robotsMeta,

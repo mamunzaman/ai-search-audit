@@ -2,7 +2,10 @@ const footerLinks = ["Privacy Policy", "Terms of Service", "Documentation"];
 
 export function ReportFooter() {
   return (
-    <footer className="mt-auto border-t border-outline-variant bg-white px-margin-desktop py-8">
+    <footer
+      data-report-print-hide
+      className="mt-auto border-t border-outline-variant bg-white px-margin-desktop py-8"
+    >
       <div className="mx-auto flex max-w-container-max flex-col items-center justify-between gap-4 md:flex-row">
         <div className="flex items-center gap-2">
           <span className="text-headline-md font-bold text-primary">

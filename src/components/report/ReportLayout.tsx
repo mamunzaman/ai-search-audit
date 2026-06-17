@@ -19,9 +19,9 @@ export function ReportLayout({
   return (
     <div className="min-h-screen min-w-0 overflow-x-hidden bg-canvas text-[16px] leading-relaxed text-on-surface">
       <ReportSidebar domain={domain} activeNav="Overview" auditDate={auditDate} />
-      <div className="flex min-h-screen min-w-0 flex-col md:ml-64">
+      <div className="report-print-shell flex min-h-screen min-w-0 flex-col md:ml-64">
         <ReportTopNav domain={domain} />
-        <main className={cn(reportStyles.mainShell, "space-y-stack-lg")}>
+        <main className={cn(reportStyles.mainShell, "report-print-main space-y-stack-lg")}>
           {children}
         </main>
         <ReportFooter />

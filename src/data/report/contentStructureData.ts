@@ -154,7 +154,7 @@ function buildFindings(audit: AuditResponse): ContentFinding[] {
       subtitle: "H1-H4 sequencing",
       statusLabel: headingScore >= 80 ? "Optimal" : "Review",
       statusClassName: headingScore >= 80 ? "text-[#2E7D32] font-bold" : "text-[#856404] font-bold",
-      rawData: `${audit.headings.h1.length}:${audit.headings.h2.length}:${audit.headings.h3.length}:0 Ratio`,
+      rawData: `${audit.headings.h1.length}:${audit.headings.h2.length}:${audit.headings.h3.length}:${audit.headings.h4.length} Ratio`,
       impact: headingScore >= 80 ? "High" : "Medium",
       impactClassName: "text-primary font-bold",
     },

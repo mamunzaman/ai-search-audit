@@ -313,3 +313,63 @@ body {
   font-family: var(--font-sans);
   color: var(--color-on-surface);
 }
+
+@media print {
+  @page {
+    margin: 12mm;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #1a1b23 !important;
+  }
+
+  .report-print-hide,
+  [data-report-print-hide] {
+    display: none !important;
+  }
+
+  .report-print-shell {
+    margin-left: 0 !important;
+  }
+
+  .report-print-main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .card-shadow {
+    box-shadow: none !important;
+  }
+
+  .animate-fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  [data-report-print-carousel] {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    height: auto !important;
+    overflow: visible !important;
+    scroll-snap-type: none !important;
+  }
+
+  [data-insight-slide] {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 280px;
+    page-break-inside: avoid;
+  }
+
+  a[href]::after {
+    content: none !important;
+  }
+
+  .report-print-title {
+    display: block !important;
+    margin-bottom: 24px;
+  }
+}
