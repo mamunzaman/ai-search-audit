@@ -12,7 +12,8 @@ import {
   type ContentStructureDetailView,
   type DensityBar,
 } from "@/data/report/contentStructureData";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
+import { IssueExplanationAccordion } from "./IssueExplanationAccordion";
 
 type ContentStructureDetailPageProps = {
   domain: string;
@@ -120,7 +121,7 @@ function KpiStrip({ data }: { data: ContentStructureDetailView }) {
 
 function DensityBarChart({ bars }: { bars: DensityBar[] }) {
   return (
-    <div className="flex h-64 min-w-0 items-end justify-between gap-2 px-2 sm:gap-4 sm:px-4">
+    <div className="flex h-52 min-w-0 items-end justify-between gap-2 px-2 sm:gap-3 sm:px-3">
       {bars.map((bar) => (
         <div key={bar.label} className="flex min-w-0 flex-1 flex-col items-center gap-2">
           <div className="flex w-full min-w-0 items-end gap-1">
@@ -183,48 +184,74 @@ function ReadabilityBenchmark({ data }: { data: ContentStructureDetailView }) {
 }
 
 function FindingRow({ finding }: { finding: ContentFinding }) {
+  const showAccordion = finding.statusLabel !== "Optimal";
+
   return (
-    <tr className="cursor-default transition-colors hover:bg-primary-fixed-dim">
-      <td className="p-4">
-        <div className="flex min-w-0 items-center gap-3">
-          <Icon name={finding.icon} size={24} className="shrink-0 text-primary" />
-          <div className="min-w-0">
-            <p className="break-words font-bold text-on-surface">{finding.title}</p>
-            <p className="break-words text-xs text-on-surface-variant">{finding.subtitle}</p>
+    <Fragment>
+      <tr
+        className={cn(
+          "cursor-default transition-colors hover:bg-primary-fixed-dim",
+          showAccordion ? "border-b-0" : "border-b border-outline-variant",
+        )}
+      >
+        <td className="px-stack-md py-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <Icon name={finding.icon} size={24} className="shrink-0 text-primary" />
+            <div className="min-w-0">
+              <p className="break-words font-bold text-on-surface">{finding.title}</p>
+              <p className="break-words text-xs text-on-surface-variant">{finding.subtitle}</p>
+            </div>
           </div>
-        </div>
-      </td>
-      <td className="whitespace-nowrap p-4">
-        <span className={finding.statusClassName}>{finding.statusLabel}</span>
-      </td>
-      <td className="whitespace-nowrap p-4 text-right font-data-mono">{finding.rawData}</td>
-      <td className={cn("whitespace-nowrap p-4 text-right", finding.impactClassName)}>
-        {finding.impact}
-      </td>
-    </tr>
+        </td>
+        <td className="whitespace-nowrap px-stack-md py-3">
+          <span className={finding.statusClassName}>{finding.statusLabel}</span>
+        </td>
+        <td className="whitespace-nowrap px-stack-md py-3 text-right font-data-mono">{finding.rawData}</td>
+        <td className={cn("whitespace-nowrap px-stack-md py-3 text-right", finding.impactClassName)}>
+          {finding.impact}
+        </td>
+      </tr>
+      {showAccordion ? (
+        <tr
+          className={cn(
+            reportStyles.accordionRowConnected,
+            "border-b border-outline-variant",
+          )}
+        >
+          <td colSpan={4} className={reportStyles.accordionCellIndented}>
+            <IssueExplanationAccordion
+              title={finding.title}
+              category="Content Structure"
+              status={finding.statusLabel}
+              recommendation={`${finding.subtitle} ${finding.rawData}`}
+            />
+          </td>
+        </tr>
+      ) : null}
+    </Fragment>
   );
 }
 
 function DetailedFindingsTable({ data }: { data: ContentStructureDetailView }) {
   return (
     <div className="min-w-0 overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow">
-      <div className="border-b border-outline-variant p-stack-lg">
+      <div className="border-b border-outline-variant px-stack-md py-3">
         <h3 className="text-headline-md">Detailed Findings</h3>
       </div>
       <div className="min-w-0 overflow-x-auto">
         <table className="w-full min-w-[640px] border-collapse text-left">
           <thead className="border-b border-outline-variant bg-surface-container-low">
             <tr>
-              <th className="p-4 font-label-md uppercase tracking-wider text-on-surface-variant">
+              <th className="px-stack-md py-2.5 font-label-md uppercase tracking-wider text-on-surface-variant">
                 Metric Component
               </th>
-              <th className="p-4 font-label-md uppercase tracking-wider text-on-surface-variant">
+              <th className="px-stack-md py-2.5 font-label-md uppercase tracking-wider text-on-surface-variant">
                 Status
               </th>
-              <th className="p-4 text-right font-label-md uppercase tracking-wider text-on-surface-variant">
+              <th className="px-stack-md py-2.5 text-right font-label-md uppercase tracking-wider text-on-surface-variant">
                 Raw Data
               </th>
-              <th className="p-4 text-right font-label-md uppercase tracking-wider text-on-surface-variant">
+              <th className="px-stack-md py-2.5 text-right font-label-md uppercase tracking-wider text-on-surface-variant">
                 Impact
               </th>
             </tr>
@@ -328,9 +355,9 @@ export function ContentStructureDetailPage({ domain }: ContentStructureDetailPag
     >
       <HeaderSection data={data} />
       <KpiStrip data={data} />
-      <div className="grid min-w-0 grid-cols-1 gap-stack-lg lg:grid-cols-3">
-        <div className={cn(reportStyles.card, reportStyles.cardPadding, "min-w-0 overflow-hidden lg:col-span-2")}>
-          <div className="mb-stack-lg flex min-w-0 flex-col gap-3 border-b border-outline-variant pb-stack-md sm:flex-row sm:items-center sm:justify-between">
+      <div className={reportStyles.visualFindingsGrid}>
+        <div className={cn(reportStyles.card, reportStyles.cardPadding, "min-w-0 overflow-hidden")}>
+          <div className="mb-stack-md flex min-w-0 flex-col gap-3 border-b border-outline-variant pb-stack-sm sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0">
               <h3 className={cn(reportStyles.sectionTitle, "break-words")}>
                 Heading vs Content Density

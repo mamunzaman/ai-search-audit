@@ -50,9 +50,13 @@ export function TwitterCardDetailPage({ domain }: TwitterCardDetailPageProps) {
         statusClassName={data.statusClassName}
       />
       <CategorySimpleKpiStrip kpis={data.kpis} />
-      <CategorySignalFindingsTable title="Twitter Card Signals" findings={data.findings} />
-      <CategoryGapsListSection title="Preview Gaps" issues={data.issues} />
+      <CategorySignalFindingsTable
+        title="Twitter Card Signals"
+        findings={data.findings}
+        category="Twitter Card"
+      />
       <CategoryTopRecommendationCard recommendation={data.recommendation} />
+      <CategoryGapsListSection title="Preview Gaps" issues={data.issues} category="Twitter Card" />
     </CategoryDetailLayout>
   );
 }

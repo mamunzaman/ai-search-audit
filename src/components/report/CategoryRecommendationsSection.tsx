@@ -1,11 +1,13 @@
 import { cn } from "@/lib/cn";
 import type { CategoryRecommendation } from "@/lib/category-detail-data";
+import { getIssueExplanation } from "@/lib/report/issueExplanations";
 import { CategoryRecommendationDetail } from "./CategoryRecommendationDetail";
 import { reportStyles } from "./reportStyles";
 
 type CategoryRecommendationsSectionProps = {
   recommendations: CategoryRecommendation[];
   title?: string;
+  category?: string;
 };
 
 function getPriority(index: number): "High" | "Medium" | "Low" {
@@ -41,6 +43,7 @@ const priorityStyles = {
 export function CategoryRecommendationsSection({
   recommendations,
   title = "Strategic Recommendations",
+  category,
 }: CategoryRecommendationsSectionProps) {
   if (recommendations.length === 0) {
     return null;
@@ -59,6 +62,11 @@ export function CategoryRecommendationsSection({
         {recommendations.map((rec, index) => {
           const priority = getPriority(index);
           const difficulty = getDifficulty(rec.estimatedGain);
+          const enriched = getIssueExplanation({
+            title: rec.title,
+            category,
+            recommendation: rec.description,
+          });
 
           return (
             <article key={rec.title} className={cn(reportStyles.card, "overflow-hidden")}>
@@ -78,15 +86,19 @@ export function CategoryRecommendationsSection({
                   <span className="text-body-sm font-bold text-[#2E7D32]">
                     +{rec.estimatedGain} pts
                   </span>
+                ) : enriched.expectedGain ? (
+                  <span className="text-body-sm font-bold text-[#2E7D32]">
+                    +{enriched.expectedGain} pts
+                  </span>
                 ) : null}
               </div>
 
               <div className="space-y-3 p-stack-lg">
                 <h4 className="font-bold text-primary">{rec.title}</h4>
                 <CategoryRecommendationDetail
-                  whyItMatters={rec.whyItMatters}
-                  howToFix={rec.howToFix}
-                  copyableExample={rec.copyableExample}
+                  whyItMatters={rec.whyItMatters ?? enriched.whyItMatters}
+                  howToFix={rec.howToFix ?? enriched.howToFix}
+                  copyableExample={rec.copyableExample ?? enriched.copyableExample}
                   fallbackDescription={rec.description}
                 />
               </div>

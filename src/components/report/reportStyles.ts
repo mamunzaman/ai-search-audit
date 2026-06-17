@@ -1,7 +1,11 @@
 export const reportStyles = {
   pageStack: "space-y-stack-lg",
+  detailPageStack: "space-y-stack-md",
   sectionStack: "space-y-stack-md",
   gridGap: "gap-gutter",
+  visualFindingsGrid:
+    "grid min-w-0 grid-cols-1 items-start gap-gutter xl:grid-cols-[minmax(0,1.25fr)_minmax(360px,0.75fr)]",
+  visualBlockMax: "max-h-[420px]",
 
   card: "rounded-[24px] border border-outline-variant bg-white card-shadow",
   cardPadding: "p-stack-lg",
@@ -22,10 +26,29 @@ export const reportStyles = {
 
   tableSectionHeader:
     "flex flex-col gap-3 border-b border-outline-variant bg-surface-container-low px-stack-lg py-stack-md sm:flex-row sm:items-center sm:justify-between",
+  tableSectionHeaderCompact:
+    "flex flex-col gap-2 border-b border-outline-variant bg-surface-container-low px-stack-md py-stack-sm sm:flex-row sm:items-center sm:justify-between",
   tableHeaderRow: "bg-surface-container-low",
   tableHeadCell:
     "px-stack-lg py-4 text-label-md uppercase text-on-surface-variant",
+  tableHeadCellCompact:
+    "px-stack-md py-2.5 text-label-md uppercase text-on-surface-variant",
   tableBodyCell: "px-stack-lg py-5",
+  tableBodyCellCompact: "px-stack-md py-3",
+  accordionRow: "bg-primary-fixed/20",
+  accordionRowConnected: "bg-primary-fixed/15",
+  accordionCell: "px-stack-md pb-3 pt-1",
+  accordionCellIndented: "px-stack-md pb-3 pt-1 pl-10 sm:pl-11",
+  fixCta:
+    "inline-flex max-w-full shrink-0 items-center gap-1 rounded-full border border-primary/20 bg-primary-fixed/70 px-2.5 py-1 text-label-md font-semibold text-primary transition-colors hover:border-primary/35 hover:bg-primary-fixed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:ring-offset-1",
+  fixCtaStrong:
+    "border-primary/40 bg-primary-fixed font-bold shadow-sm hover:border-primary/55 hover:bg-primary-fixed-dim",
+  fixDrawer:
+    "mt-1.5 rounded-lg border border-outline-variant border-l-4 border-l-primary bg-white p-2.5",
+  detailFindingsCard:
+    "flex min-w-0 flex-col overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow",
+  detailFindingsHeader: "border-b border-outline-variant px-stack-md py-3",
+  detailFindingsBody: "min-w-0 flex-1 space-y-stack-sm overflow-y-auto p-stack-md",
 
   heroCard:
     "flex min-w-0 flex-col items-center gap-stack-lg rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow md:flex-row md:items-center",
@@ -36,5 +59,6 @@ export const reportStyles = {
     "overflow-hidden rounded-lg border border-outline-variant bg-surface-container-low",
   codeBlockHeader:
     "flex items-center justify-between border-b border-outline-variant bg-surface-container px-stack-md py-2",
-  codeBlockPre: "overflow-x-auto p-stack-md font-mono text-body-sm leading-relaxed text-on-surface",
+  codeBlockPre:
+    "max-h-[120px] overflow-x-auto overflow-y-auto p-2 font-mono text-[11px] leading-relaxed text-on-surface",
 } as const;

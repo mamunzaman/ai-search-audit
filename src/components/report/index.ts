@@ -6,6 +6,7 @@ export { CategoryCopyableExample } from "./CategoryCopyableExample";
 export { CategoryRecommendationDetail } from "./CategoryRecommendationDetail";
 export { CategoryDetailHeader } from "./CategoryDetailHeader";
 export { CategoryDetailSectionHeader } from "./CategoryDetailSectionHeader";
+export { IssueExplanationAccordion } from "./IssueExplanationAccordion";
 export { CategoryGapsListSection } from "./CategoryGapsListSection";
 export { CategoryHeroCard } from "./CategoryHeroCard";
 export { CategorySignalFindingsTable } from "./CategorySignalFindingsTable";

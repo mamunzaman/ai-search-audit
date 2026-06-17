@@ -52,9 +52,17 @@ export function AnswerExtractionDetailPage({
         statusClassName={data.statusClassName}
       />
       <CategorySimpleKpiStrip kpis={data.kpis} />
-      <CategorySignalFindingsTable title="Extraction Signals" findings={data.findings} />
-      <CategoryGapsListSection title="Extraction Gaps" issues={data.issues} />
+      <CategorySignalFindingsTable
+        title="Extraction Signals"
+        findings={data.findings}
+        category="Answer Extraction"
+      />
       <CategoryTopRecommendationCard recommendation={data.recommendation} />
+      <CategoryGapsListSection
+        title="Extraction Gaps"
+        issues={data.issues}
+        category="Answer Extraction"
+      />
     </CategoryDetailLayout>
   );
 }

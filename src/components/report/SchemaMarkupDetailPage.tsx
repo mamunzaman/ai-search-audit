@@ -15,6 +15,7 @@ import {
   type SchemaMarkupDetailView,
 } from "@/data/report/schemaMarkupData";
 import { useEffect, useState } from "react";
+import { IssueExplanationAccordion } from "./IssueExplanationAccordion";
 
 type SchemaMarkupDetailPageProps = {
   domain: string;
@@ -152,13 +153,13 @@ function KpiStrip({ data }: { data: SchemaMarkupDetailView }) {
 
 function DetailedFindingsPanel({ data }: { data: SchemaMarkupDetailView }) {
   return (
-    <div className="min-w-0 flex-1 rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow">
-      <h3 className="mb-stack-md text-headline-md text-on-surface">Detailed Findings</h3>
-      <div className="space-y-4">
+    <div className={cn(reportStyles.detailFindingsCard, reportStyles.detailFindingsBody)}>
+      <h3 className="mb-2 text-headline-md text-on-surface">Detailed Findings</h3>
+      <div className="space-y-2">
         {data.findingRows.map((row) => (
           <div
             key={row.label}
-            className="flex min-w-0 flex-col gap-2 rounded-xl p-stack-sm transition-colors hover:bg-surface-container sm:flex-row sm:items-center sm:justify-between"
+            className="flex min-w-0 flex-col gap-1 rounded-lg p-2 transition-colors hover:bg-surface-container sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="flex min-w-0 items-center gap-3">
               <Icon name={row.icon} size={24} className={cn("shrink-0", row.iconClassName)} />
@@ -213,30 +214,42 @@ function CriticalRecommendationCard({
 
 function SchemaTypeCoverage({ data }: { data: SchemaMarkupDetailView }) {
   return (
-    <div className="min-w-0 rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow">
+    <div className="min-w-0 rounded-[24px] border border-outline-variant bg-white p-stack-md card-shadow">
       <h3 className="mb-stack-md text-headline-md text-on-surface">Schema Type Coverage</h3>
       <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
         {data.schemaTypeSignals.map((signal) => (
           <div
             key={signal.label}
-            className="flex min-w-0 items-start justify-between gap-3 rounded-xl border border-outline-variant p-stack-sm"
+            className="min-w-0 rounded-xl border border-outline-variant p-stack-sm"
           >
-            <div className="min-w-0">
-              <p className="break-words font-body-md font-bold text-on-surface">
-                {signal.label}
-              </p>
-              <p className="break-words text-body-sm text-on-surface-variant">
-                {signal.detail}
-              </p>
+            <div className="flex min-w-0 items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="break-words font-body-md font-bold text-on-surface">
+                  {signal.label}
+                </p>
+                <p className="break-words text-body-sm text-on-surface-variant">
+                  {signal.detail}
+                </p>
+              </div>
+              <Icon
+                name={signal.detected ? "check_circle" : "cancel"}
+                size={22}
+                className={cn(
+                  "shrink-0",
+                  signal.detected ? "text-primary" : "text-[#FF5A4F]",
+                )}
+              />
             </div>
-            <Icon
-              name={signal.detected ? "check_circle" : "cancel"}
-              size={22}
-              className={cn(
-                "shrink-0",
-                signal.detected ? "text-primary" : "text-[#FF5A4F]",
-              )}
-            />
+            {!signal.detected ? (
+              <div className="mt-2 border-t border-outline-variant pt-2">
+                <IssueExplanationAccordion
+                  title={signal.label}
+                  category="Schema Markup"
+                  status="fail"
+                  recommendation={signal.detail}
+                />
+              </div>
+            ) : null}
           </div>
         ))}
       </div>
@@ -247,12 +260,19 @@ function SchemaTypeCoverage({ data }: { data: SchemaMarkupDetailView }) {
           </h4>
           <ul className="space-y-1">
             {data.validationIssues.map((issue) => (
-              <li
-                key={issue}
-                className="flex min-w-0 items-start gap-2 break-words text-body-sm text-on-surface-variant"
-              >
-                <Icon name="error" size={16} className="mt-0.5 shrink-0 text-[#FF5A4F]" />
-                {issue}
+              <li key={issue} className="min-w-0">
+                <div className="flex min-w-0 items-start gap-2 break-words text-body-sm text-on-surface-variant">
+                  <Icon name="error" size={16} className="mt-0.5 shrink-0 text-[#FF5A4F]" />
+                  {issue}
+                </div>
+                <div className="mt-2 pl-6">
+                  <IssueExplanationAccordion
+                    title={issue}
+                    category="Schema Markup"
+                    status="fail"
+                    recommendation={issue}
+                  />
+                </div>
               </li>
             ))}
           </ul>
@@ -401,9 +421,9 @@ export function SchemaMarkupDetailPage({ domain }: SchemaMarkupDetailPageProps) 
     >
       <HeaderSection data={data} />
       <KpiStrip data={data} />
-      <div className={cn("grid min-w-0 grid-cols-12", reportStyles.gridGap)}>
-        <div className={cn(reportStyles.card, reportStyles.cardPadding, "col-span-12 flex min-w-0 flex-col lg:col-span-7")}>
-          <div className="mb-stack-lg flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div className={reportStyles.visualFindingsGrid}>
+        <div className={cn(reportStyles.card, reportStyles.cardPadding, "min-w-0 overflow-hidden")}>
+          <div className="mb-stack-md flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
               <h3 className={reportStyles.sectionTitle}>Schema Distribution</h3>
               <p className="text-body-sm text-on-surface-variant">
@@ -419,7 +439,7 @@ export function SchemaMarkupDetailPage({ domain }: SchemaMarkupDetailPageProps) 
               <option value="90">Last 90 Days</option>
             </select>
           </div>
-          <div className="flex min-h-[300px] flex-1 flex-col items-center justify-center gap-8 lg:flex-row lg:gap-10">
+          <div className="flex flex-1 flex-col items-center justify-center gap-6 lg:flex-row lg:gap-8">
             <SchemaDistributionDonut
               segments={data.distributionSegments}
               centerLabel={data.distributionCenterLabel}
@@ -447,7 +467,7 @@ export function SchemaMarkupDetailPage({ domain }: SchemaMarkupDetailPageProps) 
             </div>
           </div>
         </div>
-        <div className="col-span-12 flex min-w-0 flex-col gap-gutter lg:col-span-5">
+        <div className="flex min-w-0 flex-col gap-gutter">
           <DetailedFindingsPanel data={data} />
           <CriticalRecommendationCard recommendation={data.criticalRecommendation} />
         </div>

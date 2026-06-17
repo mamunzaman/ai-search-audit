@@ -97,22 +97,22 @@ export function SeoHealthPageClient({ domain }: SeoHealthPageClientProps) {
           <CategoryHealthTrendCard score={data.score} />
         </div>
         <div className="lg:col-span-4">
-          <CategoryIssueSpotlight issue={spotlightIssue} />
+          <CategoryIssueSpotlight issue={spotlightIssue} category="SEO Health" />
         </div>
       </div>
 
-      <CategoryFindingsTable findings={data.findings} />
+      <CategoryFindingsTable findings={data.findings} category="SEO Health" />
 
       <div className="grid grid-cols-1 items-start gap-stack-lg lg:grid-cols-12">
         <div className="lg:col-span-7">
-          <CategoryIssuesSection issues={remainingIssues} />
+          <CategoryIssuesSection issues={remainingIssues} category="SEO Health" />
         </div>
         <div className="lg:col-span-5">
           <CategoryImplementationExamples examples={data.implementationExamples} />
         </div>
       </div>
 
-      <CategoryRecommendationsSection recommendations={data.recommendations} />
+      <CategoryRecommendationsSection recommendations={data.recommendations} category="SEO Health" />
     </CategoryDetailLayout>
   );
 }

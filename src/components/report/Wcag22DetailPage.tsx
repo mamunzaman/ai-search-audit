@@ -16,6 +16,7 @@ import {
   type WcagRecommendation,
 } from "@/data/report/wcag22Data";
 import { useEffect, useState } from "react";
+import { IssueExplanationAccordion } from "./IssueExplanationAccordion";
 
 type Wcag22DetailPageProps = {
   domain: string;
@@ -137,7 +138,7 @@ function PrinciplesMatrix({ data }: { data: Wcag22DetailView }) {
           <Icon name="open_in_new" size={16} />
         </button>
       </div>
-      <div className="grid min-w-0 grid-cols-1 gap-stack-xl md:grid-cols-2">
+      <div className="grid min-w-0 grid-cols-1 gap-gutter md:grid-cols-2">
         {data.matrixRows.map((row) => (
           <div key={row.label} className="space-y-4">
             <div className="flex justify-between font-label-md">
@@ -166,7 +167,7 @@ function CriticalIssuesSection({ issues }: { issues: WcagCriticalIssue[] }) {
           <div
             key={issue.title}
             className={cn(
-              "flex min-w-0 flex-col justify-between rounded-xl border border-outline-variant border-t-4 bg-white p-stack-lg card-shadow",
+              "flex min-w-0 flex-col justify-between rounded-xl border border-outline-variant border-t-4 bg-white p-stack-md card-shadow",
               issue.borderClassName,
             )}
           >
@@ -185,16 +186,17 @@ function CriticalIssuesSection({ issues }: { issues: WcagCriticalIssue[] }) {
               <h4 className="mb-2 font-body-lg font-bold text-on-surface">
                 {issue.title}
               </h4>
-              <p className="mb-6 text-body-sm text-on-surface-variant">
+              <p className="mb-4 text-body-sm text-on-surface-variant">
                 {issue.description}
               </p>
+              <IssueExplanationAccordion
+                title={issue.title}
+                category="WCAG 2.2 Readiness"
+                severity={issue.severity}
+                status={issue.severity}
+                recommendation={issue.description}
+              />
             </div>
-            <button
-              type="button"
-              className="w-full rounded-lg bg-primary py-2 font-label-md font-bold text-white transition-all hover:brightness-110"
-            >
-              Recommended Fix
-            </button>
           </div>
         ))}
       </div>
@@ -204,8 +206,8 @@ function CriticalIssuesSection({ issues }: { issues: WcagCriticalIssue[] }) {
 
 function AiReadinessBanner({ cards }: { cards: Wcag22DetailView["aiReadinessCards"] }) {
   return (
-    <section className="relative flex min-h-[280px] min-w-0 items-center overflow-hidden rounded-xl bg-primary sm:min-h-[320px]">
-      <div className="relative z-10 flex w-full min-w-0 flex-col items-center gap-stack-xl p-stack-xl lg:flex-row">
+    <section className="relative flex min-w-0 items-center overflow-hidden rounded-xl bg-primary py-stack-lg">
+      <div className="relative z-10 flex w-full min-w-0 flex-col items-center gap-stack-md p-stack-lg lg:flex-row">
         <div className="min-w-0 flex-1 space-y-4 text-white">
           <h3 className="text-headline-lg">AI Accessibility Readiness</h3>
           <p className="max-w-xl text-body-lg opacity-90">
@@ -340,11 +342,11 @@ export function Wcag22DetailPage({ domain }: Wcag22DetailPageProps) {
       <PourKpiStrip kpis={data.pourKpis} />
       <PrinciplesMatrix data={data} />
       <CriticalIssuesSection issues={data.criticalIssues} />
-      <AiReadinessBanner cards={data.aiReadinessCards} />
       <section className={cn("grid min-w-0 grid-cols-1 lg:grid-cols-2", reportStyles.gridGap)}>
         <RecommendationsPanel items={data.recommendations} />
         <ImplementationAccordions items={data.accordionItems} />
       </section>
+      <AiReadinessBanner cards={data.aiReadinessCards} />
       <blockquote className="rounded-[24px] border border-outline-variant bg-white p-stack-lg text-center text-body-md italic text-on-surface-variant card-shadow">
         &ldquo;{data.footerQuote}&rdquo;
       </blockquote>

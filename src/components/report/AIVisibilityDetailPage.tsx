@@ -138,9 +138,9 @@ function EquilibriumMatrix({ data }: { data: AiVisibilityDetailView }) {
 
   return (
     <div className={cn(reportStyles.card, reportStyles.cardPadding, "flex min-w-0 flex-col items-center overflow-hidden")}>
-      <h3 className={cn(reportStyles.sectionTitle, "mb-8 self-start")}>Equilibrium Matrix</h3>
+      <h3 className={cn(reportStyles.sectionTitle, "mb-4 self-start")}>Equilibrium Matrix</h3>
 
-      <div className="relative mx-auto h-[240px] w-[240px] shrink-0 md:h-[280px] md:w-[280px] xl:h-[300px] xl:w-[300px]">
+      <div className="relative mx-auto h-[200px] w-[200px] shrink-0 md:h-[220px] md:w-[220px]">
         {MATRIX_AXIS_LAYOUT.map(({ label, position }) => (
           <div
             key={label}
@@ -168,7 +168,7 @@ function EquilibriumMatrix({ data }: { data: AiVisibilityDetailView }) {
         </div>
       </div>
 
-      <p className="mt-8 w-full break-words px-1 text-center text-body-sm leading-tight text-on-surface-variant">
+      <p className="mt-4 w-full break-words px-1 text-center text-body-sm leading-tight text-on-surface-variant">
         {data.radarInsight}
       </p>
     </div>
@@ -185,7 +185,7 @@ function AuditBreakdown({ data }: { data: AiVisibilityDetailView }) {
         {data.breakdown.map((item) => (
           <div
             key={item.title}
-            className="grid grid-cols-1 gap-4 p-6 transition-colors hover:bg-surface-container-low sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-6"
+            className="grid grid-cols-1 gap-3 p-4 transition-colors hover:bg-surface-container-low sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-4"
           >
             <Icon
               name={item.icon}
@@ -365,7 +365,7 @@ export function AIVisibilityDetailPage({ domain }: AIVisibilityDetailPageProps) 
     >
       <HeroSection data={data} />
       <KpiStrip data={data} />
-      <div className="grid min-w-0 grid-cols-1 items-start gap-stack-lg xl:grid-cols-[360px_minmax(0,1fr)]">
+      <div className={cn("grid min-w-0 grid-cols-1 items-start", reportStyles.gridGap, "xl:grid-cols-[minmax(280px,0.38fr)_minmax(0,1fr)]")}>
         <EquilibriumMatrix data={data} />
         <AuditBreakdown data={data} />
       </div>

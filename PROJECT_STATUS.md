@@ -1,13 +1,13 @@
 # Project Status
 
-**Last Update:** 14 June 2026 (Social Metadata Coverage card)
+**Last Update:** 14 June 2026 (Fix CTA pill buttons)
 
 ## Completed Features
-- [x] Social Metadata Coverage — Open Graph + Twitter Card scores in Visual Insights
-- [x] Schema Coverage card in Visual Insights
-- [x] AI Visibility Breakdown + Heading Structure cards
+- [x] Fix CTA — pill buttons with severity emphasis, connected table rows
+- [x] Detail page layout — balanced visual/findings grid, compact tables
+- [x] Fix drawer — compact inline trigger, field-specific fallbacks
+- [x] Visual Insights section (heading, AI breakdown, schema, social)
 - [x] Export Report — browser print-to-PDF
-- [x] Fix Plan + Score explanation on Overview
 - [x] Report UI standardization across `/report/*` detail pages
 
 ## In Progress
@@ -16,5 +16,4 @@
 ## Pending Tasks
 - [ ] Visual Insights — Trust Signal Coverage card
 - [ ] Carousel / Growth Potential card deep links
-- [ ] Sitemap-based crawl expansion
 - [ ] Mobile sidebar navigation drawer

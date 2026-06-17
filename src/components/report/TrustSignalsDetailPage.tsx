@@ -11,7 +11,9 @@ import {
   type TrustSignalsDetailView,
   type TrustStatusTone,
 } from "@/data/report/trustSignalsData";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
+import { IssueExplanationAccordion } from "./IssueExplanationAccordion";
+import { reportStyles } from "./reportStyles";
 
 type TrustSignalsDetailPageProps = {
   domain: string;
@@ -224,7 +226,7 @@ function KpiStrip({ data }: { data: TrustSignalsDetailView }) {
 function VerificationChecklist({ data }: { data: TrustSignalsDetailView }) {
   return (
     <div className="min-w-0 overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant bg-surface-container-low/50 p-stack-lg">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-outline-variant bg-surface-container-low/50 px-stack-md py-stack-sm">
         <h2 className="text-headline-md">Verification Checklist</h2>
         <button
           type="button"
@@ -238,43 +240,58 @@ function VerificationChecklist({ data }: { data: TrustSignalsDetailView }) {
         <table className="w-full min-w-[640px] border-collapse text-left">
           <thead className="bg-surface-container-low">
             <tr>
-              <th className="p-stack-lg font-label-md text-on-surface-variant">Marker Domain</th>
-              <th className="p-stack-lg font-label-md text-on-surface-variant">Status</th>
-              <th className="p-stack-lg font-label-md text-on-surface-variant">LLM Confidence</th>
-              <th className="p-stack-lg font-label-md text-on-surface-variant">Action</th>
+              <th className="px-stack-md py-3 font-label-md text-on-surface-variant">Marker Domain</th>
+              <th className="px-stack-md py-3 font-label-md text-on-surface-variant">Status</th>
+              <th className="px-stack-md py-3 font-label-md text-on-surface-variant">LLM Confidence</th>
             </tr>
           </thead>
           <tbody>
-            {data.checklist.map((item) => (
-              <tr
-                key={item.title}
-                className="border-b border-outline-variant transition-colors last:border-b-0 hover:bg-surface-container-low"
-              >
-                <td className="p-stack-lg">
-                  <div className="flex min-w-0 items-center gap-stack-md">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      <Icon name={item.icon} size={18} />
-                    </div>
-                    <span className="break-words text-body-sm font-semibold leading-tight">
-                      {item.title}
-                    </span>
-                  </div>
-                </td>
-                <td className="p-stack-lg">
-                  <StatusBadge item={item} />
-                </td>
-                <td className="p-stack-lg font-data-mono tabular-nums">{item.confidence}%</td>
-                <td className="p-stack-lg">
-                  <button
-                    type="button"
-                    className="text-on-surface-variant transition-colors hover:text-primary"
-                    aria-label={`Actions for ${item.title}`}
+            {data.checklist.map((item) => {
+              const showAccordion = item.statusTone !== "pass";
+
+              return (
+                <Fragment key={item.title}>
+                  <tr
+                    className={cn(
+                      "transition-colors hover:bg-surface-container-low",
+                      showAccordion ? "border-b-0" : "border-b border-outline-variant",
+                    )}
                   >
-                    <Icon name="more_horiz" size={24} className="shrink-0" />
-                  </button>
-                </td>
-              </tr>
-            ))}
+                    <td className="px-stack-md py-3">
+                      <div className="flex min-w-0 items-center gap-stack-sm">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                          <Icon name={item.icon} size={18} />
+                        </div>
+                        <span className="break-words text-body-sm font-semibold leading-tight">
+                          {item.title}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-stack-md py-3">
+                      <StatusBadge item={item} />
+                    </td>
+                    <td className="px-stack-md py-3 font-data-mono tabular-nums">{item.confidence}%</td>
+                  </tr>
+                  {showAccordion ? (
+                    <tr
+                      className={cn(
+                        reportStyles.accordionRowConnected,
+                        "border-b border-outline-variant",
+                      )}
+                    >
+                      <td colSpan={3} className={reportStyles.accordionCellIndented}>
+                        <IssueExplanationAccordion
+                          title={item.title}
+                          category="Trust Signals"
+                          status={item.statusLabel}
+                          recommendation={item.statusLabel}
+                        />
+                      </td>
+                    </tr>
+                  ) : null}
+                </Fragment>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -381,29 +398,37 @@ function BenchmarkCard({ data }: { data: TrustSignalsDetailView }) {
 
 function SeverityBreakdown({ data }: { data: TrustSignalsDetailView }) {
   return (
-    <div className="min-w-0 rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow">
-      <h3 className="mb-stack-lg text-[20px] font-semibold text-on-surface">
+    <div className="min-w-0 rounded-[24px] border border-outline-variant bg-white p-stack-md card-shadow">
+      <h3 className="mb-stack-md text-headline-md text-on-surface">
         Severity Breakdown
       </h3>
-      <div className="mb-stack-lg flex items-center gap-0.5">
+      <div className="mb-stack-md flex items-center gap-0.5">
         <div className="h-4 flex-1 rounded-l-full bg-[#2E7D32]" title="No Risk" />
         <div className="h-4 w-1/4 bg-[#FFC107]" title="Low Risk" />
         <div className="h-4 w-12 rounded-r-full bg-error" title="Critical" />
       </div>
-      <div className="space-y-stack-md">
+      <div className="space-y-stack-sm">
         {data.severityIssues.map((issue) => (
           <div
             key={issue.title}
-            className="flex min-w-0 items-start gap-stack-md rounded-xl border border-outline-variant bg-surface-container-low p-stack-md"
+            className="flex min-w-0 items-start gap-stack-sm rounded-xl border border-outline-variant bg-surface-container-low p-stack-sm"
           >
             <Icon name="done_outline" size={24} className="shrink-0 text-[#856404]" />
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="break-words text-body-sm font-bold leading-tight text-on-surface">
                 {issue.title}
               </p>
               <p className="break-words font-label-md leading-tight text-on-surface-variant">
                 {issue.detail}
               </p>
+              <div className="mt-1.5">
+                <IssueExplanationAccordion
+                  title={issue.title}
+                  category="Trust Signals"
+                  status="warning"
+                  recommendation={issue.detail}
+                />
+              </div>
             </div>
           </div>
         ))}
@@ -415,11 +440,18 @@ function SeverityBreakdown({ data }: { data: TrustSignalsDetailView }) {
           </p>
           <ul className="space-y-1">
             {data.missingTrustElements.map((element) => (
-              <li
-                key={element}
-                className="break-words text-body-sm leading-tight text-on-surface-variant"
-              >
-                • {element}
+              <li key={element} className="min-w-0">
+                <p className="break-words text-body-sm leading-tight text-on-surface-variant">
+                  • {element}
+                </p>
+                <div className="mt-2 pl-3">
+                  <IssueExplanationAccordion
+                    title={element}
+                    category="Trust Signals"
+                    status="fail"
+                    recommendation={element}
+                  />
+                </div>
               </li>
             ))}
           </ul>
@@ -431,7 +463,7 @@ function SeverityBreakdown({ data }: { data: TrustSignalsDetailView }) {
 
 function EntityMappingCard() {
   return (
-    <div className="relative flex h-64 min-w-0 items-center justify-center overflow-hidden rounded-[24px] border border-outline-variant bg-surface card-shadow">
+    <div className="relative flex h-48 min-w-0 items-center justify-center overflow-hidden rounded-[24px] border border-outline-variant bg-surface card-shadow">
       <EntityRelationMappingVisual />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-surface to-transparent" />
       <div className="absolute bottom-stack-md px-4 text-center">
@@ -465,12 +497,12 @@ export function TrustSignalsDetailPage({ domain }: TrustSignalsDetailPageProps) 
     >
       <HeroSection data={data} />
       <KpiStrip data={data} />
-      <div className="grid min-w-0 grid-cols-1 gap-gutter lg:grid-cols-12">
-        <div className="min-w-0 space-y-gutter lg:col-span-8">
+      <div className={reportStyles.visualFindingsGrid}>
+        <div className="min-w-0 space-y-gutter">
           <VerificationChecklist data={data} />
           <ImplementationSection data={data} />
         </div>
-        <div className="min-w-0 space-y-gutter lg:col-span-4">
+        <div className="min-w-0 space-y-gutter">
           <BenchmarkCard data={data} />
           <SeverityBreakdown data={data} />
           <EntityMappingCard />

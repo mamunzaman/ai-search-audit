@@ -52,9 +52,17 @@ export function CitationReadinessDetailPage({
         statusClassName={data.statusClassName}
       />
       <CategorySimpleKpiStrip kpis={data.kpis} />
-      <CategorySignalFindingsTable title="Citation Signals" findings={data.findings} />
-      <CategoryGapsListSection title="Citation Gaps" issues={data.issues} />
+      <CategorySignalFindingsTable
+        title="Citation Signals"
+        findings={data.findings}
+        category="Citation Readiness"
+      />
       <CategoryTopRecommendationCard recommendation={data.recommendation} />
+      <CategoryGapsListSection
+        title="Citation Gaps"
+        issues={data.issues}
+        category="Citation Readiness"
+      />
     </CategoryDetailLayout>
   );
 }

@@ -3,12 +3,12 @@
 **Goal:** Extend sitewide signal aggregation to Answer Extraction audit.
 
 **Verify:**
-- `/report` Visual Insights shows Social Metadata beside Schema Coverage
-- OG/Twitter scores and present/total match `/report/open-graph` and `/report/twitter-card`
-- Missing social tags → lower scores and fewer pass findings
-- Mobile stacks all four cards in single column
+- Fail/warning rows show blue “View fix” pill; expands to “Hide fix”
+- Expanded drawer shows “Recommended fix” header
+- Passed rows have no fix CTA
 
 ## Done
 
-- `generateVisualInsights()` adds `socialMetadataCoverage` from OG + Twitter audits
-- `SocialMetadataCoverageCard` with progress bars and footer note
+- Shared `visualFindingsGrid` (60/40, min 360px findings column)
+- Compact table + accordion tokens; recommendations moved higher on signal pages
+- Entity map capped at 420px; WCAG recommendations before AI banner

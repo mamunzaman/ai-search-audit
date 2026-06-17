@@ -159,6 +159,17 @@ export type SchemaCoverageItem = {
   present: boolean;
 };
 
+export type IssueExampleType = "html" | "schema" | "text" | "meta";
+
+export type IssueExplanation = {
+  whyItMatters: string;
+  whereToFix?: string;
+  howToFix: string;
+  copyableExample?: string;
+  exampleType?: IssueExampleType;
+  expectedGain?: number;
+};
+
 export type SocialMetadataCoverageBlock = {
   score: number;
   present: number;

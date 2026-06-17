@@ -50,9 +50,13 @@ export function OpenGraphDetailPage({ domain }: OpenGraphDetailPageProps) {
         statusClassName={data.statusClassName}
       />
       <CategorySimpleKpiStrip kpis={data.kpis} />
-      <CategorySignalFindingsTable title="Open Graph Signals" findings={data.findings} />
-      <CategoryGapsListSection title="Preview Gaps" issues={data.issues} />
+      <CategorySignalFindingsTable
+        title="Open Graph Signals"
+        findings={data.findings}
+        category="Open Graph"
+      />
       <CategoryTopRecommendationCard recommendation={data.recommendation} />
+      <CategoryGapsListSection title="Preview Gaps" issues={data.issues} category="Open Graph" />
     </CategoryDetailLayout>
   );
 }

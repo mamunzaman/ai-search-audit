@@ -13,6 +13,7 @@ import {
   type EntityRelationshipNode,
 } from "@/data/report/entityClarityData";
 import { useEffect, useState } from "react";
+import { IssueExplanationAccordion } from "./IssueExplanationAccordion";
 
 type EntityClarityDetailPageProps = {
   domain: string;
@@ -26,9 +27,14 @@ function EntityRelationshipMap({
   nodes: EntityRelationshipNode[];
 }) {
   return (
-    <div className="relative min-h-[280px] overflow-hidden bg-canvas p-4 sm:min-h-[320px] sm:p-stack-lg md:min-h-[400px]">
+    <div
+      className={cn(
+        "relative flex items-center justify-center overflow-hidden bg-canvas p-4 sm:p-stack-md",
+        reportStyles.visualBlockMax,
+      )}
+    >
       <svg
-        className="mx-auto h-auto w-full max-w-full"
+        className="mx-auto h-auto w-full max-w-md"
         viewBox="0 0 600 400"
         aria-hidden="true"
         focusable="false"
@@ -171,13 +177,13 @@ function KpiStrip({ data }: { data: EntityClarityDetailView }) {
 
 function DetailedFindings({ data }: { data: EntityClarityDetailView }) {
   return (
-    <div className="flex min-w-0 flex-col overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow">
-      <div className="border-b border-outline-variant px-stack-lg py-4">
+    <div className={reportStyles.detailFindingsCard}>
+      <div className={reportStyles.detailFindingsHeader}>
         <h3 className="break-words text-headline-md leading-tight text-on-surface">
           Detailed Findings
         </h3>
       </div>
-      <div className="min-w-0 flex-1 space-y-stack-md overflow-y-auto p-stack-lg">
+      <div className={reportStyles.detailFindingsBody}>
         <div>
           <p className="font-label-md uppercase text-on-surface-variant">Primary Entity</p>
           <p className="break-words text-body-md font-bold text-on-surface">{data.primaryEntity}</p>
@@ -209,9 +215,9 @@ function DetailedFindings({ data }: { data: EntityClarityDetailView }) {
           </div>
           <p className="mt-1 text-[12px] text-on-surface-variant">{data.consistencyNote}</p>
         </div>
-        <div className="border-t border-outline-variant pt-stack-md">
-          <p className="mb-stack-sm font-label-md uppercase text-on-surface-variant">Entity Signals</p>
-          <div className="space-y-3">
+        <div className="border-t border-outline-variant pt-stack-sm">
+          <p className="mb-2 font-label-md uppercase text-on-surface-variant">Entity Signals</p>
+          <div className="space-y-2.5">
             {data.entitySignals.map((signal) => (
               <div key={signal.label} className="min-w-0">
                 <div className="flex items-center justify-between gap-2">
@@ -225,6 +231,16 @@ function DetailedFindings({ data }: { data: EntityClarityDetailView }) {
                 <p className="break-words text-body-sm leading-tight text-on-surface-variant">
                   {signal.detail}
                 </p>
+                {signal.score < 80 ? (
+                  <div className="mt-1.5">
+                    <IssueExplanationAccordion
+                      title={signal.label}
+                      category="Entity Clarity"
+                      status="warning"
+                      recommendation={signal.detail}
+                    />
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>
@@ -236,11 +252,18 @@ function DetailedFindings({ data }: { data: EntityClarityDetailView }) {
             </p>
             <ul className="space-y-1">
               {data.missingEntities.map((item) => (
-                <li
-                  key={item}
-                  className="break-words text-body-sm leading-tight text-on-surface-variant"
-                >
-                  • {item}
+                <li key={item} className="min-w-0">
+                  <p className="break-words text-body-sm leading-tight text-on-surface-variant">
+                    • {item}
+                  </p>
+                  <div className="mt-2 pl-3">
+                    <IssueExplanationAccordion
+                      title={item}
+                      category="Entity Clarity"
+                      status="fail"
+                      recommendation={item}
+                    />
+                  </div>
                 </li>
               ))}
             </ul>
@@ -414,9 +437,9 @@ export function EntityClarityDetailPage({ domain }: EntityClarityDetailPageProps
     >
       <HeaderSection data={data} />
       <KpiStrip data={data} />
-      <div className="grid min-w-0 grid-cols-1 items-start gap-stack-lg xl:grid-cols-[minmax(0,1fr)_380px]">
+      <div className={reportStyles.visualFindingsGrid}>
         <div className={cn(reportStyles.card, "min-w-0 overflow-hidden")}>
-          <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 border-b border-outline-variant px-stack-lg py-stack-md">
+          <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 border-b border-outline-variant px-stack-md py-stack-sm">
             <h3 className={cn(reportStyles.sectionTitle, "break-words")}>
               Entity Relationship Map
             </h3>
@@ -435,10 +458,8 @@ export function EntityClarityDetailPage({ domain }: EntityClarityDetailPageProps
         </div>
         <DetailedFindings data={data} />
       </div>
-      <div className="grid min-w-0 grid-cols-1 items-start gap-stack-lg xl:grid-cols-2">
-        <RecommendationCard data={data} />
-        <BenchmarkCard data={data} />
-      </div>
+      <RecommendationCard data={data} />
+      <BenchmarkCard data={data} />
       <ImplementationSection data={data} />
     </CategoryDetailLayout>
   );

@@ -1,11 +1,13 @@
 import { Icon } from "@/components/icons/Icon";
 import { cn } from "@/lib/cn";
 import type { CategoryIssue } from "@/lib/category-detail-data";
+import { IssueExplanationAccordion } from "./IssueExplanationAccordion";
 import { reportStyles } from "./reportStyles";
 
 type CategoryIssuesSectionProps = {
   issues: CategoryIssue[];
   title?: string;
+  category?: string;
 };
 
 const impactStyles: Record<
@@ -43,9 +45,10 @@ function impactScore(impact: CategoryIssue["impact"]): number {
 
 type CategoryIssueSpotlightProps = {
   issue?: CategoryIssue;
+  category?: string;
 };
 
-export function CategoryIssueSpotlight({ issue }: CategoryIssueSpotlightProps) {
+export function CategoryIssueSpotlight({ issue, category }: CategoryIssueSpotlightProps) {
   if (!issue) {
     return (
       <section
@@ -92,20 +95,12 @@ export function CategoryIssueSpotlight({ issue }: CategoryIssueSpotlightProps) {
         {issue.explanation}
       </p>
 
-      <div className="rounded-xl bg-surface-container-low p-stack-md">
-        <p className="mb-1 text-label-md font-bold uppercase text-primary">Recommendation</p>
-        <p className="text-body-sm font-semibold text-on-surface">
-          {issue.recommendation ?? issue.title}
-        </p>
-        {issue.estimatedGain ? (
-          <p className="mt-1 text-label-md text-outline">
-            Estimated impact:{" "}
-            <span className="font-bold text-[#2E7D32]">
-              +{issue.estimatedGain} health points
-            </span>
-          </p>
-        ) : null}
-      </div>
+      <IssueExplanationAccordion
+        title={issue.title}
+        category={category}
+        severity={issue.impact}
+        recommendation={issue.recommendation ?? issue.explanation}
+      />
     </section>
   );
 }
@@ -113,6 +108,7 @@ export function CategoryIssueSpotlight({ issue }: CategoryIssueSpotlightProps) {
 export function CategoryIssuesSection({
   issues,
   title = "Priority Issues",
+  category,
 }: CategoryIssuesSectionProps) {
   if (issues.length === 0) {
     return null;
@@ -157,14 +153,12 @@ export function CategoryIssuesSection({
               <h4 className="mb-1 text-body-md font-bold text-on-surface">{issue.title}</h4>
               <p className="mb-3 text-body-sm text-on-surface-variant">{issue.explanation}</p>
 
-              {issue.recommendation ? (
-                <div className="rounded-xl bg-surface-container-low p-stack-md">
-                  <p className="mb-1 text-label-md font-bold uppercase text-primary">
-                    Recommended Fix
-                  </p>
-                  <p className="text-body-sm font-semibold">{issue.recommendation}</p>
-                </div>
-              ) : null}
+              <IssueExplanationAccordion
+                title={issue.title}
+                category={category}
+                severity={issue.impact}
+                recommendation={issue.recommendation ?? issue.explanation}
+              />
             </article>
           );
         })}

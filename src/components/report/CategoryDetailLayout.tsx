@@ -27,7 +27,7 @@ export function CategoryDetailLayout({
         <ReportTopNav domain={domain} />
         <main className={reportStyles.mainShell}>
           <ReportBreadcrumb domain={domain} currentLabel={categoryLabel} />
-          <div className={reportStyles.pageStack}>{children}</div>
+          <div className={reportStyles.detailPageStack}>{children}</div>
         </main>
         <ReportFooter />
       </div>

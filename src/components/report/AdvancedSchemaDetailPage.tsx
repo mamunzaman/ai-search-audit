@@ -50,9 +50,13 @@ export function AdvancedSchemaDetailPage({ domain }: AdvancedSchemaDetailPagePro
         statusClassName={data.statusClassName}
       />
       <CategorySimpleKpiStrip kpis={data.kpis} />
-      <CategorySignalFindingsTable title="Advanced Schema Signals" findings={data.findings} />
-      <CategoryGapsListSection title="Schema Gaps" issues={data.issues} />
+      <CategorySignalFindingsTable
+        title="Advanced Schema Signals"
+        findings={data.findings}
+        category="Advanced Schema"
+      />
       <CategoryTopRecommendationCard recommendation={data.recommendation} />
+      <CategoryGapsListSection title="Schema Gaps" issues={data.issues} category="Advanced Schema" />
     </CategoryDetailLayout>
   );
 }
