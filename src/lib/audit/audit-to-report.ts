@@ -24,11 +24,20 @@ import {
   generateScoreExplanation,
 } from "@/lib/report/scoreExplanation";
 import {
+  buildPlaceholderFixPlan,
+  generateFixPlan,
+} from "@/lib/report/fixPlan";
+import {
   demoRankedPriorityIssues,
   generatePriorityIssues,
 } from "@/lib/report/priorityIssues";
 import { enrichRecommendationFields } from "@/lib/report/recommendationTemplates";
-import type { ExecutiveSummary, RankedPriorityIssue, ScoreExplanation } from "@/types/audit";
+import type {
+  ExecutiveSummary,
+  FixPlan,
+  RankedPriorityIssue,
+  ScoreExplanation,
+} from "@/types/audit";
 import {
   getAccessibilityAnalysis,
   getEntityAnalysis,
@@ -107,6 +116,7 @@ export type ReportViewData = {
   accessibilityAnalysis: AccessibilityAnalysis;
   executiveSummary: ExecutiveSummary;
   scoreExplanation: ScoreExplanation;
+  fixPlan: FixPlan;
 };
 
 const CATEGORY_ORDER = [
@@ -313,6 +323,7 @@ export function auditToReportView(
     accessibilityAnalysis: getAccessibilityAnalysis(normalized),
     executiveSummary: generateExecutiveSummary(normalized),
     scoreExplanation: generateScoreExplanation(normalized),
+    fixPlan: generateFixPlan(normalized),
   };
 }
 
@@ -376,6 +387,7 @@ export function getPlaceholderReportView(domain: string): ReportViewData {
     accessibilityAnalysis: { ...defaultAccessibilityAnalysis },
     executiveSummary: defaultExecutiveSummary,
     scoreExplanation: buildPlaceholderScoreExplanation(reportMeta.score),
+    fixPlan: buildPlaceholderFixPlan(),
   };
 }
 

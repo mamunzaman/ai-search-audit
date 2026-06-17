@@ -1,7 +1,7 @@
 import type { ReportCategory, ReportRecommendation } from "@/lib/report-data";
 import { categories as demoCategories } from "@/lib/report-data";
 import { defaultExecutiveSummary } from "@/lib/report/executiveSummary";
-import type { RankedPriorityIssue, ScoreExplanation } from "@/types/audit";
+import type { FixPlan, RankedPriorityIssue, ScoreExplanation } from "@/types/audit";
 import type { ReportViewData } from "./audit-to-report";
 import {
   getFormLabelCoverage,
@@ -104,6 +104,7 @@ export type ReportV2ViewData = {
   criticalCount: number;
   optimizationCount: number;
   scoreExplanation: ScoreExplanation;
+  fixPlan: FixPlan;
 };
 
 function getCategoryScore(
@@ -448,5 +449,6 @@ export function buildReportV2View(view: ReportViewData): ReportV2ViewData {
       (row) => row.status === "Optimization",
     ).length,
     scoreExplanation: view.scoreExplanation,
+    fixPlan: view.fixPlan,
   };
 }

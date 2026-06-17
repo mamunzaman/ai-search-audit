@@ -22,6 +22,7 @@ export { CategoryKpiStrip } from "./CategoryKpiStrip";
 export { CategoryRecommendationsSection } from "./CategoryRecommendationsSection";
 export { CategoryRadarCard } from "./CategoryRadarCard";
 export { ExecutiveScoreCard } from "./ExecutiveScoreCard";
+export { FixPlanCard } from "./FixPlanCard";
 export { GrowthPotentialCard } from "./GrowthPotentialCard";
 export { HighImpactRecommendationsTable } from "./HighImpactRecommendationsTable";
 export { LLMIndexStatusCard } from "./LLMIndexStatusCard";

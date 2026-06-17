@@ -3,6 +3,7 @@
 import {
   AccessibilityAuditReport,
   ExecutiveScoreCard,
+  FixPlanCard,
   HighImpactRecommendationsTable,
   ReportLayout,
   ScoreExplanationCard,
@@ -53,6 +54,8 @@ export function ReportPageClient({ domain }: ReportPageClientProps) {
       />
 
       <AccessibilityAuditReport data={data.accessibilityReport} />
+
+      <FixPlanCard data={data.fixPlan} />
 
       <HighImpactRecommendationsTable
         rows={data.recommendations}

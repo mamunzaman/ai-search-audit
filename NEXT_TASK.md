@@ -3,10 +3,10 @@
 **Goal:** Extend sitewide signal aggregation to Answer Extraction audit.
 
 **Verify:**
-- `/report` shows "Why your AI Visibility Score is X" card below score/summary
-- Strong sites show more strengths; weak sites show blockers + quick wins
+- `/report` Fix Plan shows 3 actions with summed gain footer
+- Card sits above High-Impact Recommendations
 
 ## Done
 
-- `generateScoreExplanation()` with strengths, blockers, quick wins
-- `ScoreExplanationCard` on Overview below executive summary grid
+- `generateFixPlan()` — top 3 priority issues by gain, severity, category score
+- `FixPlanCard` on Overview

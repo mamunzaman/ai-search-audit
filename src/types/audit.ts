@@ -128,6 +128,18 @@ export type ScoreExplanation = {
   quickWins: string[];
 };
 
+export type FixPlanAction = {
+  title: string;
+  estimatedGain: number;
+  category: string;
+  why: string;
+};
+
+export type FixPlan = {
+  actions: FixPlanAction[];
+  totalPotentialGain: number;
+};
+
 export type PriorityIssueSeverity = "Critical" | "High" | "Medium" | "Low";
 
 export type RankedPriorityIssue = {

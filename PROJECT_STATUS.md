@@ -3,6 +3,7 @@
 **Last Update:** 14 June 2026 (Implementation-ready recommendations)
 
 ## Completed Features
+- [x] Fix Plan card — top 3 prioritized actions with total potential gain on Overview
 - [x] Score explanation card — `generateScoreExplanation()` + `ScoreExplanationCard` on Overview
 - [x] Priority issue enrichment — `generatePriorityIssues()` adds `whyItMatters`, `howToFix`, `copyableExample`
 - [x] High-Impact Recommendations table — shows issue title, why it matters, how to fix
