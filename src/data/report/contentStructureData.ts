@@ -2,8 +2,18 @@ import { buildReportView } from "@/lib/audit/audit-to-report";
 import { calculateAuditScores } from "@/lib/audit/audit-score";
 import { getReadabilityAnalysis } from "@/lib/audit/audit-normalize";
 import { loadAuditReportSafe } from "@/lib/audit/storage";
-import type { AuditResponse, CategoryScore } from "@/lib/audit/types";
+import type { AuditResponse, CategoryScore, HeadingOutlineItem } from "@/lib/audit/types";
+import type { DetailPageRecommendation } from "@/types/audit";
 import { reportMeta } from "@/lib/report-data";
+
+export type HeadingCounts = {
+  h1: number;
+  h2: number;
+  h3: number;
+  h4: number;
+  h5: number;
+  h6: number;
+};
 
 export type ContentKpi = {
   label: string;
@@ -56,6 +66,10 @@ export type ContentStructureDetailView = {
   findings: ContentFinding[];
   missingStructureElements: string[];
   implementationCode: string;
+  headingCounts: HeadingCounts;
+  headingOutline: HeadingOutlineItem[];
+  headingIssues: string[];
+  recommendation: DetailPageRecommendation;
   auditDate: string;
 };
 
@@ -125,6 +139,113 @@ function contentDepthScore(readability: ReturnType<typeof getReadabilityAnalysis
   }
 
   return 30;
+}
+
+function buildHeadingCounts(audit: AuditResponse): HeadingCounts {
+  return {
+    h1: audit.headings.h1.length,
+    h2: audit.headings.h2.length,
+    h3: audit.headings.h3.length,
+    h4: audit.headings.h4.length,
+    h5: audit.headings.h5.length,
+    h6: audit.headings.h6.length,
+  };
+}
+
+function buildFallbackHeadingOutline(headings: AuditResponse["headings"]): HeadingOutlineItem[] {
+  if (headings.outline && headings.outline.length > 0) {
+    return headings.outline;
+  }
+
+  const outline: HeadingOutlineItem[] = [];
+  const pushLevel = (level: HeadingOutlineItem["level"], items: string[]) => {
+    items.forEach((text) => outline.push({ level, text }));
+  };
+
+  pushLevel(1, headings.h1);
+  pushLevel(2, headings.h2);
+  pushLevel(3, headings.h3);
+  pushLevel(4, headings.h4);
+  pushLevel(5, headings.h5);
+  pushLevel(6, headings.h6);
+
+  return outline;
+}
+
+function buildHeadingIssues(audit: AuditResponse): string[] {
+  const issues: string[] = [];
+  const { headings } = audit;
+  const readability = audit.readabilityAnalysis;
+
+  if (headings.h1.length !== 1) {
+    issues.push(
+      headings.h1.length === 0 ? "Missing H1 heading" : "Multiple H1 headings found",
+    );
+  }
+
+  if (headings.h2.length > 0 && headings.h3.length === 0) {
+    issues.push("Some sections are too shallow (missing H3s)");
+  }
+
+  if (headings.h4.length === 0 && headings.h5.length === 0 && headings.h6.length === 0) {
+    issues.push("No H4–H6 used");
+  }
+
+  if (!readability.hasFAQText && readability.questionHeadingCount === 0) {
+    issues.push("FAQ and question headings are missing");
+  }
+
+  if (audit.accessibilityAnalysis.headingOrderIssues > 0) {
+    issues.push("Heading levels skip order in places");
+  }
+
+  return issues.slice(0, 4);
+}
+
+const DEMO_HEADING_COUNTS: HeadingCounts = {
+  h1: 1,
+  h2: 5,
+  h3: 17,
+  h4: 0,
+  h5: 0,
+  h6: 0,
+};
+
+const DEMO_HEADING_OUTLINE: HeadingOutlineItem[] = [
+  { level: 1, text: "Apple" },
+  { level: 2, text: "Store" },
+  { level: 2, text: "Mac" },
+  { level: 2, text: "iPad" },
+  { level: 2, text: "iPhone" },
+  { level: 2, text: "Watch" },
+  { level: 2, text: "Vision" },
+  { level: 2, text: "AirPods" },
+  { level: 2, text: "TV & Home" },
+  { level: 2, text: "Entertainment" },
+  { level: 2, text: "Accessories" },
+  { level: 2, text: "Support" },
+  { level: 2, text: "iPhone" },
+];
+
+const DEMO_HEADING_ISSUES = [
+  "Some sections are too shallow (missing H3s)",
+  "No H4–H6 used",
+  "FAQ and question headings are missing",
+];
+
+function buildRecommendation(
+  topRec: ReturnType<typeof calculateAuditScores>["recommendations"][number] | undefined,
+  topOpportunity: ContentStructureDetailView["topOpportunity"],
+): DetailPageRecommendation {
+  return {
+    title: topRec?.title ?? topOpportunity.title,
+    description: topRec?.whyThisMatters ?? topOpportunity.description,
+    impactGain: `+${topRec?.estimatedGain ?? 5} pts`,
+    priority: "High",
+    effort: "Medium",
+    whyItMatters: topRec?.whyThisMatters,
+    howToFix: topRec?.howToFix ?? topOpportunity.description,
+  };
 }
 
 function buildImplementationCode(domain: string): string {
@@ -253,6 +374,13 @@ function buildFindings(audit: AuditResponse): ContentFinding[] {
 }
 
 function buildDemoView(domain: string): ContentStructureDetailView {
+  const topOpportunity = {
+    title: "Paragraph Complexity",
+    gain: "+5 pts",
+    description:
+      "Long paragraphs are harder for AI models to chunk into distinct semantic entities.",
+  };
+
   return {
     domain,
     isRealData: false,
@@ -262,12 +390,7 @@ function buildDemoView(domain: string): ContentStructureDetailView {
     title: "Content Structure Analysis",
     summary:
       "Your page maintains a high standard of semantic hierarchy. The content is well-structured for both human readability and LLM token chunking, with clear thematic breaks and consistent list usage.",
-    topOpportunity: {
-      title: "Paragraph Complexity",
-      gain: "+5 pts",
-      description:
-        "Long paragraphs are harder for AI models to chunk into distinct semantic entities.",
-    },
+    topOpportunity,
     kpis: [
       { label: "Heading Logic", value: "90%", progress: 90 },
       { label: "Readability Index", value: "72", progress: 72 },
@@ -350,6 +473,10 @@ function buildDemoView(domain: string): ContentStructureDetailView {
       "Shorter paragraph blocks in mid-page sections",
     ],
     implementationCode: buildImplementationCode(domain),
+    headingCounts: DEMO_HEADING_COUNTS,
+    headingOutline: DEMO_HEADING_OUTLINE,
+    headingIssues: DEMO_HEADING_ISSUES,
+    recommendation: buildRecommendation(undefined, topOpportunity),
     auditDate: reportMeta.auditDate,
   };
 }
@@ -391,6 +518,15 @@ export function buildContentStructureDetailView(
     missingStructureElements.push("FAQ or question-led headings for answer blocks");
   }
 
+  const topOpportunity = {
+    title: topRec?.title ?? topIssue?.split(".")[0] ?? "Paragraph Complexity",
+    gain: `+${topRec?.estimatedGain ?? 5} pts`,
+    description:
+      topRec?.howToFix ??
+      topIssue ??
+      "Long paragraphs are harder for AI models to chunk into distinct semantic entities.",
+  };
+
   return {
     domain: view.domain,
     isRealData: true,
@@ -401,14 +537,7 @@ export function buildContentStructureDetailView(
     summary:
       category?.summary ??
       "Content structure depends on heading hierarchy, scannable paragraphs, and structured blocks.",
-    topOpportunity: {
-      title: topRec?.title ?? topIssue?.split(".")[0] ?? "Paragraph Complexity",
-      gain: `+${topRec?.estimatedGain ?? 5} pts`,
-      description:
-        topRec?.howToFix ??
-        topIssue ??
-        "Long paragraphs are harder for AI models to chunk into distinct semantic entities.",
-    },
+    topOpportunity,
     kpis: [
       { label: "Heading Logic", value: `${headingLogic}%`, progress: headingLogic },
       { label: "Readability Index", value: String(readabilityScore), progress: readabilityScore },
@@ -474,6 +603,10 @@ export function buildContentStructureDetailView(
         ? missingStructureElements
         : buildDemoView(view.domain).missingStructureElements,
     implementationCode: buildImplementationCode(view.domain),
+    headingCounts: buildHeadingCounts(audit),
+    headingOutline: buildFallbackHeadingOutline(audit.headings),
+    headingIssues: buildHeadingIssues(audit),
+    recommendation: buildRecommendation(topRec, topOpportunity),
     auditDate: view.auditDate,
   };
 }

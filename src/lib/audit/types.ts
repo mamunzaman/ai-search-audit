@@ -77,6 +77,11 @@ export type AuditRequest = {
   debug?: boolean;
 };
 
+export type HeadingOutlineItem = {
+  level: 1 | 2 | 3 | 4 | 5 | 6;
+  text: string;
+};
+
 export type AuditHeadings = {
   h1: string[];
   h2: string[];
@@ -84,6 +89,7 @@ export type AuditHeadings = {
   h4: string[];
   h5: string[];
   h6: string[];
+  outline?: HeadingOutlineItem[];
 };
 
 export type AuditLinks = {

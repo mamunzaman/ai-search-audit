@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import type { AuditLinks, ParsedAnchor, ParsedPageData } from "./types";
+import type { AuditLinks, HeadingOutlineItem, ParsedAnchor, ParsedPageData } from "./types";
 
 function cleanText(value: string | undefined | null): string {
   return (value ?? "").replace(/\s+/g, " ").trim();
@@ -69,6 +69,29 @@ function extractAnchors($: cheerio.CheerioAPI): ParsedAnchor[] {
   return anchors;
 }
 
+function extractHeadingOutline($: cheerio.CheerioAPI): HeadingOutlineItem[] {
+  const outline: HeadingOutlineItem[] = [];
+
+  $("h1, h2, h3, h4, h5, h6").each((_, element) => {
+    const tag = element.tagName?.toLowerCase();
+    if (!tag || !tag.startsWith("h")) {
+      return;
+    }
+
+    const level = Number(tag.slice(1));
+    if (level < 1 || level > 6) {
+      return;
+    }
+
+    const text = cleanText($(element).text());
+    if (text) {
+      outline.push({ level: level as HeadingOutlineItem["level"], text });
+    }
+  });
+
+  return outline;
+}
+
 export function parseHtml(html: string, pageUrl: string): ParsedPageData {
   const $ = cheerio.load(html);
 
@@ -92,6 +115,7 @@ export function parseHtml(html: string, pageUrl: string): ParsedPageData {
       h4: extractHeadings($, "h4"),
       h5: extractHeadings($, "h5"),
       h6: extractHeadings($, "h6"),
+      outline: extractHeadingOutline($),
     },
     canonical,
     robotsMeta,

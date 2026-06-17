@@ -7,5 +7,5 @@
 
 ## Done
 
-- UI debug flow: homepage checkbox → debug audit → report download button
-- Server still writes `.audit-debug/*.json`; client downloads stored payload (no server path exposure)
+- Content Structure layout — full-width Heading Hierarchy, 2-col findings/recommendation row below
+- `npm run lint` / `npm run build` pass

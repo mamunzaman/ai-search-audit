@@ -94,6 +94,17 @@ function hasSchemaType(schemaTypes: string[], type: string): boolean {
 }
 
 function normalizeHeadings(headings: AuditHeadings | undefined): AuditHeadings {
+  const outline = Array.isArray(headings?.outline)
+    ? headings.outline.filter(
+        (item) =>
+          item &&
+          typeof item.text === "string" &&
+          item.text.trim().length > 0 &&
+          item.level >= 1 &&
+          item.level <= 6,
+      )
+    : [];
+
   return {
     h1: Array.isArray(headings?.h1) ? headings.h1 : [],
     h2: Array.isArray(headings?.h2) ? headings.h2 : [],
@@ -101,6 +112,7 @@ function normalizeHeadings(headings: AuditHeadings | undefined): AuditHeadings {
     h4: Array.isArray(headings?.h4) ? headings.h4 : [],
     h5: Array.isArray(headings?.h5) ? headings.h5 : [],
     h6: Array.isArray(headings?.h6) ? headings.h6 : [],
+    outline,
   };
 }
 

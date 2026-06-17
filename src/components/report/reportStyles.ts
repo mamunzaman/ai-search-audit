@@ -5,6 +5,14 @@ export const reportStyles = {
   gridGap: "gap-gutter",
   visualFindingsGrid:
     "grid min-w-0 grid-cols-1 items-start gap-gutter xl:grid-cols-[minmax(0,1.25fr)_minmax(360px,0.75fr)]",
+  contentStructureInsightGrid:
+    "flex min-w-0 flex-col gap-gutter",
+  contentStructureInsightRow:
+    "grid min-w-0 grid-cols-1 items-stretch gap-gutter lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]",
+  contentStructureMainRow:
+    "grid min-w-0 grid-cols-1 items-start gap-gutter lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]",
+  contentStructureColumn:
+    "flex min-w-0 w-full flex-col gap-stack-md",
   visualBlockMax: "max-h-[420px]",
 
   card: "rounded-[24px] border border-outline-variant bg-white card-shadow",
@@ -13,16 +21,16 @@ export const reportStyles = {
 
   pageTitle: "break-words text-headline-lg font-semibold text-on-surface",
   pageSummary:
-    "max-w-3xl break-words text-body-md leading-relaxed text-on-surface-variant",
-  sectionTitle: "text-headline-md text-on-surface",
-  cardTitle: "text-headline-lg text-primary",
+    "max-w-3xl break-words text-body-md leading-relaxed text-text-secondary",
+  sectionTitle: "text-headline-md font-semibold text-on-surface",
+  cardTitle: "text-headline-lg font-semibold text-primary",
   subsectionLabel:
-    "text-label-md font-bold uppercase tracking-wider text-on-surface-variant",
+    "text-label-md font-bold uppercase tracking-wider text-text-secondary",
 
   statusBadge: "rounded-full px-3 py-1 text-label-md font-bold uppercase tracking-wide",
   tableBadge: "rounded px-2 py-1 text-[10px] font-bold uppercase",
   countBadge:
-    "flex items-center gap-1 rounded-full border border-outline-variant bg-white px-3 py-1 text-label-md text-on-surface-variant",
+    "flex items-center gap-1 rounded-full border border-outline-variant bg-white px-3 py-1 text-label-md font-medium text-text-secondary",
 
   tableSectionHeader:
     "flex flex-col gap-3 border-b border-outline-variant bg-surface-container-low px-stack-lg py-stack-md sm:flex-row sm:items-center sm:justify-between",
@@ -30,9 +38,9 @@ export const reportStyles = {
     "flex flex-col gap-2 border-b border-outline-variant bg-surface-container-low px-stack-md py-stack-sm sm:flex-row sm:items-center sm:justify-between",
   tableHeaderRow: "bg-surface-container-low",
   tableHeadCell:
-    "px-stack-lg py-4 text-label-md uppercase text-on-surface-variant",
+    "px-stack-lg py-4 text-label-md font-semibold uppercase text-text-secondary",
   tableHeadCellCompact:
-    "px-stack-md py-2.5 text-label-md uppercase text-on-surface-variant",
+    "px-stack-md py-2.5 text-label-md font-semibold uppercase text-text-secondary",
   tableBodyCell: "px-stack-lg py-5",
   tableBodyCellCompact: "px-stack-md py-3",
   accordionRow: "bg-primary-fixed/20",
