@@ -271,12 +271,13 @@ export async function POST(request: Request) {
     }
 
     const debugPayload = collectAuditDebugData(audit, page.html, siteCrawl);
-    const debugFile = await writeAuditDebugFile(debugPayload);
+    await writeAuditDebugFile(debugPayload);
 
     return NextResponse.json({
       success: true,
+      audit,
       score: getAuditOverallScore(audit),
-      debugFile,
+      debug: debugPayload,
       debugSummary: buildAuditDebugSummary(debugPayload),
     });
   } catch (error) {

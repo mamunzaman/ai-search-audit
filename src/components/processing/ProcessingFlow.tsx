@@ -9,8 +9,9 @@ import {
   ProcessingProgress,
   ProcessingSteps,
 } from "@/components/processing";
+import { runAudit } from "@/lib/audit-client";
 import { auditToActivityLog, auditToProcessingMetrics } from "@/lib/audit/audit-to-report";
-import { saveAuditReport } from "@/lib/audit/storage";
+import { saveAuditSession } from "@/lib/report-storage";
 import type { AuditResponse } from "@/lib/audit/types";
 import { normalizeDomain } from "@/lib/domain";
 import {
@@ -29,9 +30,10 @@ import { useEffect, useState } from "react";
 
 type ProcessingFlowProps = {
   domain: string;
+  debug?: boolean;
 };
 
-export function ProcessingFlow({ domain }: ProcessingFlowProps) {
+export function ProcessingFlow({ domain, debug = false }: ProcessingFlowProps) {
   const router = useRouter();
   const [milestoneIndex, setMilestoneIndex] = useState(0);
   const [audit, setAudit] = useState<AuditResponse | null>(null);
@@ -52,23 +54,28 @@ export function ProcessingFlow({ domain }: ProcessingFlowProps) {
 
     async function fetchAudit() {
       try {
-        const response = await fetch("/api/audit", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url: domain }),
+        const result = await runAudit(domain, {
+          debug,
           signal: controller.signal,
         });
+        const normalizedDomain = normalizeDomain(
+          result.audit.finalUrl || domain,
+        );
 
-        const data = (await response.json()) as AuditResponse & {
-          error?: string;
-        };
-
-        if (!response.ok) {
-          throw new Error(data.error || "Audit request failed.");
-        }
-
-        saveAuditReport(data);
-        setAudit(data);
+        saveAuditSession({
+          audit: result.audit,
+          domain: normalizedDomain,
+          ...(result.mode === "debug"
+            ? {
+                debug: {
+                  debug: result.debug,
+                  debugSummary: result.debugSummary,
+                  score: result.score,
+                },
+              }
+            : {}),
+        });
+        setAudit(result.audit);
       } catch (error) {
         if (controller.signal.aborted) {
           return;
@@ -87,7 +94,7 @@ export function ProcessingFlow({ domain }: ProcessingFlowProps) {
     void fetchAudit();
 
     return () => controller.abort();
-  }, [domain, retryKey]);
+  }, [debug, domain, retryKey]);
 
   useEffect(() => {
     if (milestoneIndex >= PROGRESS_MILESTONES.length - 1) {

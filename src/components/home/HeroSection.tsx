@@ -7,7 +7,8 @@ import { HERO_INPUT_ID, useHomeUrl } from "./HomeUrlProvider";
 import { HeroDashboardPreview } from "./HeroDashboardPreview";
 
 export function HeroSection() {
-  const { urlInput, setUrlInput, navigateToProcessing } = useHomeUrl();
+  const { urlInput, setUrlInput, debugEnabled, setDebugEnabled, navigateToProcessing } =
+    useHomeUrl();
 
   const handleSubmit = () => {
     navigateToProcessing();
@@ -49,6 +50,15 @@ export function HeroSection() {
                 Get your LLM Visibility Report
               </Button>
             </div>
+            <label className="mt-3 flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant">
+              <input
+                type="checkbox"
+                checked={debugEnabled}
+                onChange={(event) => setDebugEnabled(event.target.checked)}
+                className="h-4 w-4 rounded border-outline-variant text-primary focus:ring-primary/20"
+              />
+              Save debug JSON for score testing
+            </label>
           </div>
           <div className="flex flex-wrap items-center gap-6 pt-2">
             {trustSignals.map((signal) => (

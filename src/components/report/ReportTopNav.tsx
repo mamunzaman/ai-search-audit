@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { DebugDownloadButton } from "@/components/report/DebugDownloadButton";
 import { ExportReportButton } from "@/components/report/ExportReportButton";
 import { Button } from "@/components/ui";
 import { avatarUrl } from "@/lib/report-data";
@@ -23,6 +24,7 @@ export function ReportTopNav({ domain }: ReportTopNavProps) {
         </p>
       </div>
       <div className="flex shrink-0 flex-wrap items-center gap-stack-sm sm:gap-stack-md">
+        <DebugDownloadButton />
         <ExportReportButton domain={domain} />
         <Link href="/">
           <Button

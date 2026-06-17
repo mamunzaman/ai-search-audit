@@ -2,7 +2,7 @@ import { ProcessingFlow } from "@/components/processing/ProcessingFlow";
 import { resolveDomain } from "@/lib/domain";
 
 type ProcessingPageProps = {
-  searchParams: Promise<{ domain?: string }>;
+  searchParams: Promise<{ domain?: string; debug?: string }>;
 };
 
 export default async function ProcessingPage({
@@ -10,6 +10,7 @@ export default async function ProcessingPage({
 }: ProcessingPageProps) {
   const params = await searchParams;
   const domain = resolveDomain(params.domain);
+  const debug = params.debug === "true";
 
-  return <ProcessingFlow domain={domain} />;
+  return <ProcessingFlow domain={domain} debug={debug} />;
 }

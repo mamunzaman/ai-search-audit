@@ -16,6 +16,8 @@ const HERO_INPUT_ID = "hero-url-input";
 type HomeUrlContextValue = {
   urlInput: string;
   setUrlInput: (value: string) => void;
+  debugEnabled: boolean;
+  setDebugEnabled: (value: boolean) => void;
   scrollToHeroInput: () => void;
   navigateToProcessing: (value?: string) => boolean;
 };
@@ -25,6 +27,7 @@ const HomeUrlContext = createContext<HomeUrlContextValue | null>(null);
 export function HomeUrlProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [urlInput, setUrlInput] = useState("");
+  const [debugEnabled, setDebugEnabled] = useState(false);
 
   const scrollToHeroInput = useCallback(() => {
     const input = document.getElementById(HERO_INPUT_ID);
@@ -42,20 +45,23 @@ export function HomeUrlProvider({ children }: { children: ReactNode }) {
       }
 
       const domain = normalizeDomain(raw);
-      router.push(`/processing?domain=${encodeURIComponent(domain)}`);
+      const debugQuery = debugEnabled ? "&debug=true" : "";
+      router.push(`/processing?domain=${encodeURIComponent(domain)}${debugQuery}`);
       return true;
     },
-    [router, urlInput],
+    [debugEnabled, router, urlInput],
   );
 
   const value = useMemo(
     () => ({
       urlInput,
       setUrlInput,
+      debugEnabled,
+      setDebugEnabled,
       scrollToHeroInput,
       navigateToProcessing,
     }),
-    [urlInput, scrollToHeroInput, navigateToProcessing],
+    [urlInput, debugEnabled, scrollToHeroInput, navigateToProcessing],
   );
 
   return (

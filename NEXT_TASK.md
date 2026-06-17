@@ -7,5 +7,5 @@
 
 ## Done
 
-- Intent-aware scoring: cloudflare.com 85, vercel.com 86, shopify.com 87 (category scores unchanged)
-- `pageIntent` on audit response + debug output (`intent`, `confidence`, `reasons`)
+- UI debug flow: homepage checkbox → debug audit → report download button
+- Server still writes `.audit-debug/*.json`; client downloads stored payload (no server path exposure)

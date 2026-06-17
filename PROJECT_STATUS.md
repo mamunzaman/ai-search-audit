@@ -1,14 +1,13 @@
 # Project Status
 
-**Last Update:** 14 June 2026 (Intent-aware scoring)
+**Last Update:** 14 June 2026 (UI debug JSON download)
 
 ## Completed Features
-- [x] Page intent detection — homepage, saas, local-business, ecommerce, blog, article, documentation
-- [x] Intent-aware overall score weighting — category scores unchanged; marketing pages de-emphasize article-style signals
-- [x] Audit debug payload — `debug=true` returns intent, confidence, reasons + scores
+- [x] Optional homepage debug mode — checkbox saves debug JSON for score testing
+- [x] Report debug download — “Download Debug JSON” in top nav when debug session exists
+- [x] Page intent detection + intent-aware overall score weighting
+- [x] Audit debug payload — API returns full `debug` object when `debug=true`
 - [x] Connected navigation flow across homepage and report pages
-- [x] Fix CTA — pill buttons with severity emphasis
-- [x] Export Report — browser print-to-PDF
 
 ## In Progress
 - [ ] Extend sitewide signal aggregation to Answer Extraction
