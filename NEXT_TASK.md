@@ -1,12 +1,12 @@
 # Next Task
 
-**Goal:** Extend sitewide signal aggregation to Answer Extraction audit (match Trust Signals / Citation Readiness pattern).
+**Goal:** Extend sitewide signal aggregation to Answer Extraction audit.
 
 **Verify:**
-- Run audit on multi-page site; Answer Extraction uses `siteCrawl.pages` when available
-- `/report/answer-extraction` shows sitewide extraction signals
+- `/report` shows "Why your AI Visibility Score is X" card below score/summary
+- Strong sites show more strengths; weak sites show blockers + quick wins
 
 ## Done
 
-- Report UI standardized across Overview + all category detail pages
-- Shared `reportStyles` tokens and category layout components
+- `generateScoreExplanation()` with strengths, blockers, quick wins
+- `ScoreExplanationCard` on Overview below executive summary grid

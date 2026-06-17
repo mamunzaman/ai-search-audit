@@ -7,6 +7,8 @@ import {
 import { loadAuditReportSafe } from "@/lib/audit/storage";
 import type { AuditResponse, CategoryScore } from "@/lib/audit/types";
 import { reportMeta, entityClarityAuditMock } from "@/lib/report-data";
+import { buildDetailPageRecommendation } from "@/lib/report/recommendationTemplates";
+import type { DetailPageRecommendation } from "@/types/audit";
 
 export type EntityKpi = {
   label: string;
@@ -51,13 +53,7 @@ export type EntityClarityDetailView = {
   consistencyNote: string;
   relationshipPrimaryLabel: string;
   relationshipNodes: EntityRelationshipNode[];
-  recommendation: {
-    title: string;
-    description: string;
-    impactGain: string;
-    priority: string;
-    effort: string;
-  };
+  recommendation: DetailPageRecommendation;
   benchmarkRows: EntityBenchmarkRow[];
   entitySignals: EntitySignalItem[];
   missingEntities: string[];
@@ -262,14 +258,15 @@ function buildDemoView(domain: string): EntityClarityDetailView {
     consistencyNote: "Verified on 24/25 global citations.",
     relationshipPrimaryLabel: "AuditMetric",
     relationshipNodes: defaultRelationshipNodes(),
-    recommendation: {
+    recommendation: buildDetailPageRecommendation({
+      category: "Entity Clarity",
       title: "Refine Wikipedia/WikiData Linking",
       description:
         "Strengthen the \"sameAs\" properties in your Organization schema to point directly to your verified WikiData entity.",
       impactGain: "+2 Score Gain",
       priority: "Medium",
       effort: "Easy",
-    },
+    }),
     benchmarkRows: [
       { entity: "AuditMetric (You)", kgStrength: 92, consistency: 95, highlight: true },
       { entity: "Competitor Alpha", kgStrength: 88, consistency: 91 },
@@ -393,7 +390,8 @@ export function buildEntityClarityDetailView(
         : "Consistency needs stronger schema and metadata alignment.",
     relationshipPrimaryLabel: primaryLabel.length > 14 ? primaryLabel.slice(0, 12) : primaryLabel,
     relationshipNodes: buildRelationshipNodes(entity.relatedEntities),
-    recommendation: {
+    recommendation: buildDetailPageRecommendation({
+      category: "Entity Clarity",
       title: topRec?.title ?? "Refine Wikipedia/WikiData Linking",
       description:
         topRec?.howToFix ??
@@ -401,7 +399,7 @@ export function buildEntityClarityDetailView(
       impactGain: `+${topRec?.estimatedGain ?? 2} Score Gain`,
       priority: (topRec?.estimatedGain ?? 2) >= 5 ? "High" : "Medium",
       effort: (topRec?.estimatedGain ?? 2) >= 5 ? "Medium" : "Easy",
-    },
+    }),
     benchmarkRows: [
       {
         entity: `${primaryLabel} (You)`,

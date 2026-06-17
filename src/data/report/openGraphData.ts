@@ -4,6 +4,8 @@ import { getOpenGraphAudit } from "@/lib/audit/audit-normalize";
 import { loadAuditReportSafe } from "@/lib/audit/storage";
 import type { AuditResponse, CategoryScore } from "@/lib/audit/types";
 import { openGraphAuditMock, reportMeta } from "@/lib/report-data";
+import { buildDetailPageRecommendation } from "@/lib/report/recommendationTemplates";
+import type { DetailPageRecommendation } from "@/types/audit";
 import type { AuditFindingStatus } from "@/types/audit";
 
 export type OpenGraphKpi = {
@@ -32,13 +34,7 @@ export type OpenGraphDetailView = {
   kpis: OpenGraphKpi[];
   findings: OpenGraphFindingRow[];
   issues: string[];
-  recommendation: {
-    title: string;
-    description: string;
-    impactGain: string;
-    priority: string;
-    effort: string;
-  };
+  recommendation: DetailPageRecommendation;
   auditDate: string;
 };
 
@@ -119,7 +115,8 @@ function buildDemoView(domain: string): OpenGraphDetailView {
     ],
     findings,
     issues: mock.issues.map((issue) => issue.explanation),
-    recommendation: {
+    recommendation: buildDetailPageRecommendation({
+      category: "Open Graph",
       title: topRec?.title ?? "Add og:site_name",
       description:
         topRec?.howToFix ??
@@ -127,7 +124,7 @@ function buildDemoView(domain: string): OpenGraphDetailView {
       impactGain: `+${topRec?.estimatedGain ?? 4} Score Gain`,
       priority: (topRec?.estimatedGain ?? 4) >= 6 ? "High" : "Medium",
       effort: "Easy",
-    },
+    }),
     auditDate: reportMeta.auditDate,
   };
 }
@@ -174,7 +171,8 @@ export function buildOpenGraphDetailView(
       ogAudit.issues.length > 0
         ? ogAudit.issues.map((issue) => issue.explanation)
         : category?.problems.slice(0, 4) ?? [],
-    recommendation: {
+    recommendation: buildDetailPageRecommendation({
+      category: "Open Graph",
       title: topRec?.title ?? "Improve Open Graph metadata",
       description:
         topRec?.howToFix ??
@@ -183,7 +181,7 @@ export function buildOpenGraphDetailView(
       impactGain: `+${topRec?.estimatedGain ?? 5} Score Gain`,
       priority: (topRec?.estimatedGain ?? 5) >= 6 ? "High" : "Medium",
       effort: (topRec?.estimatedGain ?? 5) >= 6 ? "Medium" : "Easy",
-    },
+    }),
     auditDate: view.auditDate,
   };
 }

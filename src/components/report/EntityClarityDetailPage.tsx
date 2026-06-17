@@ -3,6 +3,7 @@
 import { CategoryDetailLayout } from "@/components/report/CategoryDetailLayout";
 import { reportStyles } from "@/components/report/reportStyles";
 import { ReportScoreRing } from "@/components/report/ScoreRing";
+import { CategoryRecommendationDetail } from "@/components/report/CategoryRecommendationDetail";
 import { Icon } from "@/components/icons/Icon";
 import { cn } from "@/lib/cn";
 import {
@@ -270,9 +271,12 @@ function RecommendationCard({ data }: { data: EntityClarityDetailView }) {
                 {data.recommendation.impactGain}
               </span>
             </div>
-            <p className="mt-1 break-words text-body-sm leading-tight text-on-surface-variant">
-              {data.recommendation.description}
-            </p>
+            <CategoryRecommendationDetail
+              whyItMatters={data.recommendation.whyItMatters}
+              howToFix={data.recommendation.howToFix}
+              copyableExample={data.recommendation.copyableExample}
+              fallbackDescription={data.recommendation.description}
+            />
             <div className="mt-3 flex flex-wrap items-center gap-4">
               <span className="rounded bg-primary/10 px-2 py-1 text-[12px] font-medium text-primary">
                 Priority: {data.recommendation.priority}

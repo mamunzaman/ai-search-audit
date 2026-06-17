@@ -1,7 +1,7 @@
 import type { ReportCategory, ReportRecommendation } from "@/lib/report-data";
 import { categories as demoCategories } from "@/lib/report-data";
 import { defaultExecutiveSummary } from "@/lib/report/executiveSummary";
-import type { RankedPriorityIssue } from "@/types/audit";
+import type { RankedPriorityIssue, ScoreExplanation } from "@/types/audit";
 import type { ReportViewData } from "./audit-to-report";
 import {
   getFormLabelCoverage,
@@ -72,7 +72,8 @@ export type ReportV2AccessibilityReport = {
 
 export type ReportV2RecommendationRow = {
   title: string;
-  description: string;
+  whyItMatters: string;
+  howToFix: string;
   status: "Critical" | "Optimization";
   impact: string;
   action: string;
@@ -102,6 +103,7 @@ export type ReportV2ViewData = {
   recommendations: ReportV2RecommendationRow[];
   criticalCount: number;
   optimizationCount: number;
+  scoreExplanation: ScoreExplanation;
 };
 
 function getCategoryScore(
@@ -158,7 +160,8 @@ function buildRecommendationRows(
 ): ReportV2RecommendationRow[] {
   return priorityIssues.slice(0, 6).map((issue) => ({
     title: issue.title,
-    description: issue.impact,
+    whyItMatters: issue.whyItMatters ?? issue.impact,
+    howToFix: issue.howToFix ?? issue.recommendation,
     status: mapIssueStatus(issue.severity),
     impact: `+${issue.estimatedGain} pts`,
     action: "View Spec",
@@ -376,22 +379,30 @@ export function buildReportV2View(view: ReportViewData): ReportV2ViewData {
     : [
         {
           title: "Microdata Entity Mapping",
-          description:
-            "Resolve missing Organization schema for historical archives.",
+          whyItMatters:
+            "AI systems use Organization schema to identify the website owner and connect the brand to trusted entities.",
+          howToFix:
+            "Add JSON-LD Organization schema with name, url, logo, and sameAs profiles.",
           status: "Critical" as const,
           impact: "+12 pts",
           action: "View Spec",
         },
         {
           title: "Content Cluster Pruning",
-          description: "Consolidate thin tag pages into high-value topics.",
+          whyItMatters:
+            "Thin tag pages dilute topical authority and reduce AI citation confidence.",
+          howToFix:
+            "Consolidate thin tag pages into high-value topic hubs with internal links.",
           status: "Optimization" as const,
           impact: "+6 pts",
           action: "View Spec",
         },
         {
           title: "Semantic Internal Linking",
-          description: "Automate cross-linking between related site sections.",
+          whyItMatters:
+            "Related-section links help crawlers map entity relationships across the site.",
+          howToFix:
+            "Automate cross-linking between related sections using descriptive anchor text.",
           status: "Optimization" as const,
           impact: "+8 pts",
           action: "View Spec",
@@ -436,5 +447,6 @@ export function buildReportV2View(view: ReportViewData): ReportV2ViewData {
     optimizationCount: recommendationRows.filter(
       (row) => row.status === "Optimization",
     ).length,
+    scoreExplanation: view.scoreExplanation,
   };
 }

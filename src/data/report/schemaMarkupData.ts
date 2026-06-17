@@ -3,6 +3,8 @@ import { calculateAuditScores } from "@/lib/audit/audit-score";
 import { loadAuditReportSafe } from "@/lib/audit/storage";
 import type { AuditResponse, CategoryScore } from "@/lib/audit/types";
 import { reportMeta } from "@/lib/report-data";
+import { buildCriticalRecommendation } from "@/lib/report/recommendationTemplates";
+import type { EnrichedRecommendationFields } from "@/types/audit";
 
 export type SchemaKpi = {
   label: string;
@@ -62,7 +64,7 @@ export type SchemaMarkupDetailView = {
     title: string;
     description: string;
     gainLabel: string;
-  };
+  } & EnrichedRecommendationFields;
   lowSeverityIssues: SchemaIssue[];
   schemaTypeSignals: SchemaTypeSignal[];
   missingRecommendedSchema: string[];
@@ -487,12 +489,13 @@ function buildDemoView(domain: string): SchemaMarkupDetailView {
         value: "5 New Entities",
       },
     ],
-    criticalRecommendation: {
+    criticalRecommendation: buildCriticalRecommendation({
+      category: "Schema Markup",
       title: "Implement JSON-LD for Related Entities",
       description:
         "Adding 'mentions' and 'about' properties will increase thematic relevance by 24% for LLM indexing.",
       gainLabel: "+6 Visibility Gain",
-    },
+    }),
     lowSeverityIssues: [
       {
         title: "Missing Product Aggregate Rating",
@@ -644,13 +647,14 @@ export function buildSchemaMarkupDetailView(
         value: `${missing.length} New Entities`,
       },
     ],
-    criticalRecommendation: {
+    criticalRecommendation: buildCriticalRecommendation({
+      category: "Schema Markup",
       title: topRec?.title ?? "Implement JSON-LD for Related Entities",
       description:
         topRec?.howToFix ??
         "Add structured data blocks for Organization, WebSite, and page-specific schema types.",
       gainLabel: `+${topRec?.estimatedGain ?? 6} Visibility Gain`,
-    },
+    }),
     lowSeverityIssues:
       lowIssues.length > 0
         ? lowIssues

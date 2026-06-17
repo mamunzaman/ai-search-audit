@@ -34,6 +34,7 @@ export type ReportRecommendation = {
   whyThisMatters: string;
   howToFix: string;
   estimatedGain: number;
+  copyableExample?: string;
 };
 
 export type SidebarNavItem = {

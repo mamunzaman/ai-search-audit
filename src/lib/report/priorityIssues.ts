@@ -18,6 +18,7 @@ import type {
   PriorityIssueSeverity,
   RankedPriorityIssue,
 } from "@/types/audit";
+import { enrichPriorityIssue } from "@/lib/report/recommendationTemplates";
 
 const MAX_PRIORITY_ISSUES = 6;
 
@@ -60,7 +61,7 @@ type AiAuditResult = {
 };
 
 export const demoRankedPriorityIssues: RankedPriorityIssue[] = [
-  {
+  enrichPriorityIssue({
     title: "Missing Organization Schema",
     category: "Schema Markup",
     severity: "High",
@@ -68,8 +69,8 @@ export const demoRankedPriorityIssues: RankedPriorityIssue[] = [
     recommendation: "Add JSON-LD Organization markup with name, url, logo, and sameAs links.",
     estimatedGain: 6,
     detailHref: "/report/schema-markup",
-  },
-  {
+  }),
+  enrichPriorityIssue({
     title: "Broken Semantic Links (Primary Nav)",
     category: "Content Structure",
     severity: "Medium",
@@ -77,8 +78,8 @@ export const demoRankedPriorityIssues: RankedPriorityIssue[] = [
     recommendation: "Fix broken internal links and ensure descriptive anchor text.",
     estimatedGain: 4,
     detailHref: "/report/content-structure",
-  },
-  {
+  }),
+  enrichPriorityIssue({
     title: "Incomplete Author Profiles",
     category: "Citation Readiness",
     severity: "High",
@@ -86,7 +87,7 @@ export const demoRankedPriorityIssues: RankedPriorityIssue[] = [
     recommendation: "Add visible author bylines plus meta author tags or Person schema.",
     estimatedGain: 5,
     detailHref: "/report/citation-readiness",
-  },
+  }),
 ];
 
 function severityRank(severity: PriorityIssueSeverity): number {
@@ -159,7 +160,7 @@ function getCategorySlug(category: string): string {
 }
 
 function toRankedIssue(draft: IssueDraft): RankedPriorityIssue {
-  return {
+  return enrichPriorityIssue({
     title: draft.title,
     category: draft.category,
     severity: draft.severity,
@@ -167,7 +168,7 @@ function toRankedIssue(draft: IssueDraft): RankedPriorityIssue {
     recommendation: draft.recommendation,
     estimatedGain: draft.estimatedGain,
     detailHref: draft.detailHref,
-  };
+  });
 }
 
 function findMatchingRecommendation(

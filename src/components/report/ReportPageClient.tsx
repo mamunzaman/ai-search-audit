@@ -5,6 +5,7 @@ import {
   ExecutiveScoreCard,
   HighImpactRecommendationsTable,
   ReportLayout,
+  ScoreExplanationCard,
   StrategicOverviewCard,
   VisualInsightsCarousel,
 } from "@/components/report";
@@ -38,6 +39,8 @@ export function ReportPageClient({ domain }: ReportPageClientProps) {
         <ExecutiveScoreCard data={data} />
         <StrategicOverviewCard data={data.strategicOverview} domain={data.domain} />
       </section>
+
+      <ScoreExplanationCard data={data.scoreExplanation} />
 
       <VisualInsightsCarousel
         radarPoints={data.radarPoints}

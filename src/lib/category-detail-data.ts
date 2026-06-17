@@ -12,6 +12,7 @@ import {
 } from "@/lib/audit/social-metadata";
 import type { AuditCheck, AuditResponse } from "@/lib/audit/types";
 import { reportMeta } from "@/lib/report-data";
+import { enrichRecommendationFields } from "@/lib/report/recommendationTemplates";
 
 export type FindingStatus = "optimized" | "needs_attention" | "critical";
 
@@ -36,6 +37,9 @@ export type CategoryRecommendation = {
   title: string;
   description: string;
   estimatedGain?: number;
+  whyItMatters?: string;
+  howToFix?: string;
+  copyableExample?: string;
 };
 
 export type CategoryKpi = {
@@ -438,10 +442,14 @@ function buildRecommendationsFromCategory(
 
   if (seoCategory) {
     for (const rec of seoCategory.recommendations) {
+      const title = rec.replace(/\.$/, "");
+      const enriched = enrichRecommendationFields(title, rec, "SEO Health");
+
       recommendations.push({
-        title: rec.replace(/\.$/, ""),
-        description: rec,
+        title,
+        description: enriched.howToFix ?? rec,
         estimatedGain: 4,
+        ...enriched,
       });
     }
   }
@@ -455,10 +463,19 @@ function buildRecommendationsFromCategory(
       continue;
     }
 
+    const enriched = enrichRecommendationFields(
+      rec.title,
+      `${rec.whyThisMatters} ${rec.howToFix}`,
+      "SEO Health",
+    );
+
     recommendations.push({
       title: rec.title,
-      description: rec.howToFix,
+      description: enriched.howToFix ?? rec.howToFix,
       estimatedGain: rec.estimatedGain,
+      whyItMatters: enriched.whyItMatters ?? rec.whyThisMatters,
+      howToFix: enriched.howToFix ?? rec.howToFix,
+      copyableExample: enriched.copyableExample,
     });
   }
 

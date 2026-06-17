@@ -31,4 +31,10 @@ export const reportStyles = {
     "flex min-w-0 flex-col items-center gap-stack-lg rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow md:flex-row md:items-center",
   mainShell:
     "mx-auto w-full min-w-0 max-w-container-max flex-1 overflow-x-hidden p-margin-mobile md:p-margin-desktop",
+
+  codeBlock:
+    "overflow-hidden rounded-lg border border-outline-variant bg-surface-container-low",
+  codeBlockHeader:
+    "flex items-center justify-between border-b border-outline-variant bg-surface-container px-stack-md py-2",
+  codeBlockPre: "overflow-x-auto p-stack-md font-mono text-body-sm leading-relaxed text-on-surface",
 } as const;

@@ -1,5 +1,6 @@
 "use client";
 
+import { CategoryRecommendationDetail } from "@/components/report/CategoryRecommendationDetail";
 import { CategoryDetailLayout } from "@/components/report/CategoryDetailLayout";
 import { reportStyles } from "@/components/report/reportStyles";
 import { ReportScoreRing } from "@/components/report/ScoreRing";
@@ -189,9 +190,14 @@ function CriticalRecommendationCard({
       <p className="mb-1 break-words font-body-md font-semibold text-on-error-container">
         {recommendation.title}
       </p>
-      <p className="mb-4 break-words text-body-sm text-on-error-container">
-        {recommendation.description}
-      </p>
+      <div className="mb-4 text-on-error-container">
+        <CategoryRecommendationDetail
+          whyItMatters={recommendation.whyItMatters}
+          howToFix={recommendation.howToFix}
+          copyableExample={recommendation.copyableExample}
+          fallbackDescription={recommendation.description}
+        />
+      </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <span className="font-label-md font-bold text-error">{recommendation.gainLabel}</span>
         <button

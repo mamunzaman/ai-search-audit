@@ -61,13 +61,14 @@ export function HighImpactRecommendationsTable({
                 className="transition-colors hover:bg-primary-container/5"
               >
                 <td className="px-stack-lg py-5">
-                  <div className="flex flex-col">
+                  <div className="flex flex-col gap-1">
                     <span className="font-bold text-primary">{row.title}</span>
-                    {row.description ? (
-                      <span className="line-clamp-2 text-body-sm text-on-surface-variant">
-                        {row.description}
-                      </span>
-                    ) : null}
+                    <span className="line-clamp-1 text-body-sm text-on-surface-variant">
+                      {row.whyItMatters}
+                    </span>
+                    <span className="line-clamp-1 text-body-sm text-on-surface">
+                      {row.howToFix}
+                    </span>
                   </div>
                 </td>
                 <td className="px-stack-lg py-5">

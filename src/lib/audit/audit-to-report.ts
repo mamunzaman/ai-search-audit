@@ -20,10 +20,15 @@ import {
   generateExecutiveSummary,
 } from "@/lib/report/executiveSummary";
 import {
+  buildPlaceholderScoreExplanation,
+  generateScoreExplanation,
+} from "@/lib/report/scoreExplanation";
+import {
   demoRankedPriorityIssues,
   generatePriorityIssues,
 } from "@/lib/report/priorityIssues";
-import type { ExecutiveSummary, RankedPriorityIssue } from "@/types/audit";
+import { enrichRecommendationFields } from "@/lib/report/recommendationTemplates";
+import type { ExecutiveSummary, RankedPriorityIssue, ScoreExplanation } from "@/types/audit";
 import {
   getAccessibilityAnalysis,
   getEntityAnalysis,
@@ -101,6 +106,7 @@ export type ReportViewData = {
   recommendations: ReportRecommendation[];
   accessibilityAnalysis: AccessibilityAnalysis;
   executiveSummary: ExecutiveSummary;
+  scoreExplanation: ScoreExplanation;
 };
 
 const CATEGORY_ORDER = [
@@ -303,9 +309,10 @@ export function auditToReportView(
     criticalIssues: buildHeroIssues(scores.categories),
     categories: mapCategoryScores(scores.categories),
     priorityIssues: generatePriorityIssues(normalized),
-    recommendations: scores.recommendations,
+    recommendations: enrichReportRecommendations(scores.recommendations),
     accessibilityAnalysis: getAccessibilityAnalysis(normalized),
     executiveSummary: generateExecutiveSummary(normalized),
+    scoreExplanation: generateScoreExplanation(normalized),
   };
 }
 
@@ -368,7 +375,27 @@ export function getPlaceholderReportView(domain: string): ReportViewData {
     recommendations: [],
     accessibilityAnalysis: { ...defaultAccessibilityAnalysis },
     executiveSummary: defaultExecutiveSummary,
+    scoreExplanation: buildPlaceholderScoreExplanation(reportMeta.score),
   };
+}
+
+function enrichReportRecommendations(
+  recommendations: ReportRecommendation[],
+): ReportRecommendation[] {
+  return recommendations.map((rec) => {
+    const enriched = enrichRecommendationFields(
+      rec.title,
+      `${rec.whyThisMatters} ${rec.howToFix}`,
+      "",
+    );
+
+    return {
+      ...rec,
+      whyThisMatters: enriched.whyItMatters ?? rec.whyThisMatters,
+      howToFix: enriched.howToFix ?? rec.howToFix,
+      copyableExample: enriched.copyableExample,
+    };
+  });
 }
 
 export function buildReportView(

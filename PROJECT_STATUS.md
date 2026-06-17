@@ -1,23 +1,21 @@
 # Project Status
 
-**Last Update:** 14 June 2026 (Report UI standardization)
+**Last Update:** 14 June 2026 (Implementation-ready recommendations)
 
 ## Completed Features
-- [x] Report UI standardization — all `/report/*` detail pages use `CategoryDetailLayout`, `reportStyles`, and shared category components
-- [x] Shared report components — `CategoryHeroCard`, `CategorySignalFindingsTable`, `CategorySimpleKpiStrip`, `CategoryGapsListSection`, `CategoryTopRecommendationCard`
-- [x] DESIGN_SYSTEM.md — report typography/spacing rules documented
-- [x] Priority Issues — ranked top 6 from all audit categories via `generatePriorityIssues()`
-- [x] Executive Summary — rule-based `generateExecutiveSummary()` from category scores
-- [x] Citation Readiness Audit — sitewide signals from `siteCrawl.pages`
-- [x] Trust Signals Audit — sitewide signals from `siteCrawl.pages`
-- [x] Entity Clarity Audit — sitewide signals from `siteCrawl.pages`
-- [x] MVP site crawler — `crawlSite()` up to 5 same-origin pages
-- [x] Advanced Schema, Open Graph, Twitter Card, and prior audits
+- [x] Score explanation card — `generateScoreExplanation()` + `ScoreExplanationCard` on Overview
+- [x] Priority issue enrichment — `generatePriorityIssues()` adds `whyItMatters`, `howToFix`, `copyableExample`
+- [x] High-Impact Recommendations table — shows issue title, why it matters, how to fix
+- [x] Report UI standardization — all `/report/*` detail pages use shared layout and tokens
+- [x] Priority Issues — ranked top 6 from all audit categories
+- [x] Executive Summary — rule-based from category scores
+- [x] Sitewide audits — Trust Signals, Citation Readiness, Entity Clarity
 
 ## In Progress
-- [ ] Extend sitewide signal aggregation to other audits (Answer Extraction next)
+- [ ] Extend sitewide signal aggregation to Answer Extraction
 
 ## Pending Tasks
+- [ ] Show copyableExample on detail pages
 - [ ] Carousel / Growth Potential card deep links
 - [ ] Sitemap-based crawl expansion
 - [ ] Mobile sidebar navigation drawer

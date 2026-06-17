@@ -21,7 +21,22 @@ export type AuditRecommendation = {
   whyThisMatters: string;
   howToFix: string;
   estimatedGain: number;
+  copyableExample?: string;
 };
+
+export type EnrichedRecommendationFields = {
+  whyItMatters?: string;
+  howToFix?: string;
+  copyableExample?: string;
+};
+
+export type DetailPageRecommendation = {
+  title: string;
+  description: string;
+  impactGain: string;
+  priority: string;
+  effort: string;
+} & EnrichedRecommendationFields;
 
 export type AIAuditStatus = "good" | "warning" | "poor";
 
@@ -105,6 +120,14 @@ export type ExecutiveSummary = {
   potentialGain: number;
 };
 
+export type ScoreExplanation = {
+  scoreLabel: string;
+  summary: string;
+  strengths: string[];
+  blockers: string[];
+  quickWins: string[];
+};
+
 export type PriorityIssueSeverity = "Critical" | "High" | "Medium" | "Low";
 
 export type RankedPriorityIssue = {
@@ -115,4 +138,7 @@ export type RankedPriorityIssue = {
   recommendation: string;
   estimatedGain: number;
   detailHref: string;
+  whyItMatters?: string;
+  howToFix?: string;
+  copyableExample?: string;
 };

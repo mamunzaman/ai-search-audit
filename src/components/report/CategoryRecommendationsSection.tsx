@@ -1,6 +1,6 @@
-import { Icon } from "@/components/icons/Icon";
 import { cn } from "@/lib/cn";
 import type { CategoryRecommendation } from "@/lib/category-detail-data";
+import { CategoryRecommendationDetail } from "./CategoryRecommendationDetail";
 import { reportStyles } from "./reportStyles";
 
 type CategoryRecommendationsSectionProps = {
@@ -83,18 +83,12 @@ export function CategoryRecommendationsSection({
 
               <div className="space-y-3 p-stack-lg">
                 <h4 className="font-bold text-primary">{rec.title}</h4>
-                <p className="text-body-sm leading-relaxed text-on-surface-variant">
-                  {rec.description}
-                </p>
-                <div className="flex items-start gap-2 rounded-lg bg-surface-container-low p-stack-md">
-                  <Icon name="build" size={16} className="mt-0.5 text-outline" />
-                  <div>
-                    <p className={reportStyles.subsectionLabel}>Fix Summary</p>
-                    <p className="text-body-sm font-medium text-on-surface">
-                      {rec.description}
-                    </p>
-                  </div>
-                </div>
+                <CategoryRecommendationDetail
+                  whyItMatters={rec.whyItMatters}
+                  howToFix={rec.howToFix}
+                  copyableExample={rec.copyableExample}
+                  fallbackDescription={rec.description}
+                />
               </div>
             </article>
           );

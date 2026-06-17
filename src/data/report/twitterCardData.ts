@@ -4,7 +4,8 @@ import { getTwitterCardAudit } from "@/lib/audit/audit-normalize";
 import { loadAuditReportSafe } from "@/lib/audit/storage";
 import type { AuditResponse, CategoryScore } from "@/lib/audit/types";
 import { reportMeta, twitterCardAuditMock } from "@/lib/report-data";
-import type { AuditFindingStatus } from "@/types/audit";
+import { buildDetailPageRecommendation } from "@/lib/report/recommendationTemplates";
+import type { AuditFindingStatus, DetailPageRecommendation } from "@/types/audit";
 
 export type TwitterCardKpi = {
   label: string;
@@ -32,13 +33,7 @@ export type TwitterCardDetailView = {
   kpis: TwitterCardKpi[];
   findings: TwitterCardFindingRow[];
   issues: string[];
-  recommendation: {
-    title: string;
-    description: string;
-    impactGain: string;
-    priority: string;
-    effort: string;
-  };
+  recommendation: DetailPageRecommendation;
   auditDate: string;
 };
 
@@ -119,7 +114,8 @@ function buildDemoView(domain: string): TwitterCardDetailView {
     ],
     findings,
     issues: mock.issues.map((issue) => issue.explanation),
-    recommendation: {
+    recommendation: buildDetailPageRecommendation({
+      category: "Twitter Card",
       title: topRec?.title ?? "Improve twitter:image URL",
       description:
         topRec?.howToFix ??
@@ -127,7 +123,7 @@ function buildDemoView(domain: string): TwitterCardDetailView {
       impactGain: `+${topRec?.estimatedGain ?? 6} Score Gain`,
       priority: (topRec?.estimatedGain ?? 6) >= 6 ? "High" : "Medium",
       effort: "Easy",
-    },
+    }),
     auditDate: reportMeta.auditDate,
   };
 }
@@ -174,7 +170,8 @@ export function buildTwitterCardDetailView(
       twitterAudit.issues.length > 0
         ? twitterAudit.issues.map((issue) => issue.explanation)
         : category?.problems.slice(0, 4) ?? [],
-    recommendation: {
+    recommendation: buildDetailPageRecommendation({
+      category: "Twitter Card",
       title: topRec?.title ?? "Improve Twitter Card metadata",
       description:
         topRec?.howToFix ??
@@ -183,7 +180,7 @@ export function buildTwitterCardDetailView(
       impactGain: `+${topRec?.estimatedGain ?? 5} Score Gain`,
       priority: (topRec?.estimatedGain ?? 5) >= 6 ? "High" : "Medium",
       effort: (topRec?.estimatedGain ?? 5) >= 6 ? "Medium" : "Easy",
-    },
+    }),
     auditDate: view.auditDate,
   };
 }
