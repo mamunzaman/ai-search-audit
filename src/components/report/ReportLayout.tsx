@@ -17,7 +17,7 @@ export function ReportLayout({
   auditDate,
 }: ReportLayoutProps) {
   return (
-    <div className="min-h-screen min-w-0 overflow-x-hidden bg-canvas text-[16px] leading-relaxed text-on-surface">
+    <div className="min-h-screen min-w-0 overflow-x-hidden bg-canvas font-sans text-body-md leading-relaxed text-on-surface antialiased">
       <ReportSidebar domain={domain} activeNav="Overview" auditDate={auditDate} />
       <div className="report-print-shell flex min-h-screen min-w-0 flex-col md:ml-64">
         <ReportTopNav domain={domain} />

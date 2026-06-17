@@ -5,9 +5,9 @@ const sidebarIcons = ["monitoring", "search_check", "hub"];
 
 export function HeroDashboardPreview() {
   return (
-    <div className="group relative">
-      <div className="absolute -inset-4 rounded-[32px] bg-primary/5 opacity-50 blur-3xl transition-opacity group-hover:opacity-100" />
-      <div className="relative flex h-[500px] overflow-hidden rounded-2xl border border-outline-variant bg-white soft-elevation">
+    <div className="group relative w-full lg:pt-1">
+      <div className="absolute -inset-3 rounded-[28px] bg-primary/5 opacity-50 blur-2xl transition-opacity group-hover:opacity-80" />
+      <div className="relative flex min-h-[360px] overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow sm:min-h-[400px] lg:min-h-[440px]">
         <div className="flex w-16 flex-col items-center gap-8 bg-primary py-8 md:w-20">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20">
             <Icon name="analytics" className="text-white" filled />

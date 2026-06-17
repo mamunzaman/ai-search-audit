@@ -19,7 +19,7 @@ export function ReportTopNav({ domain }: ReportTopNavProps) {
         <h1 className="truncate text-headline-md font-bold text-primary">
           {domain} Report
         </h1>
-        <p className="text-body-sm text-on-surface-variant">
+        <p className="text-body-sm text-text-secondary">
           Visual Analytics Executive Summary
         </p>
       </div>

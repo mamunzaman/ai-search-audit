@@ -16,20 +16,22 @@ export function MetricCard({ metric }: MetricCardProps) {
   const { icon, title, score, critical } = metric;
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-outline-variant bg-white p-6 soft-elevation">
-      <div className="flex items-start justify-between">
-        <Icon name={icon} className="text-primary" size={32} />
+    <div className="flex flex-col gap-4 rounded-[24px] border border-outline-variant bg-white p-6 card-shadow">
+      <div className="flex items-start justify-between gap-3">
+        <Icon name={icon} className="shrink-0 text-primary" size={28} />
         <span
           className={cn(
-            "font-headline-md text-headline-md",
+            "text-right font-headline-md text-headline-md font-bold tabular-nums tracking-tight",
             critical ? "text-accent-coral" : "text-primary",
           )}
         >
           {score}
-          <small className="font-label-md text-label-md text-on-surface-variant">/100</small>
+          <small className="ml-0.5 font-label-md text-label-md font-semibold text-text-secondary">
+            /100
+          </small>
         </span>
       </div>
-      <h4 className="font-body-md text-body-md font-bold text-on-surface">{title}</h4>
+      <h4 className="font-body-md text-body-md font-semibold text-on-surface">{title}</h4>
       <div className="h-2 overflow-hidden rounded-full bg-surface-container-high">
         <div
           className={cn(

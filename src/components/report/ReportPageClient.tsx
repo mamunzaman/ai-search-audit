@@ -44,7 +44,7 @@ export function ReportPageClient({ domain }: ReportPageClientProps) {
         <h1 className="text-headline-lg font-semibold text-primary">
           {data.domain} — AI Search Audit Report
         </h1>
-        <p className="text-body-sm text-on-surface-variant">
+        <p className="text-body-sm text-text-secondary">
           Generated {view.auditDate}
         </p>
       </div>
