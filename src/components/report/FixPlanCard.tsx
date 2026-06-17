@@ -12,7 +12,7 @@ export function FixPlanCard({ data }: FixPlanCardProps) {
 
   return (
     <section
-      className={`${reportStyles.card} ${reportStyles.cardPaddingXl} animate-fade-in`}
+      className={`${reportStyles.card} ${reportStyles.cardPaddingXl}`}
       style={{ animationDelay: "0.35s" }}
     >
       <h2 className={`${reportStyles.sectionTitle} mb-stack-lg text-primary`}>

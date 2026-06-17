@@ -49,7 +49,7 @@ function ExplanationList({
 export function ScoreExplanationCard({ data }: ScoreExplanationCardProps) {
   return (
     <section
-      className={`${reportStyles.card} ${reportStyles.cardPaddingXl} animate-fade-in`}
+      className={`${reportStyles.card} ${reportStyles.cardPaddingXl}`}
       style={{ animationDelay: "0.3s" }}
     >
       <h2 className={`${reportStyles.sectionTitle} mb-stack-sm text-primary`}>

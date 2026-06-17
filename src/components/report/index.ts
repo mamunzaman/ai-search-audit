@@ -30,6 +30,14 @@ export { HighImpactRecommendationsTable } from "./HighImpactRecommendationsTable
 export { LLMIndexStatusCard } from "./LLMIndexStatusCard";
 export { ReadinessTrendCard } from "./ReadinessTrendCard";
 export { ReportPageClient } from "./ReportPageClient";
+export {
+  ReportDetailMotion,
+  ReportFadeIn,
+  ReportStagger,
+  ReportStaggerItem,
+} from "./ReportMotion";
+export { ReportAuditGate } from "./ReportAuditGate";
+export { ReportEmptyState } from "./ReportEmptyState";
 export { ReportBreadcrumb } from "./ReportBreadcrumb";
 export { ReportFooter } from "./ReportFooter";
 export { ReportLayout } from "./ReportLayout";

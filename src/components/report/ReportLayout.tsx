@@ -24,7 +24,7 @@ export function ReportLayout({
         <main className={cn(reportStyles.mainShell, "report-print-main space-y-stack-lg")}>
           {children}
         </main>
-        <ReportFooter />
+        <ReportFooter domain={domain} />
       </div>
     </div>
   );

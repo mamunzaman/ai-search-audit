@@ -2,6 +2,7 @@ import { Icon } from "@/components/icons/Icon";
 import { cn } from "@/lib/cn";
 import type { CategoryIssue } from "@/lib/category-detail-data";
 import { IssueExplanationAccordion } from "./IssueExplanationAccordion";
+import { ReportFadeIn } from "./ReportMotion";
 import { reportStyles } from "./reportStyles";
 
 type CategoryIssuesSectionProps = {
@@ -115,7 +116,8 @@ export function CategoryIssuesSection({
   }
 
   return (
-    <section className={reportStyles.sectionStack}>
+    <ReportFadeIn>
+      <section className={reportStyles.sectionStack}>
       <h3 className={reportStyles.sectionTitle}>{title}</h3>
       <div className={cn("grid grid-cols-1 lg:grid-cols-2", reportStyles.gridGap)}>
         {issues.map((issue) => {
@@ -164,5 +166,6 @@ export function CategoryIssuesSection({
         })}
       </div>
     </section>
+    </ReportFadeIn>
   );
 }

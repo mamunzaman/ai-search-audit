@@ -2,6 +2,7 @@ import { cn } from "@/lib/cn";
 import { isExplanationStatus } from "@/lib/report/issueExplanations";
 import { Fragment } from "react";
 import { IssueExplanationAccordion } from "./IssueExplanationAccordion";
+import { ReportFadeIn } from "./ReportMotion";
 import { reportStyles } from "./reportStyles";
 
 export type SignalFindingRow = {
@@ -32,7 +33,8 @@ export function CategorySignalFindingsTable({
   const bodyCell = compact ? reportStyles.tableBodyCellCompact : reportStyles.tableBodyCell;
   const accordionCell = compact ? reportStyles.accordionCellIndented : "px-stack-lg pb-3 pt-1 pl-10";
   return (
-    <section className={cn(reportStyles.card, "overflow-hidden")}>
+    <ReportFadeIn>
+      <section className={cn(reportStyles.card, "overflow-hidden")}>
       <div className={sectionHeader}>
         <h3 className={reportStyles.sectionTitle}>{title}</h3>
       </div>
@@ -95,5 +97,6 @@ export function CategorySignalFindingsTable({
         </table>
       </div>
     </section>
+    </ReportFadeIn>
   );
 }

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ExportReportButton } from "@/components/report/ExportReportButton";
 import { Button } from "@/components/ui";
 import { avatarUrl } from "@/lib/report-data";
@@ -23,12 +24,15 @@ export function ReportTopNav({ domain }: ReportTopNavProps) {
       </div>
       <div className="flex shrink-0 flex-wrap items-center gap-stack-sm sm:gap-stack-md">
         <ExportReportButton domain={domain} />
-        <Button
-          data-report-print-hide
-          className="rounded-lg px-6 py-2 text-label-md hover:brightness-110"
-        >
-          New Audit
-        </Button>
+        <Link href="/">
+          <Button
+            data-report-print-hide
+            type="button"
+            className="rounded-lg px-6 py-2 text-label-md hover:brightness-110"
+          >
+            Run New Audit
+          </Button>
+        </Link>
         <div
           data-report-print-hide
           className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-outline-variant bg-surface-container"

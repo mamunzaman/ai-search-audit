@@ -1,4 +1,5 @@
 import { cn } from "@/lib/cn";
+import { ReportFadeIn } from "./ReportMotion";
 import { reportStyles } from "./reportStyles";
 
 export type SimpleKpi = {
@@ -13,7 +14,8 @@ type CategorySimpleKpiStripProps = {
 
 export function CategorySimpleKpiStrip({ kpis }: CategorySimpleKpiStripProps) {
   return (
-    <div className={cn("grid grid-cols-2 lg:grid-cols-4", reportStyles.gridGap)}>
+    <ReportFadeIn>
+      <div className={cn("grid grid-cols-2 lg:grid-cols-4", reportStyles.gridGap)}>
       {kpis.map((kpi) => (
         <div key={kpi.label} className={cn(reportStyles.card, reportStyles.cardPadding)}>
           <p className={reportStyles.subsectionLabel}>{kpi.label}</p>
@@ -25,6 +27,7 @@ export function CategorySimpleKpiStrip({ kpis }: CategorySimpleKpiStripProps) {
           ) : null}
         </div>
       ))}
-    </div>
+      </div>
+    </ReportFadeIn>
   );
 }

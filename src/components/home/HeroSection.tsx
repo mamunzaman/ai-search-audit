@@ -46,7 +46,7 @@ export function HeroSection() {
                 className="whitespace-nowrap rounded-xl px-6 py-3"
                 onClick={handleSubmit}
               >
-                Get LLM Visibility Report
+                Get your LLM Visibility Report
               </Button>
             </div>
           </div>

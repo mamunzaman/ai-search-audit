@@ -1,6 +1,7 @@
 import { Icon } from "@/components/icons/Icon";
 import { cn } from "@/lib/cn";
 import type { CategoryKpi } from "@/lib/category-detail-data";
+import { ReportFadeIn } from "./ReportMotion";
 import { reportStyles } from "./reportStyles";
 
 type CategoryKpiStripProps = {
@@ -42,7 +43,8 @@ const trendIcons = {
 
 export function CategoryKpiStrip({ kpis }: CategoryKpiStripProps) {
   return (
-    <div className={cn("grid grid-cols-2 md:grid-cols-4", reportStyles.gridGap)}>
+    <ReportFadeIn>
+      <div className={cn("grid grid-cols-2 md:grid-cols-4", reportStyles.gridGap)}>
       {kpis.map((kpi) => {
         const trend = getTrend(kpi.value);
 
@@ -86,6 +88,7 @@ export function CategoryKpiStrip({ kpis }: CategoryKpiStripProps) {
           </div>
         );
       })}
-    </div>
+      </div>
+    </ReportFadeIn>
   );
 }

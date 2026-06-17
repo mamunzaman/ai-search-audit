@@ -94,7 +94,7 @@ export function StrategicOverviewCard({ data, domain }: StrategicOverviewCardPro
 
   return (
     <div
-      className="flex animate-fade-in flex-col rounded-[24px] border border-outline-variant bg-white p-stack-xl card-shadow lg:col-span-8"
+      className="flex flex-col rounded-[24px] border border-outline-variant bg-white p-stack-xl card-shadow lg:col-span-8"
       style={{ animationDelay: "0.2s" }}
     >
       <h2 className="mb-stack-md text-headline-lg text-primary">Audit Summary</h2>

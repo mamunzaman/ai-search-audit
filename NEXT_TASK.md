@@ -3,12 +3,11 @@
 **Goal:** Extend sitewide signal aggregation to Answer Extraction audit.
 
 **Verify:**
-- Fail/warning rows show blue “View fix” pill; expands to “Hide fix”
-- Expanded drawer shows “Recommended fix” header
-- Passed rows have no fix CTA
+- `/report` sections stagger in on load
+- Detail pages replay animation on route change (`domain` + category key)
+- `prefers-reduced-motion` disables transforms; print has no animation artifacts
 
 ## Done
 
-- Shared `visualFindingsGrid` (60/40, min 360px findings column)
-- Compact table + accordion tokens; recommendations moved higher on signal pages
-- Entity map capped at 420px; WCAG recommendations before AI banner
+- `ReportMotion.tsx` — `ReportFadeIn`, `ReportStagger`, `ReportStaggerItem`, `ReportDetailMotion`
+- Overview + `CategoryDetailLayout` stagger; shared category components use motion context

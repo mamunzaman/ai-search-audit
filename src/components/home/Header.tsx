@@ -12,7 +12,13 @@ export function Header() {
     <header className="sticky top-0 z-50 border-b border-outline-variant bg-surface">
       <div className="mx-auto flex w-full max-w-container-max items-center justify-between px-margin-desktop py-4">
         <div className="font-headline-md text-headline-md font-bold text-on-surface">
-          AI Search Audit
+          <Link
+            href="/"
+            aria-label="Go to homepage"
+            className="cursor-pointer transition-colors hover:text-primary"
+          >
+            AI Search Audit
+          </Link>
         </div>
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (

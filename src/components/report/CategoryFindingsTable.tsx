@@ -4,6 +4,7 @@ import type { CategoryFinding, FindingStatus } from "@/lib/category-detail-data"
 import { isExplanationStatus } from "@/lib/report/issueExplanations";
 import { Fragment } from "react";
 import { IssueExplanationAccordion } from "./IssueExplanationAccordion";
+import { ReportFadeIn } from "./ReportMotion";
 import { reportStyles } from "./reportStyles";
 
 type CategoryFindingsTableProps = {
@@ -86,7 +87,8 @@ export function CategoryFindingsTable({
   const accordionCell = compact ? reportStyles.accordionCellIndented : "px-stack-lg pb-3 pt-1 pl-12";
 
   return (
-    <section className={cn(reportStyles.card, "overflow-hidden")}>
+    <ReportFadeIn>
+      <section className={cn(reportStyles.card, "overflow-hidden")}>
       <div className={sectionHeader}>
         <h3 className={reportStyles.sectionTitle}>{title}</h3>
         <div className="flex flex-wrap gap-2">
@@ -195,5 +197,6 @@ export function CategoryFindingsTable({
         </table>
       </div>
     </section>
+    </ReportFadeIn>
   );
 }

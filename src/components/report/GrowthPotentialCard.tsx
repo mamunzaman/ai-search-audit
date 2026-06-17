@@ -8,7 +8,7 @@ type GrowthPotentialCardProps = {
 export function GrowthPotentialCard({ areas }: GrowthPotentialCardProps) {
   return (
     <div
-      className="flex h-full flex-col overflow-hidden rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow animate-fade-in"
+      className="flex h-full flex-col overflow-hidden rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow"
       style={{ animationDelay: "0.4s" }}
     >
       <div className="mb-stack-md flex h-12 shrink-0 items-center justify-between border-b border-outline-variant pb-stack-sm">

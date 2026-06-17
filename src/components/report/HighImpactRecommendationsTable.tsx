@@ -20,7 +20,7 @@ export function HighImpactRecommendationsTable({
 }: HighImpactRecommendationsTableProps) {
   return (
     <section
-      className="animate-fade-in overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow"
+      className="overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow"
       style={{ animationDelay: "0.6s" }}
     >
       <div className="flex flex-col gap-3 border-b border-outline-variant bg-surface-container-low px-stack-lg py-stack-md sm:flex-row sm:items-center sm:justify-between">

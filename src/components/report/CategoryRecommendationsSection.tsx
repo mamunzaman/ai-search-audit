@@ -2,6 +2,7 @@ import { cn } from "@/lib/cn";
 import type { CategoryRecommendation } from "@/lib/category-detail-data";
 import { getIssueExplanation } from "@/lib/report/issueExplanations";
 import { CategoryRecommendationDetail } from "./CategoryRecommendationDetail";
+import { ReportFadeIn } from "./ReportMotion";
 import { reportStyles } from "./reportStyles";
 
 type CategoryRecommendationsSectionProps = {
@@ -50,7 +51,8 @@ export function CategoryRecommendationsSection({
   }
 
   return (
-    <section className={reportStyles.sectionStack}>
+    <ReportFadeIn>
+      <section className={reportStyles.sectionStack}>
       <div className="border-b border-outline-variant pb-stack-md">
         <p className="text-label-md font-bold uppercase tracking-wider text-primary">
           Action Plan
@@ -107,5 +109,6 @@ export function CategoryRecommendationsSection({
         })}
       </div>
     </section>
+    </ReportFadeIn>
   );
 }

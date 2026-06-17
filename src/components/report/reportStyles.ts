@@ -45,6 +45,9 @@ export const reportStyles = {
     "border-primary/40 bg-primary-fixed font-bold shadow-sm hover:border-primary/55 hover:bg-primary-fixed-dim",
   fixDrawer:
     "mt-1.5 rounded-lg border border-outline-variant border-l-4 border-l-primary bg-white p-2.5",
+  motionFadeIn: "report-fade-in",
+  motionStagger: "report-stagger",
+  motionStaggerItem: "report-stagger-item",
   detailFindingsCard:
     "flex min-w-0 flex-col overflow-hidden rounded-[24px] border border-outline-variant bg-white card-shadow",
   detailFindingsHeader: "border-b border-outline-variant px-stack-md py-3",

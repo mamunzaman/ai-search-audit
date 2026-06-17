@@ -1,5 +1,6 @@
 import { Icon } from "@/components/icons/Icon";
 import Link from "next/link";
+import { buildReportNavHref } from "@/lib/report/navigation";
 import { reportMeta, sidebarNav } from "@/lib/report-data";
 
 type ReportSidebarProps = {
@@ -7,64 +8,6 @@ type ReportSidebarProps = {
   activeNav?: string;
   auditDate?: string;
 };
-
-function buildNavHref(slug: string | undefined, domain: string): string {
-  const encoded = encodeURIComponent(domain);
-
-  if (slug === "overview") {
-    return `/report?domain=${encoded}`;
-  }
-
-  if (slug === "seo-health") {
-    return `/report/seo-health?domain=${encoded}`;
-  }
-
-  if (slug === "ai-visibility") {
-    return `/report/ai-visibility?domain=${encoded}`;
-  }
-
-  if (slug === "trust-signals") {
-    return `/report/trust-signals?domain=${encoded}`;
-  }
-
-  if (slug === "open-graph") {
-    return `/report/open-graph?domain=${encoded}`;
-  }
-
-  if (slug === "twitter-card") {
-    return `/report/twitter-card?domain=${encoded}`;
-  }
-
-  if (slug === "entity-clarity") {
-    return `/report/entity-clarity?domain=${encoded}`;
-  }
-
-  if (slug === "citation-readiness") {
-    return `/report/citation-readiness?domain=${encoded}`;
-  }
-
-  if (slug === "answer-extraction") {
-    return `/report/answer-extraction?domain=${encoded}`;
-  }
-
-  if (slug === "content-structure") {
-    return `/report/content-structure?domain=${encoded}`;
-  }
-
-  if (slug === "schema-markup") {
-    return `/report/schema-markup?domain=${encoded}`;
-  }
-
-  if (slug === "advanced-schema") {
-    return `/report/advanced-schema?domain=${encoded}`;
-  }
-
-  if (slug === "wcag-2.2") {
-    return `/report/wcag-22?domain=${encoded}`;
-  }
-
-  return "#";
-}
 
 export function ReportSidebar({
   domain,
@@ -80,9 +23,13 @@ export function ReportSidebar({
       className="fixed left-0 top-0 z-30 hidden h-screen w-64 flex-col border-r border-outline-variant bg-surface p-stack-md md:flex"
     >
       <div className="mb-stack-xl px-2">
-        <span className="text-headline-md font-bold text-primary">
+        <Link
+          href="/"
+          aria-label="Go to homepage"
+          className="cursor-pointer text-headline-md font-bold text-primary transition-colors hover:text-primary-container"
+        >
           AuditMetric
-        </span>
+        </Link>
       </div>
       <div className="mb-stack-lg px-2">
         <div className="mb-stack-xs flex items-center gap-stack-sm">
@@ -102,7 +49,7 @@ export function ReportSidebar({
       <nav className="flex-1 space-y-1">
         {sidebarNav.map((item) => {
           const isActive = item.label === activeNav;
-          const href = buildNavHref(item.slug, domain);
+          const href = buildReportNavHref(item.slug, domain);
 
           return (
             <Link
@@ -121,23 +68,26 @@ export function ReportSidebar({
         })}
       </nav>
       <div className="mt-auto border-t border-outline-variant pt-stack-md">
-        <a
-          href="#"
-          className="mb-1 flex items-center gap-3 rounded-lg px-3 py-2 text-on-surface-variant hover:bg-surface-container-high"
+        <button
+          type="button"
+          disabled
+          className="mb-1 flex w-full cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-on-surface-variant opacity-60"
         >
           <Icon name="settings" />
           <span className="text-label-md">Settings</span>
-        </a>
-        <a
-          href="#"
-          className="flex items-center gap-3 rounded-lg px-3 py-2 text-on-surface-variant hover:bg-surface-container-high"
+        </button>
+        <button
+          type="button"
+          disabled
+          className="flex w-full cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-on-surface-variant opacity-60"
         >
           <Icon name="help" />
           <span className="text-label-md">Support</span>
-        </a>
+        </button>
         <button
           type="button"
-          className="mt-stack-md w-full rounded-xl bg-[#FF5A4F] py-3 text-label-md font-bold uppercase tracking-wider text-white transition-all hover:brightness-90"
+          disabled
+          className="mt-stack-md w-full cursor-not-allowed rounded-xl bg-[#FF5A4F]/70 py-3 text-label-md font-bold uppercase tracking-wider text-white opacity-80"
         >
           Upgrade Plan
         </button>

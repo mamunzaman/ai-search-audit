@@ -10,7 +10,7 @@ type VisualInsightsSectionProps = {
 
 export function VisualInsightsSection({ data }: VisualInsightsSectionProps) {
   return (
-    <section className="animate-fade-in space-y-stack-md" style={{ animationDelay: "0.4s" }}>
+    <section className="space-y-stack-md">
       <div className="min-w-0">
         <p className="text-label-md font-bold uppercase tracking-wider text-primary">
           Visual Insights

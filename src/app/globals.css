@@ -261,8 +261,32 @@
   }
 }
 
+@keyframes report-fade-in-keyframes {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in,
+.report-fade-in,
+.report-stagger-item {
+  opacity: 0;
+  animation: report-fade-in-keyframes 0.55s ease-out forwards;
+  animation-delay: var(--report-motion-delay, 0ms);
+}
+
+.report-stagger {
+  display: flex;
+  flex-direction: column;
+}
+
 .animate-fade-in {
-  animation: fade-in 0.6s ease-out forwards;
+  animation-duration: 0.6s;
 }
 
 .progress-ring__circle {
@@ -307,6 +331,14 @@
   .score-ring-circle {
     transition: none;
   }
+
+  .animate-fade-in,
+  .report-fade-in,
+  .report-stagger-item {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 body {
@@ -342,7 +374,9 @@ body {
     box-shadow: none !important;
   }
 
-  .animate-fade-in {
+  .animate-fade-in,
+  .report-fade-in,
+  .report-stagger-item {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;

@@ -1,5 +1,6 @@
 import { ReportScoreRing } from "@/components/report/ScoreRing";
 import { cn } from "@/lib/cn";
+import { ReportFadeIn } from "./ReportMotion";
 import { reportStyles } from "./reportStyles";
 
 type CategoryHeroCardProps = {
@@ -24,7 +25,8 @@ export function CategoryHeroCard({
   className,
 }: CategoryHeroCardProps) {
   return (
-    <section className={cn(reportStyles.heroCard, className)}>
+    <ReportFadeIn>
+      <section className={cn(reportStyles.heroCard, className)}>
       <ReportScoreRing
         score={score}
         categorySlug={categorySlug}
@@ -40,5 +42,6 @@ export function CategoryHeroCard({
         <p className={reportStyles.pageSummary}>{summary}</p>
       </div>
     </section>
+    </ReportFadeIn>
   );
 }

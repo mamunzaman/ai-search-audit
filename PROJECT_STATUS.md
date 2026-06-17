@@ -1,14 +1,12 @@
 # Project Status
 
-**Last Update:** 14 June 2026 (Fix CTA pill buttons)
+**Last Update:** 14 June 2026 (Report entrance animations)
 
 ## Completed Features
-- [x] Fix CTA — pill buttons with severity emphasis, connected table rows
-- [x] Detail page layout — balanced visual/findings grid, compact tables
-- [x] Fix drawer — compact inline trigger, field-specific fallbacks
-- [x] Visual Insights section (heading, AI breakdown, schema, social)
+- [x] Shared report motion — fade/slide stagger on Overview + detail pages
+- [x] Connected navigation flow across homepage and report pages
+- [x] Fix CTA — pill buttons with severity emphasis
 - [x] Export Report — browser print-to-PDF
-- [x] Report UI standardization across `/report/*` detail pages
 
 ## In Progress
 - [ ] Extend sitewide signal aggregation to Answer Extraction

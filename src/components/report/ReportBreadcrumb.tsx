@@ -1,5 +1,6 @@
 import { Icon } from "@/components/icons/Icon";
 import Link from "next/link";
+import { reportOverviewHref } from "@/lib/report/navigation";
 
 type ReportBreadcrumbProps = {
   domain: string;
@@ -12,18 +13,26 @@ export function ReportBreadcrumb({
   currentLabel,
   currentHref,
 }: ReportBreadcrumbProps) {
-  const reportHref = `/report?domain=${encodeURIComponent(domain)}`;
+  const reportHref = reportOverviewHref(domain);
 
   return (
     <nav
       aria-label="Breadcrumb"
       className="mb-gutter flex min-w-0 flex-wrap items-center gap-2 text-body-sm text-on-surface-variant"
     >
-      <Link href="/" className="transition-colors hover:text-primary">
+      <Link
+        href="/"
+        aria-label="Go to homepage"
+        className="cursor-pointer transition-colors hover:text-primary"
+      >
         AI Search Audit
       </Link>
       <Icon name="chevron_right" size={16} className="shrink-0 opacity-50" />
-      <Link href={reportHref} className="transition-colors hover:text-primary">
+      <Link
+        href={reportHref}
+        aria-label="Back to report overview"
+        className="cursor-pointer transition-colors hover:text-primary"
+      >
         Report
       </Link>
       <Icon name="chevron_right" size={16} className="shrink-0 opacity-50" />

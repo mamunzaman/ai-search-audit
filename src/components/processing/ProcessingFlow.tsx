@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   ActivityFeed,
   EstimatedCompletion,
@@ -14,7 +15,6 @@ import type { AuditResponse } from "@/lib/audit/types";
 import { normalizeDomain } from "@/lib/domain";
 import {
   activityLog,
-  footerLinks,
   metrics as placeholderMetrics,
 } from "@/lib/processing-data";
 import {
@@ -24,7 +24,6 @@ import {
   processingDescription,
   PROGRESS_MILESTONES,
 } from "@/lib/processing-steps";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -183,19 +182,32 @@ export function ProcessingFlow({ domain }: ProcessingFlowProps) {
       </main>
       <footer className="mt-auto border-t border-outline-variant bg-surface-container-low py-stack-xl">
         <div className="mx-auto flex w-full max-w-container-max flex-col items-center justify-between px-margin-desktop md:flex-row">
-          <span className="font-headline-md text-headline-md font-bold text-primary">
+          <Link
+            href="/"
+            aria-label="Go to homepage"
+            className="font-headline-md text-headline-md font-bold text-primary transition-colors hover:text-primary-container"
+          >
             AI Search Audit
-          </span>
+          </Link>
           <div className="mt-6 flex gap-8 md:mt-0">
-            {footerLinks.map((link) => (
-              <a
-                key={link}
-                href="#"
-                className="font-body-sm text-body-sm text-on-surface-variant hover:underline decoration-primary"
-              >
-                {link}
-              </a>
-            ))}
+            <Link
+              href="/"
+              className="font-body-sm text-body-sm text-on-surface-variant hover:underline decoration-primary"
+            >
+              Home
+            </Link>
+            <Link
+              href="/#features"
+              className="font-body-sm text-body-sm text-on-surface-variant hover:underline decoration-primary"
+            >
+              Features
+            </Link>
+            <Link
+              href="/#how-it-works"
+              className="font-body-sm text-body-sm text-on-surface-variant hover:underline decoration-primary"
+            >
+              How It Works
+            </Link>
           </div>
           <p className="mt-6 font-body-sm text-body-sm text-on-surface-variant opacity-80 md:mt-0">
             © 2024 AI Search Audit. All rights reserved.

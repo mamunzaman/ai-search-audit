@@ -7,7 +7,7 @@ type LLMIndexStatusCardProps = {
 
 export function LLMIndexStatusCard({ engines }: LLMIndexStatusCardProps) {
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow animate-fade-in">
+    <div className="flex h-full flex-col overflow-hidden rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow">
       <div className="mb-stack-md flex h-12 shrink-0 items-center justify-between border-b border-outline-variant pb-stack-sm">
         <div className="min-w-0">
           <h3 className="line-clamp-1 text-headline-md">LLM Index Status</h3>
