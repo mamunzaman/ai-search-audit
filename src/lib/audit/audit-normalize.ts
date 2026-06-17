@@ -45,6 +45,7 @@ import type {
   AdvancedSchemaAuditResult,
   SiteCrawlResult,
 } from "@/types/audit";
+import { detectPageIntent } from "./pageIntent";
 import type {
   AccessibilityAnalysis,
   AccessibilityFinding,
@@ -64,7 +65,7 @@ import type {
   TrustSignals,
 } from "./types";
 
-export const AUDIT_SCHEMA_VERSION = 17;
+export const AUDIT_SCHEMA_VERSION = 18;
 
 export const defaultTrustSignals: TrustSignals = {
   aboutPage: false,
@@ -1082,6 +1083,17 @@ export function normalizeAuditResponse(data: unknown): AuditResponse | null {
   const socialMetadata = deriveSocialMetadata(audit.socialMetadata);
   const entityAnalysis = deriveEntityAnalysis(audit.entityAnalysis);
   const readabilityAnalysis = deriveReadabilityAnalysis(audit.readabilityAnalysis);
+  const aiVisibilitySignals = deriveAiVisibilitySignals(
+    {
+      title: audit.title,
+      metaDescription: audit.metaDescription,
+      headings,
+      links,
+      schemaTypes,
+      trustSignals,
+    },
+    audit.aiVisibilitySignals,
+  );
 
   return {
     url: audit.url ?? "",
@@ -1096,17 +1108,7 @@ export function normalizeAuditResponse(data: unknown): AuditResponse | null {
     schemaTypes,
     links,
     trustSignals,
-    aiVisibilitySignals: deriveAiVisibilitySignals(
-      {
-        title: audit.title,
-        metaDescription: audit.metaDescription,
-        headings,
-        links,
-        schemaTypes,
-        trustSignals,
-      },
-      audit.aiVisibilitySignals,
-    ),
+    aiVisibilitySignals,
     robotsAnalysis,
     sitemapAnalysis,
     technicalSignals,
@@ -1162,6 +1164,19 @@ export function normalizeAuditResponse(data: unknown): AuditResponse | null {
     accessibilityAnalysis: deriveAccessibilityAnalysis(audit.accessibilityAnalysis),
     checks: normalizeChecks(audit.checks),
     siteCrawl: deriveSiteCrawl(audit.siteCrawl),
+    pageIntent:
+      audit.pageIntent ??
+      detectPageIntent({
+        pageUrl: audit.finalUrl ?? audit.url ?? "",
+        title: typeof audit.title === "string" ? audit.title : "",
+        metaDescription:
+          typeof audit.metaDescription === "string" ? audit.metaDescription : "",
+        headings,
+        schemaTypes,
+        hasFaqSchema: aiVisibilitySignals.faqSchema,
+        hasFaqText: readabilityAnalysis.hasFAQText,
+        questionHeadingCount: readabilityAnalysis.questionHeadingCount,
+      }),
   };
 }
 

@@ -1,13 +1,11 @@
 # Next Task
 
-**Goal:** Extend sitewide signal aggregation to Answer Extraction audit.
+**Goal:** Extend sitewide signal aggregation to Answer Extraction.
 
 **Verify:**
-- `/report` sections stagger in on load
-- Detail pages replay animation on route change (`domain` + category key)
-- `prefers-reduced-motion` disables transforms; print has no animation artifacts
+- Run audit on a multi-page site; confirm answer-extraction findings reflect crawled pages beyond the homepage.
 
 ## Done
 
-- `ReportMotion.tsx` — `ReportFadeIn`, `ReportStagger`, `ReportStaggerItem`, `ReportDetailMotion`
-- Overview + `CategoryDetailLayout` stagger; shared category components use motion context
+- Intent-aware scoring: cloudflare.com 85, vercel.com 86, shopify.com 87 (category scores unchanged)
+- `pageIntent` on audit response + debug output (`intent`, `confidence`, `reasons`)

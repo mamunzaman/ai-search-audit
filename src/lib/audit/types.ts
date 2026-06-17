@@ -57,8 +57,24 @@ export type AuditScoreResult = {
   recommendations: AuditRecommendation[];
 };
 
+export type PageIntentType =
+  | "homepage"
+  | "saas"
+  | "local-business"
+  | "ecommerce"
+  | "blog"
+  | "article"
+  | "documentation";
+
+export type PageIntent = {
+  intent: PageIntentType;
+  confidence: number;
+  reasons: string[];
+};
+
 export type AuditRequest = {
   url: string;
+  debug?: boolean;
 };
 
 export type AuditHeadings = {
@@ -255,6 +271,7 @@ export type AuditResponse = {
   accessibilityAnalysis: AccessibilityAnalysis;
   checks: AuditCheck[];
   siteCrawl: SiteCrawlResult;
+  pageIntent: PageIntent;
 };
 
 export type StoredAuditReport = AuditResponse & {

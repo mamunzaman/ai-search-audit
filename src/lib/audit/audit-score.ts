@@ -54,6 +54,11 @@ import {
   hasCompleteOpenGraph,
   hasTwitterCard,
 } from "./social-metadata";
+import {
+  calculateIntentAwareOverallScore,
+  calculateIntentWeightedCategoryAverage,
+  detectPageIntentFromAudit,
+} from "./pageIntent";
 
 const FAIL_PENALTY = 15;
 const WARN_PENALTY = 7;
@@ -1739,9 +1744,17 @@ export function calculateAuditScores(audit: AuditResponse): AuditScoreResult {
   ];
 
   const overallFromChecks = calculateOverallScoreFromChecks(normalized.checks);
-  const categoryAverage = average(categories.map((category) => category.score));
+  const pageIntent = normalized.pageIntent ?? detectPageIntentFromAudit(normalized);
+  const categoryAverage = calculateIntentWeightedCategoryAverage(
+    categories.map((category) => ({ label: category.label, score: category.score })),
+    pageIntent,
+  );
   const overallScore = clamp(
-    Math.round((overallFromChecks + categoryAverage) / 2),
+    calculateIntentAwareOverallScore(
+      overallFromChecks,
+      categoryAverage,
+      pageIntent,
+    ),
     0,
     100,
   );

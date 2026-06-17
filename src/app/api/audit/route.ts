@@ -28,6 +28,7 @@ import {
 } from "@/lib/audit/readability-check";
 import { runSeoChecks } from "@/lib/audit/seo-checks";
 import { detectTrustSignals } from "@/lib/audit/trust-signals";
+import { detectPageIntent } from "@/lib/audit/pageIntent";
 import { runAdvancedSchemaAudit } from "@/lib/audit/advancedSchemaAudit";
 import { runTwitterCardAudit } from "@/lib/audit/twitterCardAudit";
 import { runOpenGraphAudit } from "@/lib/audit/openGraphAudit";
@@ -39,7 +40,18 @@ import {
 import type { SiteCrawlResult } from "@/types/audit";
 import type { AuditRequest, AuditResponse } from "@/lib/audit/types";
 import { validateAuditUrl } from "@/lib/audit/url-validator";
+import {
+  collectAuditDebugData,
+  buildAuditDebugSummary,
+  getAuditOverallScore,
+  writeAuditDebugFile,
+} from "@/lib/audit/debugAudit";
 import { NextResponse } from "next/server";
+
+function isDebugEnabled(request: Request, body: AuditRequest): boolean {
+  const queryFlag = new URL(request.url).searchParams.get("debug");
+  return queryFlag === "true" || body.debug === true;
+}
 
 function mapEntityClaritySitePages(
   siteCrawl: SiteCrawlResult,
@@ -170,6 +182,16 @@ async function buildAuditResponse(
   const entityChecks = runEntityChecks(entityAnalysis);
   const readabilityChecks = runReadabilityChecks(readabilityAnalysis);
   const accessibilityChecks = runAccessibilityChecks(accessibilityAnalysis);
+  const pageIntent = detectPageIntent({
+    pageUrl: page.finalUrl,
+    title: parsed.title ?? "",
+    metaDescription: parsed.metaDescription ?? "",
+    headings: parsed.headings,
+    schemaTypes,
+    hasFaqSchema: aiVisibilitySignals.faqSchema,
+    hasFaqText: readabilityAnalysis.hasFAQText,
+    questionHeadingCount: readabilityAnalysis.questionHeadingCount,
+  });
 
   return {
     url,
@@ -211,6 +233,7 @@ async function buildAuditResponse(
       ...accessibilityChecks,
     ],
     siteCrawl,
+    pageIntent,
   };
 }
 
@@ -240,9 +263,22 @@ export async function POST(request: Request) {
       siteCrawl = createFallbackSiteCrawl(validation.url, page, 5);
     }
 
-    return NextResponse.json(
-      await buildAuditResponse(validation.url, page, siteCrawl),
-    );
+    const debug = isDebugEnabled(request, body);
+    const audit = await buildAuditResponse(validation.url, page, siteCrawl);
+
+    if (!debug) {
+      return NextResponse.json(audit);
+    }
+
+    const debugPayload = collectAuditDebugData(audit, page.html, siteCrawl);
+    const debugFile = await writeAuditDebugFile(debugPayload);
+
+    return NextResponse.json({
+      success: true,
+      score: getAuditOverallScore(audit),
+      debugFile,
+      debugSummary: buildAuditDebugSummary(debugPayload),
+    });
   } catch (error) {
     if (error instanceof AuditFetchError) {
       return NextResponse.json(

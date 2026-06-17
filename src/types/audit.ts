@@ -202,3 +202,35 @@ export type RankedPriorityIssue = {
   howToFix?: string;
   copyableExample?: string;
 };
+
+export type AuditDebugHeadings = {
+  h1: number;
+  h2: number;
+  h3: number;
+  h4?: number;
+  h5?: number;
+  h6?: number;
+};
+
+export type AuditDebugCrawlPage = {
+  url: string;
+  statusCode?: number;
+  htmlLength?: number;
+  textLength?: number;
+};
+
+export type AuditDebugPayload = {
+  url: string;
+  statusCode?: number;
+  htmlLength?: number;
+  textLength?: number;
+  title?: string;
+  metaDescription?: string;
+  headings?: AuditDebugHeadings;
+  categoryScores?: Record<string, number>;
+  crawlPages?: AuditDebugCrawlPage[];
+  missingCriticalSignals?: string[];
+  intent?: string;
+  confidence?: number;
+  reasons?: string[];
+};
