@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { cn } from "@/lib/cn";
 import { ReportAuditGate } from "./ReportAuditGate";
 import { ReportBreadcrumb } from "./ReportBreadcrumb";
 import { ReportFooter } from "./ReportFooter";
@@ -25,7 +26,12 @@ export function CategoryDetailLayout({
   return (
     <div className="min-h-screen min-w-0 overflow-x-hidden bg-canvas text-[16px] leading-relaxed text-on-surface">
       <ReportSidebar domain={domain} activeNav={activeNav} auditDate={auditDate} />
-      <div className="flex min-h-screen min-w-0 flex-col md:ml-64">
+      <div
+        className={cn(
+          "flex min-h-screen min-w-0 flex-col",
+          reportStyles.reportShellOffset,
+        )}
+      >
         <ReportTopNav domain={domain} />
         <main className={reportStyles.mainShell}>
           <ReportBreadcrumb domain={domain} currentLabel={categoryLabel} />

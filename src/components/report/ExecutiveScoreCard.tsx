@@ -7,7 +7,7 @@ type ExecutiveScoreCardProps = {
 
 export function ExecutiveScoreCard({ data }: ExecutiveScoreCardProps) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-[24px] border border-outline-variant bg-white px-stack-lg py-stack-xl card-shadow lg:col-span-4">
+    <div className="flex h-full min-h-[280px] w-full flex-col items-center justify-center rounded-[24px] border border-outline-variant bg-white px-stack-lg py-stack-xl card-shadow xl:col-span-4">
       <ReportScoreRing
         score={data.score}
         categorySlug="overview"

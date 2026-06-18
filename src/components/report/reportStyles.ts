@@ -62,9 +62,16 @@ export const reportStyles = {
   detailFindingsBody: "min-w-0 flex-1 space-y-stack-sm overflow-y-auto p-stack-md",
 
   heroCard:
-    "flex min-w-0 flex-col items-center gap-stack-lg rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow md:flex-row md:items-center",
+    "flex min-w-0 flex-col items-center gap-stack-lg rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow lg:flex-row lg:items-center",
   mainShell:
-    "mx-auto w-full min-w-0 max-w-container-max flex-1 overflow-x-hidden p-margin-mobile md:p-margin-desktop",
+    "mx-auto w-full min-w-0 max-w-container-max flex-1 overflow-x-hidden p-margin-mobile md:px-4 md:py-4 lg:p-margin-desktop",
+  reportShellOffset: "md:ml-16 xl:ml-64",
+  kpiStripGrid: "grid min-w-0 grid-cols-2 gap-gutter xl:grid-cols-4",
+  detailGrid2: "grid min-w-0 grid-cols-1 gap-gutter md:grid-cols-2",
+  overviewGrid12: "grid min-w-0 grid-cols-1 items-stretch gap-gutter xl:grid-cols-12",
+  tableScroll: "report-table-scroll min-w-0",
+  reportTable: "report-table w-full text-left",
+  breakSafe: "min-w-0 break-words [overflow-wrap:anywhere]",
 
   codeBlock:
     "overflow-hidden rounded-lg border border-outline-variant bg-surface-container-low",

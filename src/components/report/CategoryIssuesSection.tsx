@@ -91,8 +91,10 @@ export function CategoryIssueSpotlight({ issue, category }: CategoryIssueSpotlig
         </div>
       </div>
 
-      <h4 className="mb-1 text-body-md font-bold text-on-surface">{issue.title}</h4>
-      <p className="mb-4 line-clamp-3 text-body-sm text-on-surface-variant">
+      <h4 className={cn("mb-1 text-body-md font-bold text-on-surface", reportStyles.breakSafe)}>
+        {issue.title}
+      </h4>
+      <p className={cn("mb-4 text-body-sm text-on-surface-variant", reportStyles.breakSafe)}>
         {issue.explanation}
       </p>
 
@@ -119,7 +121,7 @@ export function CategoryIssuesSection({
     <ReportFadeIn>
       <section className={reportStyles.sectionStack}>
       <h3 className={reportStyles.sectionTitle}>{title}</h3>
-      <div className={cn("grid grid-cols-1 lg:grid-cols-2", reportStyles.gridGap)}>
+      <div className={cn(reportStyles.detailGrid2)}>
         {issues.map((issue) => {
           const styles = impactStyles[issue.impact];
           const score = impactScore(issue.impact);
@@ -152,8 +154,12 @@ export function CategoryIssuesSection({
                 </div>
               </div>
 
-              <h4 className="mb-1 text-body-md font-bold text-on-surface">{issue.title}</h4>
-              <p className="mb-3 text-body-sm text-on-surface-variant">{issue.explanation}</p>
+              <h4 className={cn("mb-1 text-body-md font-bold text-on-surface", reportStyles.breakSafe)}>
+                {issue.title}
+              </h4>
+              <p className={cn("mb-3 text-body-sm text-on-surface-variant", reportStyles.breakSafe)}>
+                {issue.explanation}
+              </p>
 
               <IssueExplanationAccordion
                 title={issue.title}

@@ -44,7 +44,7 @@ const trendIcons = {
 export function CategoryKpiStrip({ kpis }: CategoryKpiStripProps) {
   return (
     <ReportFadeIn>
-      <div className={cn("grid grid-cols-2 md:grid-cols-4", reportStyles.gridGap)}>
+      <div className={cn(reportStyles.kpiStripGrid)}>
       {kpis.map((kpi) => {
         const trend = getTrend(kpi.value);
 
@@ -58,7 +58,7 @@ export function CategoryKpiStrip({ kpis }: CategoryKpiStripProps) {
             )}
           >
             <div className="flex items-start justify-between gap-2">
-              <p className={reportStyles.subsectionLabel}>{kpi.label}</p>
+              <p className={cn(reportStyles.subsectionLabel, "min-w-0")}>{kpi.label}</p>
               <span
                 className={cn(
                   "inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase",

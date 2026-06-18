@@ -328,12 +328,30 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: geometricPrecision;
+  overflow-x: hidden;
 }
 
 body {
   font-family: var(--font-sans);
   color: var(--color-on-surface);
   font-synthesis: none;
+  overflow-x: hidden;
+}
+
+.report-table-scroll {
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.report-table {
+  min-width: 36rem;
+}
+
+.report-break-safe {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 @media print {

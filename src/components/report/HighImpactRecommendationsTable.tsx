@@ -36,17 +36,17 @@ export function HighImpactRecommendationsTable({
           </span>
         </div>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-left">
+      <div className="report-table-scroll">
+        <table className="report-table w-full text-left">
           <thead className="bg-surface-container-low">
             <tr>
-              <th className="px-stack-lg py-4 text-label-md uppercase text-on-surface-variant">
+              <th className="px-stack-md py-3 text-label-md uppercase text-on-surface-variant md:px-stack-lg md:py-4">
                 Issue
               </th>
-              <th className="px-stack-lg py-4 text-label-md uppercase text-on-surface-variant">
+              <th className="px-stack-md py-3 text-label-md uppercase text-on-surface-variant md:px-stack-lg md:py-4">
                 Status
               </th>
-              <th className="px-stack-lg py-4 text-label-md uppercase text-on-surface-variant">
+              <th className="px-stack-md py-3 text-label-md uppercase text-on-surface-variant md:px-stack-lg md:py-4">
                 Potential Impact
               </th>
               <th
@@ -63,18 +63,18 @@ export function HighImpactRecommendationsTable({
                 key={row.title}
                 className="transition-colors hover:bg-primary-container/5"
               >
-                <td className="px-stack-lg py-5">
-                  <div className="flex flex-col gap-1">
-                    <span className="font-bold text-primary">{row.title}</span>
-                    <span className="line-clamp-1 text-body-sm text-on-surface-variant">
+                <td className="px-stack-md py-4 md:px-stack-lg md:py-5">
+                  <div className="flex min-w-0 flex-col gap-1">
+                    <span className="break-words font-bold text-primary">{row.title}</span>
+                    <span className="break-words text-body-sm text-on-surface-variant">
                       {row.whyItMatters}
                     </span>
-                    <span className="line-clamp-1 text-body-sm text-on-surface">
+                    <span className="break-words text-body-sm text-on-surface">
                       {row.howToFix}
                     </span>
                   </div>
                 </td>
-                <td className="px-stack-lg py-5">
+                <td className="whitespace-nowrap px-stack-md py-4 md:px-stack-lg md:py-5">
                   <span
                     className={cn(
                       "rounded px-2 py-1 text-[10px] font-bold uppercase",

@@ -60,7 +60,7 @@ export function CategoryRecommendationsSection({
         <h3 className={reportStyles.sectionTitle}>{title}</h3>
       </div>
 
-      <div className={cn("grid grid-cols-1 lg:grid-cols-2", reportStyles.gridGap)}>
+      <div className={cn(reportStyles.detailGrid2)}>
         {recommendations.map((rec, index) => {
           const priority = getPriority(index);
           const difficulty = getDifficulty(rec.estimatedGain);
@@ -72,8 +72,8 @@ export function CategoryRecommendationsSection({
 
           return (
             <article key={rec.title} className={cn(reportStyles.card, "overflow-hidden")}>
-              <div className="flex items-center justify-between border-b border-outline-variant bg-surface-container-low px-stack-lg py-stack-md">
-                <div className="flex items-center gap-2">
+              <div className="flex min-w-0 flex-wrap items-center justify-between gap-2 border-b border-outline-variant bg-surface-container-low px-stack-md py-stack-sm md:px-stack-lg md:py-stack-md">
+                <div className="flex min-w-0 flex-wrap items-center gap-2">
                   <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-label-md font-bold text-on-primary">
                     {String(index + 1).padStart(2, "0")}
                   </span>
@@ -95,8 +95,8 @@ export function CategoryRecommendationsSection({
                 ) : null}
               </div>
 
-              <div className="space-y-3 p-stack-lg">
-                <h4 className="font-bold text-primary">{rec.title}</h4>
+              <div className="space-y-3 p-stack-md md:p-stack-lg">
+                <h4 className={cn("font-bold text-primary", reportStyles.breakSafe)}>{rec.title}</h4>
                 <CategoryRecommendationDetail
                   whyItMatters={rec.whyItMatters ?? enriched.whyItMatters}
                   howToFix={rec.howToFix ?? enriched.howToFix}

@@ -19,7 +19,12 @@ export function ReportLayout({
   return (
     <div className="min-h-screen min-w-0 overflow-x-hidden bg-canvas font-sans text-body-md leading-relaxed text-on-surface antialiased">
       <ReportSidebar domain={domain} activeNav="Overview" auditDate={auditDate} />
-      <div className="report-print-shell flex min-h-screen min-w-0 flex-col md:ml-64">
+      <div
+        className={cn(
+          "report-print-shell flex min-h-screen min-w-0 flex-col",
+          reportStyles.reportShellOffset,
+        )}
+      >
         <ReportTopNav domain={domain} />
         <main className={cn(reportStyles.mainShell, "report-print-main space-y-stack-lg")}>
           {children}

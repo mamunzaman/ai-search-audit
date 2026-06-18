@@ -107,8 +107,8 @@ export function CategoryFindingsTable({
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-left">
+      <div className={reportStyles.tableScroll}>
+        <table className={reportStyles.reportTable}>
           <thead className={reportStyles.tableHeaderRow}>
             <tr>
               <th className={headCell}>Parameter</th>
@@ -141,18 +141,18 @@ export function CategoryFindingsTable({
                           showAccordion ? "border-b-0" : "border-b border-outline-variant",
                         )}
                       >
-                        <td className={bodyCell}>
-                          <div className="flex items-center gap-2.5">
-                            <Icon name={finding.icon} className="text-outline" size={20} />
-                            <div>
+                        <td className={cn(bodyCell, "min-w-[10rem]")}>
+                          <div className="flex min-w-0 items-start gap-2.5">
+                            <Icon name={finding.icon} className="shrink-0 text-outline" size={20} />
+                            <div className="min-w-0">
                               <span className="font-bold text-primary">{finding.label}</span>
-                              <p className="line-clamp-1 text-body-sm text-on-surface-variant">
+                              <p className={cn("text-body-sm text-on-surface-variant", reportStyles.breakSafe)}>
                                 {finding.detail}
                               </p>
                             </div>
                           </div>
                         </td>
-                        <td className={bodyCell}>
+                        <td className={cn(bodyCell, "whitespace-nowrap")}>
                           <span
                             className={cn(
                               reportStyles.tableBadge,

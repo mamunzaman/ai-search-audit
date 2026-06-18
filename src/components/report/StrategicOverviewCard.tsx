@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { cn } from "@/lib/cn";
 import type { ReportV2ViewData } from "@/lib/audit/report-v2";
 
 type StrategicOverviewCardProps = {
@@ -46,7 +47,7 @@ type KpiItemProps = {
 function KpiItem({ label, value, showDivider, href }: KpiItemProps) {
   const content = (
     <>
-      <div>
+      <div className="min-w-0">
         <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-outline">
           {label}
         </span>
@@ -56,32 +57,22 @@ function KpiItem({ label, value, showDivider, href }: KpiItemProps) {
     </>
   );
 
+  const itemClassName = showDivider
+    ? "flex min-w-0 flex-1 items-center justify-between gap-stack-sm border-outline-variant px-stack-sm py-2 sm:border-r sm:px-stack-md sm:py-0 last:border-r-0"
+    : "flex min-w-0 flex-1 items-center justify-between gap-stack-sm px-stack-sm py-2 sm:px-stack-md sm:py-0";
+
   if (href) {
     return (
       <Link
         href={href}
-        className={
-          showDivider
-            ? "flex flex-1 items-center justify-between gap-stack-sm border-r border-outline-variant px-stack-md transition-colors last:border-r-0 hover:bg-surface-container-low"
-            : "flex flex-1 items-center justify-between gap-stack-sm px-stack-md transition-colors hover:bg-surface-container-low"
-        }
+        className={cn(itemClassName, "transition-colors hover:bg-surface-container-low")}
       >
         {content}
       </Link>
     );
   }
 
-  return (
-    <div
-      className={
-        showDivider
-          ? "flex flex-1 items-center justify-between gap-stack-sm border-r border-outline-variant px-stack-md last:border-r-0"
-          : "flex flex-1 items-center justify-between gap-stack-sm px-stack-md"
-      }
-    >
-      {content}
-    </div>
-  );
+  return <div className={itemClassName}>{content}</div>;
 }
 
 export function StrategicOverviewCard({ data, domain }: StrategicOverviewCardProps) {
@@ -94,14 +85,14 @@ export function StrategicOverviewCard({ data, domain }: StrategicOverviewCardPro
 
   return (
     <div
-      className="flex flex-col rounded-[24px] border border-outline-variant bg-white p-stack-xl card-shadow lg:col-span-8"
+      className="flex h-full min-h-[280px] w-full flex-col rounded-[24px] border border-outline-variant bg-white p-stack-lg card-shadow md:p-stack-xl xl:col-span-8"
       style={{ animationDelay: "0.2s" }}
     >
       <h2 className="mb-stack-md text-headline-lg text-primary">Audit Summary</h2>
-      <p className="mb-stack-xl max-w-3xl text-body-md leading-relaxed text-on-surface-variant">
+      <p className="mb-stack-lg max-w-3xl break-words text-body-md leading-relaxed text-on-surface-variant md:mb-stack-xl">
         {data.summary}
       </p>
-      <div className="mt-auto flex flex-col gap-stack-md border-t border-outline-variant pt-stack-lg sm:flex-row">
+      <div className="mt-auto grid grid-cols-1 gap-stack-sm border-t border-outline-variant pt-stack-lg sm:grid-cols-3 sm:gap-0">
         <KpiItem label="Indexability" showDivider value={data.indexability} />
         <KpiItem
           label="Schema Health"

@@ -70,8 +70,8 @@ export function SeoHealthPageClient({ domain }: SeoHealthPageClientProps) {
       activeNav="SEO Health"
       auditDate={data.auditDate}
     >
-      <div className="grid grid-cols-1 gap-stack-lg lg:grid-cols-3">
-        <div className="lg:col-span-2">
+      <div className="grid grid-cols-1 gap-stack-lg xl:grid-cols-3">
+        <div className="xl:col-span-2">
           <CategoryDetailHeader
             score={data.score}
             statusLabel={data.statusLabel}
@@ -92,22 +92,22 @@ export function SeoHealthPageClient({ domain }: SeoHealthPageClientProps) {
 
       <CategoryKpiStrip kpis={data.kpis} />
 
-      <div className="grid grid-cols-1 items-start gap-stack-lg lg:grid-cols-12">
-        <div className="lg:col-span-8">
+      <div className="grid grid-cols-1 items-start gap-stack-lg xl:grid-cols-12">
+        <div className="xl:col-span-8">
           <CategoryHealthTrendCard score={data.score} />
         </div>
-        <div className="lg:col-span-4">
+        <div className="xl:col-span-4">
           <CategoryIssueSpotlight issue={spotlightIssue} category="SEO Health" />
         </div>
       </div>
 
       <CategoryFindingsTable findings={data.findings} category="SEO Health" />
 
-      <div className="grid grid-cols-1 items-start gap-stack-lg lg:grid-cols-12">
-        <div className="lg:col-span-7">
+      <div className="grid grid-cols-1 items-start gap-stack-lg xl:grid-cols-12">
+        <div className="xl:col-span-7">
           <CategoryIssuesSection issues={remainingIssues} category="SEO Health" />
         </div>
-        <div className="lg:col-span-5">
+        <div className="xl:col-span-5">
           <CategoryImplementationExamples examples={data.implementationExamples} />
         </div>
       </div>

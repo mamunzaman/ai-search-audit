@@ -42,7 +42,7 @@ export function CategoryDetailHeader({
   const tone = toneStyles[statusTone];
 
   return (
-    <section className={cn(reportStyles.heroCard, "lg:flex-row lg:items-center")}>
+    <section className={cn(reportStyles.heroCard)}>
       <div className="flex shrink-0 flex-col items-center">
         <ReportScoreRing
           score={score}
@@ -91,7 +91,7 @@ export function CategoryDetailHeader({
                       className="mt-0.5 shrink-0 text-[#2E7D32]"
                       filled
                     />
-                    <span className="line-clamp-1">{item}</span>
+                    <span className={reportStyles.breakSafe}>{item}</span>
                   </li>
                 ))}
               </ul>
@@ -117,7 +117,7 @@ export function CategoryDetailHeader({
                       size={14}
                       className="mt-0.5 shrink-0 text-primary"
                     />
-                    <span className="line-clamp-1">{item}</span>
+                    <span className={reportStyles.breakSafe}>{item}</span>
                   </li>
                 ))}
               </ul>

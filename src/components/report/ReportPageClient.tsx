@@ -50,9 +50,13 @@ export function ReportPageClient({ domain }: ReportPageClientProps) {
       </div>
 
       <ReportStagger motionKey={data.domain} className={reportStyles.pageStack}>
-        <section className="grid grid-cols-1 items-stretch gap-gutter lg:grid-cols-12">
-          <ExecutiveScoreCard data={data} />
-          <StrategicOverviewCard data={data.strategicOverview} domain={data.domain} />
+        <section className={reportStyles.overviewGrid12}>
+          <div className="flex h-full min-h-0 xl:col-span-4">
+            <ExecutiveScoreCard data={data} />
+          </div>
+          <div className="flex h-full min-h-0 xl:col-span-8">
+            <StrategicOverviewCard data={data.strategicOverview} domain={data.domain} />
+          </div>
         </section>
 
         <ScoreExplanationCard data={data.scoreExplanation} />
