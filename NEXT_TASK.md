@@ -1,11 +1,12 @@
 # Next Task
 
-**Goal:** Extend sitewide signal aggregation to Answer Extraction.
+**Goal:** Manual responsive QA on tablet widths (768–1366px) across report routes — confirm no horizontal page scroll except tables/code.
 
 **Verify:**
-- Run audit on a multi-page site; confirm answer-extraction findings reflect crawled pages beyond the homepage.
+- Collapsed sidebar (icon rail) on tablet; full sidebar at xl+
+- KPI strips stay 2-column until xl
+- Category detail headers stack cleanly on tablet
 
 ## Done
 
-- Content Structure layout — full-width Heading Hierarchy, 2-col findings/recommendation row below
-- `npm run lint` / `npm run build` pass
+- Tablet/iPad responsive polish for report navigation, category detail components, and overview layout (excludes Content Structure)
